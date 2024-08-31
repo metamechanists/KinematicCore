@@ -1,6 +1,9 @@
 package org.metamechanists.kinematiccore.api;
 
 
-public abstract class KinematicEntity {
+import java.io.Serializable;
+
+
+public interface KinematicEntity extends Serializable {
 
 }
