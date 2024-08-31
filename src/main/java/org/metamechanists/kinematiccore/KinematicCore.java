@@ -18,6 +18,8 @@ public class KinematicCore extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        getDataFolder().mkdir();
+
         db = DBMaker.fileDB(new File(getDataFolder(), "data.mapdb"))
                 .closeOnJvmShutdown()
                 .fileMmapEnableIfSupported()
