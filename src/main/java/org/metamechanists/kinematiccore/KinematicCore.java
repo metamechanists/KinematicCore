@@ -23,9 +23,7 @@ public class KinematicCore extends JavaPlugin {
                 .transactionEnable()
                 .make();
 
-        entities = db.hashMap("entities")
-                .keySerializer(Serializer.UUID)
-                .valueSerializer(Serializer.JAVA)
+        entities = db.hashMap("entities", Serializer.UUID, Serializer.JAVA)
                 .createOrOpen();
 
         entities.put(new UUID(1, 2), new TestEntity());
