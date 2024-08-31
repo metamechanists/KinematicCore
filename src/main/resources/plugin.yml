@@ -1,0 +1,10 @@
+name: Cybernetics
+authors: [El_Saifo]
+
+main: org.metamechanists.cybernetics.Cybernetics
+website: www.metamechanists.org
+version: '${project.version}'
+api-version: 1.20
+
+depend:
+  - Slimefun
