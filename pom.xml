@@ -52,11 +52,6 @@
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
         </repository>
-
-        <repository>
-            <id>org.metamechanists</id>
-            <url>https://repo.metamechanists.org/releases/</url>
-        </repository>
     </repositories>
 
     <dependencies>
