@@ -5,11 +5,11 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.metamechanists</groupId>
-    <artifactId>Cybernetics</artifactId>
+    <artifactId>KinematicCore</artifactId>
     <version>0</version>
     <packaging>jar</packaging>
 
-    <name>Cybernetics</name>
+    <name>KinematicCore</name>
 
     <properties>
         <java.version>1.8</java.version>
@@ -17,7 +17,7 @@
     </properties>
 
     <build>
-        <finalName>Cybernetics</finalName>
+        <finalName>KinematicCore</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -52,6 +52,11 @@
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
         </repository>
+
+        <repository>
+            <id>org.metamechanists</id>
+            <url>https://repo.metamechanists.org/releases/</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -82,5 +87,19 @@
             <version>cd3672c3f2</version>
             <scope>provided</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.metamechanists</groupId>
+            <artifactId>DisplayModelLib</artifactId>
+            <version>32</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
+
+    <distributionManagement>
+        <repository>
+            <id>metamechanists-repo</id>
+            <url>http://localhost:8085/releases</url>
+        </repository>
+    </distributionManagement>
 </project>
