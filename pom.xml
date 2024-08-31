@@ -36,7 +36,7 @@
                     <relocations>
                         <relocation>
                             <pattern>org.mapdb</pattern>
-                            <shadedPattern>org.metamechanists.kinematiccore</shadedPattern>
+                            <shadedPattern>org.metamechanists.kinematiccore.org.mapdb</shadedPattern>
                         </relocation>
                     </relocations>
                 </configuration>

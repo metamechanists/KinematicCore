@@ -20,6 +20,7 @@ public class KinematicCore extends JavaPlugin {
     public void onEnable() {
         db = DBMaker.fileDB(new File(getDataFolder(), "data.mapdb"))
                 .closeOnJvmShutdown()
+                .fileMmapEnableIfSupported()
                 .transactionEnable()
                 .make();
 
