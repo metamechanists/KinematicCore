@@ -68,7 +68,6 @@
             <groupId>org.mapdb</groupId>
             <artifactId>mapdb</artifactId>
             <version>3.1.0</version>
-            <scope>compile</scope>
         </dependency>
     </dependencies>
 
