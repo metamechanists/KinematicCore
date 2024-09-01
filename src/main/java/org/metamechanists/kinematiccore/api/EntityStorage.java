@@ -54,12 +54,12 @@ public final class EntityStorage implements Listener {
                 .transactionEnable()
                 .make();
 
-        entities = db.hashMap("kinematicEntities", Serializer.UUID, Serializer.BYTE_ARRAY)
+        entities = db.hashMap("entities", Serializer.UUID, Serializer.BYTE_ARRAY)
                 .expireStoreSize(MAX_PERSISTENT_ENTITIES_SIZE)
                 .createOrOpen();
 
         //noinspection unchecked
-        entitiesByType = db.hashMap("entitiesByKinematicEntityType ", Serializer.UUID, Serializer.JAVA)
+        entitiesByType = db.hashMap("entitiesByType ", Serializer.STRING, Serializer.JAVA)
                 .expireStoreSize(MAX_PERSISTENT_ENTITIES_SIZE)
                 .createOrOpen();
     }
