@@ -4,6 +4,7 @@ import com.destroystokyo.paper.event.entity.EntityRemoveFromWorldEvent;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
+import com.esotericsoftware.kryo.serializers.DefaultSerializers;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.EventHandler;
@@ -49,6 +50,9 @@ public final class EntityStorage implements Listener {
     @ApiStatus.Internal
     public static void init() {
         kryo.setRegistrationRequired(false);
+
+        // https://github.com/EsotericSoftware/kryo/issues/885
+        kryo.addDefaultSerializer(UUID.class, DefaultSerializers.UUIDSerializer.class);
 
         //noinspection ResultOfMethodCallIgnored
         KinematicCore.getInstance().getDataFolder().mkdir();
