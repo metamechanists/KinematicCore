@@ -22,7 +22,7 @@ public class TestEntity extends KinematicEntity<Pig> {
 
     protected TestEntity(@NotNull Location location) {
         super(() -> location.getWorld().spawn(location, Pig.class));
-        this.location = entity().getLocation();
+        this.location = location;
     }
 
     @Override
