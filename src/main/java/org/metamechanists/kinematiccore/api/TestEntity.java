@@ -8,13 +8,21 @@ import org.metamechanists.kinematiccore.KinematicCore;
 
 public class TestEntity extends KinematicEntity<Pig> {
     private static final KinematicEntitySchema SCHEMA = new KinematicEntitySchema("test_entity", TestEntity.class, Pig.class);
+    private int bruh = 5;
+    private Location location;
+    private transient String name = "bob";
 
     static {
         EntityStorage.register(SCHEMA);
     }
 
+    protected TestEntity() {
+        super();
+    }
+
     protected TestEntity(@NotNull Location location) {
         super(() -> location.getWorld().spawn(location, Pig.class));
+        this.location = entity().getLocation();
     }
 
     @Override

@@ -16,6 +16,10 @@ public abstract class KinematicEntity<T extends Entity> {
     private final UUID uuid;
     private transient WeakReference<T> entityRef;
 
+    protected KinematicEntity() {
+        uuid = null;
+    }
+
     protected KinematicEntity(@NotNull Supplier<T> spawnEntity) {
         T entity = spawnEntity.get();
         String provided = entity.getType().getEntityClass().getName();

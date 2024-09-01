@@ -168,12 +168,22 @@ public final class EntityStorage implements Listener {
     @EventHandler
     private static void onEntityLoad(@NotNull EntitiesLoadEvent event) {
         for (Entity entity : event.getEntities()) {
-            tryLoad(entity.getUniqueId());
+            try {
+                tryLoad(entity.getUniqueId());
+            } catch (RuntimeException e) {
+                KinematicCore.getInstance().getLogger().severe("Error while loading entity; entity data will be lost!");
+                e.printStackTrace();
+            }
         }
     }
 
     @EventHandler
     private static void onEntityUnload(@NotNull EntityRemoveFromWorldEvent event) {
-        tryUnload(event.getEntity().getUniqueId());
+        try {
+            tryUnload(event.getEntity().getUniqueId());
+        } catch (RuntimeException e) {
+            KinematicCore.getInstance().getLogger().severe("Error while unloading entity; entity data will be lost!");
+            e.printStackTrace();
+        }
     }
 }
