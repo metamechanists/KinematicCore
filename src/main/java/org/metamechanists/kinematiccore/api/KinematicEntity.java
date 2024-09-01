@@ -3,6 +3,7 @@ package org.metamechanists.kinematiccore.api;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -17,7 +18,7 @@ public abstract class KinematicEntity<T extends Entity> {
 
     protected KinematicEntity(@NotNull Supplier<T> spawnEntity) {
         T entity = spawnEntity.get();
-        String provided = entity.getClass().getName();
+        String provided = entity.getType().getEntityClass().getName();
         String expected = schema().entityClass().getName();
         if (!provided.equals(expected)) {
             throw new RuntimeException("The provided entity (" + provided + ") does not match the entity type specified in the schema (" + expected + ")");
