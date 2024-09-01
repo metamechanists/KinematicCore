@@ -14,7 +14,7 @@ import java.util.function.Supplier;
 public abstract class KinematicEntity<T extends Entity> {
     private final UUID uuid;
     private final Class<T> entityType;
-    private WeakReference<T> entityRef;
+    private transient WeakReference<T> entityRef;
 
     protected KinematicEntity(@NotNull Supplier<T> spawnEntity, @NotNull Class<T> entityType) {
         T entity = spawnEntity.get();
