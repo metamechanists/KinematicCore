@@ -17,9 +17,13 @@ public abstract class KinematicEntity<T extends Entity> {
 
     protected KinematicEntity(@NotNull Supplier<T> spawnEntity) {
         T entity = spawnEntity.get();
-        assert(entity.getClass() == schema().entityClass());
+        if (entity.getClass() != schema().entityClass()) {
+            throw new RuntimeException("The provided entity does not match the entity type specified in the schema!");
+        }
+
         this.uuid = entity.getUniqueId();
         this.entityRef = new WeakReference<>(entity);
+
         //noinspection ThisEscapedInObjectConstruction
         EntityStorage.add(this);
     }
