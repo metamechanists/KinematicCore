@@ -32,8 +32,8 @@ public final class EntityStorage implements Listener {
     private static final long MAX_PERSISTENT_ENTITIES_SIZE = 1024 * 1024;
     private static DB db;
 
-    private static final Output output = new Output();
-    private static final Input input = new Input();
+//    private static final Output output = new Output();
+//    private static final Input input = new Input();
     private static final Kryo kryo = new Kryo();
 
     private static HTreeMap<UUID, byte[]> entities;
@@ -86,7 +86,7 @@ public final class EntityStorage implements Listener {
         KinematicCore.getInstance().getLogger().info("Writing to disk " + uuid);
 
         KinematicEntity<?> kinematicEntity = loadedEntities.get(uuid);
-        output.reset();
+        Output output = new Output();
         kryo.writeClassAndObject(output, kinematicEntity);
         entities.put(uuid, output.getBuffer());
         entitiesByType.computeIfAbsent(kinematicEntity.schema().id(), k -> ConcurrentHashMap.newKeySet()).add(uuid);
@@ -104,7 +104,7 @@ public final class EntityStorage implements Listener {
 
         KinematicCore.getInstance().getLogger().info("Loading " + uuid);
 
-        input.reset();
+        Input input = new Input();
         input.setBuffer(bytes);
         KinematicEntity<?> kinematicEntity = (KinematicEntity<?>) kryo.readClassAndObject(input);
 
