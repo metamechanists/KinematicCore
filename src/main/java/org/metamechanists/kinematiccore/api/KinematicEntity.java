@@ -13,14 +13,13 @@ import java.util.function.Supplier;
 
 public abstract class KinematicEntity<T extends Entity> {
     private final UUID uuid;
-    private final Class<T> entityType;
     private transient WeakReference<T> entityRef;
 
-    protected KinematicEntity(@NotNull Supplier<T> spawnEntity, @NotNull Class<T> entityType) {
+    protected KinematicEntity(@NotNull Supplier<T> spawnEntity) {
         T entity = spawnEntity.get();
+        assert(entity.getClass() == schema().entityClass());
         this.uuid = entity.getUniqueId();
         this.entityRef = new WeakReference<>(entity);
-        this.entityType = entityType;
         //noinspection ThisEscapedInObjectConstruction
         EntityStorage.add(this);
     }
@@ -36,8 +35,9 @@ public abstract class KinematicEntity<T extends Entity> {
 
         // Fall back to getting entity from world, and if found, update the weakref
         Entity entityFromWorld = Bukkit.getEntity(uuid);
-        if (entityType.isInstance(entityFromWorld)) {
-            T castEntity = entityType.cast(entityFromWorld);
+        if (schema().entityClass().isInstance(entityFromWorld)) {
+            // Safe to cast because the schema should always contain the correct entity type
+            T castEntity = (T) schema().entityClass().cast(entityFromWorld);
             entityRef = new WeakReference<>(castEntity);
             return castEntity;
         }

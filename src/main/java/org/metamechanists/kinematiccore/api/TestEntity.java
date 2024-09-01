@@ -7,14 +7,14 @@ import org.metamechanists.kinematiccore.KinematicCore;
 
 
 public class TestEntity extends KinematicEntity<Pig> {
-    private static final KinematicEntitySchema SCHEMA = new KinematicEntitySchema("test_entity", TestEntity.class);
+    private static final KinematicEntitySchema SCHEMA = new KinematicEntitySchema("test_entity", TestEntity.class, Pig.class);
 
     static {
         EntityStorage.register(SCHEMA);
     }
 
     protected TestEntity(@NotNull Location location) {
-        super(() -> location.getWorld().spawn(location, Pig.class), Pig.class);
+        super(() -> location.getWorld().spawn(location, Pig.class));
     }
 
     @Override

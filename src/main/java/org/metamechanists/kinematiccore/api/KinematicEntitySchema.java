@@ -1,3 +1,6 @@
 package org.metamechanists.kinematiccore.api;
 
-public record KinematicEntitySchema(String id, Class<? extends KinematicEntity<?>> clazz) {}
+import org.bukkit.entity.Entity;
+
+
+public record KinematicEntitySchema(String id, Class<? extends KinematicEntity<?>> kinematicClass, Class<? extends Entity> entityClass) {}
