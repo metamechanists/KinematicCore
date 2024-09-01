@@ -86,7 +86,7 @@ public final class EntityStorage implements Listener {
         KinematicCore.getInstance().getLogger().info("Writing to disk " + uuid);
 
         KinematicEntity<?> kinematicEntity = loadedEntities.get(uuid);
-        Output output = new Output();
+        Output output = new Output(1024 * 1024);
         kryo.writeClassAndObject(output, kinematicEntity);
         entities.put(uuid, output.getBuffer());
         entitiesByType.computeIfAbsent(kinematicEntity.schema().id(), k -> ConcurrentHashMap.newKeySet()).add(uuid);
