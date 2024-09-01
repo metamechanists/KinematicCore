@@ -17,7 +17,7 @@ public abstract class KinematicEntity<T extends Entity> {
 
     protected KinematicEntity(@NotNull Supplier<T> spawnEntity) {
         T entity = spawnEntity.get();
-        if (entity.getClass() != schema().entityClass()) {
+        if (!entity.getClass().getName().equals(schema().entityClass().getName())) {
             throw new RuntimeException("The provided entity does not match the entity type specified in the schema!");
         }
 
