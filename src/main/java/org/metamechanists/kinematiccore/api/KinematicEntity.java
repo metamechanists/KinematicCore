@@ -3,7 +3,6 @@ package org.metamechanists.kinematiccore.api;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -39,9 +38,11 @@ public abstract class KinematicEntity<T extends Entity> {
 
     protected final @Nullable T entity() {
         // Use weakref if available
-        T entityFromRef = entityRef.get();
-        if (entityFromRef != null && entityFromRef.isValid()) {
-            return entityFromRef;
+        if (entityRef != null) {
+            T entityFromRef = entityRef.get();
+            if (entityFromRef != null && entityFromRef.isValid()) {
+                return entityFromRef;
+            }
         }
 
         // Fall back to getting entity from world, and if found, update the weakref
