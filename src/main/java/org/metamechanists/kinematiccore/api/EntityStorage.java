@@ -37,9 +37,11 @@ public final class EntityStorage implements Listener {
 
     private static HTreeMap<UUID, byte[]> entities;
     private static HTreeMap<String, Set<UUID>> entitiesByType;
-    private static final Map<UUID, KinematicEntity<?>> loadedEntities = new ConcurrentHashMap<>();
+
     private static final Map<String, Set<UUID>> loadedEntitiesByType = new ConcurrentHashMap<>();
+    private static final Map<UUID, KinematicEntity<?>> loadedEntities = new ConcurrentHashMap<>();
     private static final Map<String, KinematicEntitySchema> schemas = new ConcurrentHashMap<>();
+
 
     private EntityStorage() {}
 
@@ -70,21 +72,80 @@ public final class EntityStorage implements Listener {
     }
 
     public static void register(@NotNull KinematicEntitySchema schema) {
+        kryo.register(schema.clazz());
         schemas.put(schema.id(), schema);
     }
 
-    @ApiStatus.Internal
-    public static void add(KinematicEntity<?> kinematicEntity) {
-        loadedEntities.put(kinematicEntity.uuid(), kinematicEntity);
-        Set<UUID> uuids = entitiesByType.computeIfAbsent(kinematicEntity.schema().id(), k -> ConcurrentHashMap.newKeySet());
-        uuids.add(kinematicEntity.uuid());
+    /*
+     * Takes an existing KinematicEntity and writes it from memory to disk.
+     * The KinematicEntity referenced by the UUID must NOT be null.
+     */
+    private static void save(UUID uuid) {
+        KinematicCore.getInstance().getLogger().info("Writing to disk " + uuid);
+
+        KinematicEntity<?> kinematicEntity = loadedEntities.get(uuid);
+        output.reset();
+        kryo.writeClassAndObject(output, kinematicEntity);
+        entities.put(uuid, output.getBuffer());
+        entitiesByType.computeIfAbsent(kinematicEntity.schema().id(), k -> ConcurrentHashMap.newKeySet()).add(uuid);
     }
 
-    public static KinematicEntity<?> kinematicEntity(UUID uuid) {
+    /*
+     * Takes an existing KinematicEntity and reads it from disk to memory.
+     * The KinematicEntity referenced by the UUID can be null.
+     */
+    private static void tryLoad(UUID uuid) {
+        byte[] bytes = entities.get(uuid);
+        if (bytes == null) {
+            return;
+        }
+
+        KinematicCore.getInstance().getLogger().info("Loading " + uuid);
+
+        input.reset();
+        input.setBuffer(bytes);
+        KinematicEntity<?> kinematicEntity = (KinematicEntity<?>) kryo.readClassAndObject(input);
+
+        loadedEntitiesByType.computeIfAbsent(kinematicEntity.schema().id(), k -> ConcurrentHashMap.newKeySet()).add(uuid);
+        loadedEntities.put(uuid, kinematicEntity);
+    }
+
+    /*
+     * Takes an existing KinematicEntity and transfers it from memory to disk.
+     * The KinematicEntity referenced by the UUID can be null.
+     */
+    private static void tryUnload(UUID uuid) {
+        KinematicEntity<?> kinematicEntity = kinematicEntity(uuid);
+        if (kinematicEntity == null) {
+            return;
+        }
+
+        KinematicCore.getInstance().getLogger().info("Unloading " + uuid);
+
+        save(uuid);
+
+        loadedEntitiesByType.get(kinematicEntity.schema().id()).remove(uuid);
+        loadedEntities.remove(uuid);
+    }
+
+    /*
+     * Adds a completely new KinematicEntity to the cache.
+     */
+    @ApiStatus.Internal
+    public static void add(@NotNull KinematicEntity<?> kinematicEntity) {
+        KinematicCore.getInstance().getLogger().info("Unloading " + kinematicEntity.uuid());
+
+        Set<UUID> uuids = loadedEntitiesByType.computeIfAbsent(kinematicEntity.schema().id(), k -> ConcurrentHashMap.newKeySet());
+        uuids.add(kinematicEntity.uuid());
+
+        loadedEntities.put(kinematicEntity.uuid(), kinematicEntity);
+    }
+
+    public static @Nullable KinematicEntity<?> kinematicEntity(UUID uuid) {
         return loadedEntities.get(uuid);
     }
 
-    public static KinematicEntitySchema schema(String id) {
+    public static @Nullable KinematicEntitySchema schema(String id) {
         return schemas.get(id);
     }
 
@@ -99,33 +160,12 @@ public final class EntityStorage implements Listener {
     @EventHandler
     private static void onEntityLoad(@NotNull EntitiesLoadEvent event) {
         for (Entity entity : event.getEntities()) {
-            byte[] bytes = entities.get(entity.getUniqueId());
-            if (bytes == null) {
-                continue;
-            }
-
-            // TODO register with kryo
-            kryo.reset();
-            input.reset();
-            input.setBuffer(bytes);
-            KinematicEntity<?> object = (KinematicEntity<?>) kryo.readClassAndObject(input);
-
-            loadedEntities.put(entity.getUniqueId(), object);
+            tryLoad(entity.getUniqueId());
         }
     }
 
     @EventHandler
     private static void onEntityUnload(@NotNull EntityRemoveFromWorldEvent event) {
-        Entity entity = event.getEntity();
-        KinematicEntity<?> kinematicEntity = loadedEntities.remove(entity.getUniqueId());
-        if (kinematicEntity == null) {
-            return;
-        }
-
-        kryo.reset();
-        output.reset();
-        kryo.writeClassAndObject(output, kinematicEntity);
-
-        entities.put(entity.getUniqueId(), output.getBuffer());
+        tryUnload(event.getEntity().getUniqueId());
     }
 }
