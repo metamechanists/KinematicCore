@@ -74,7 +74,7 @@ public final class EntityStorage implements Listener {
     }
 
     public static void register(@NotNull KinematicEntitySchema schema) {
-        kryo.register(schema.clazz());
+        kryo.register(schema.kinematicClass());
         schemas.put(schema.id(), schema);
     }
 
