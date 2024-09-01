@@ -16,8 +16,13 @@ public class TickerTask implements Runnable {
         long tick = Bukkit.getCurrentTick();
         for (Map.Entry<String, Set<UUID>> kinematicEntityType : EntityStorage.allLoadedEntitiesByType().entrySet()) {
             for (UUID uuid : kinematicEntityType.getValue()) {
-                //noinspection DataFlowIssue
-                EntityStorage.kinematicEntity(uuid).tick(tick);
+                KinematicEntity<?> kinematicEntity =EntityStorage.kinematicEntity(uuid);
+                try {
+                    kinematicEntity.tick(tick);
+                } catch (RuntimeException e) {
+                    KinematicCore.getInstance().getLogger().severe("Failed to tick " + kinematicEntity.schema().id());
+                    e.printStackTrace();
+                }
             }
         }
     }

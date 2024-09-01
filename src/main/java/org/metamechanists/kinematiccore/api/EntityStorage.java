@@ -4,6 +4,7 @@ import com.destroystokyo.paper.event.entity.EntityRemoveFromWorldEvent;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -49,6 +50,7 @@ public final class EntityStorage implements Listener {
     public static void init() {
         //noinspection ResultOfMethodCallIgnored
         KinematicCore.getInstance().getDataFolder().mkdir();
+        Bukkit.getServer().getPluginManager().registerEvents(new EntityStorage(), KinematicCore.getInstance());
 
         db = DBMaker.fileDB(new File(KinematicCore.getInstance().getDataFolder(), "data.mapdb"))
                 .closeOnJvmShutdown()
@@ -133,7 +135,7 @@ public final class EntityStorage implements Listener {
      */
     @ApiStatus.Internal
     public static void add(@NotNull KinematicEntity<?> kinematicEntity) {
-        KinematicCore.getInstance().getLogger().info("Unloading " + kinematicEntity.uuid());
+        KinematicCore.getInstance().getLogger().info("Add " + kinematicEntity.uuid());
 
         Set<UUID> uuids = loadedEntitiesByType.computeIfAbsent(kinematicEntity.schema().id(), k -> ConcurrentHashMap.newKeySet());
         uuids.add(kinematicEntity.uuid());
