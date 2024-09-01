@@ -48,6 +48,8 @@ public final class EntityStorage implements Listener {
 
     @ApiStatus.Internal
     public static void init() {
+        kryo.setRegistrationRequired(false);
+
         //noinspection ResultOfMethodCallIgnored
         KinematicCore.getInstance().getDataFolder().mkdir();
         Bukkit.getServer().getPluginManager().registerEvents(new EntityStorage(), KinematicCore.getInstance());
