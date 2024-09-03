@@ -21,6 +21,9 @@ public class StateReader {
         version = input.readInt();
 
         while (input.position() < input.limit()) {
+            Bukkit.getLogger().warning(String.valueOf(input.position()));
+            Bukkit.getLogger().warning(String.valueOf(input.limit()));
+            Bukkit.getLogger().warning(String.valueOf(input.end()));
             String key = input.readString();
             Bukkit.getLogger().warning(key);
             Object value = switch (StateType.VALUES[input.readByte()]) {
