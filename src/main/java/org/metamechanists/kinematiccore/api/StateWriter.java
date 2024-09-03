@@ -1,6 +1,7 @@
 package org.metamechanists.kinematiccore.api;
 
 import com.esotericsoftware.kryo.io.Output;
+import com.esotericsoftware.kryo.io.OutputChunked;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
@@ -56,6 +57,8 @@ public class StateWriter {
                 output.writeLong(cast.getLeastSignificantBits());
             }
         }
+
+        output.close();
     }
 
     public void setVersion(int version) {
