@@ -12,16 +12,20 @@ import java.util.UUID;
 @SuppressWarnings("unused")
 public class StateWriter {
     private final String id;
+    private final UUID uuid;
     private final Map<String, Object> map = new HashMap<>();
     private int version;
 
-    StateWriter(String id) {
+    StateWriter(String id, UUID uuid) {
         this.id = id;
+        this.uuid = uuid;
     }
 
     void write(@NotNull Output output) {
         output.writeString(id);
         output.writeInt(version);
+        output.writeLong(uuid.getMostSignificantBits());
+        output.writeLong(uuid.getLeastSignificantBits());
 
         for (Map.Entry<String, Object> entry : map.entrySet()) {
             output.writeString(entry.getKey());

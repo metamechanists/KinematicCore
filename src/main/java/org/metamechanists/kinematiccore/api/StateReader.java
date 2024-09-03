@@ -13,19 +13,17 @@ import java.util.UUID;
 @SuppressWarnings("unused")
 public class StateReader {
     private final String id;
+    private final UUID uuid;
     private final int version;
     private final Map<String, Object> map = new HashMap<>();
 
     StateReader(@NotNull Input input) {
         id = input.readString();
         version = input.readInt();
+        uuid = new UUID(input.readLong(), input.readLong());
 
         while (input.position() < input.limit()) {
-            Bukkit.getLogger().warning(String.valueOf(input.position()));
-            Bukkit.getLogger().warning(String.valueOf(input.limit()));
-            Bukkit.getLogger().warning(String.valueOf(input.end()));
             String key = input.readString();
-            Bukkit.getLogger().warning(key);
             Object value = switch (StateType.VALUES[input.readByte()]) {
                 case STRING -> input.readString();
                 case BYTE -> input.readByte();
@@ -44,6 +42,10 @@ public class StateReader {
 
     String id() {
         return id;
+    }
+
+    UUID uuid() {
+        return uuid;
     }
 
     public int version() {

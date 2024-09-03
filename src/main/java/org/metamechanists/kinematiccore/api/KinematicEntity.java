@@ -39,7 +39,7 @@ public abstract class KinematicEntity<T extends Entity> {
 
     protected KinematicEntity(@NotNull KinematicEntitySchema schema, @NotNull StateReader reader) {
         this.schema = schema;
-        this.uuid = reader.getUUID("KINEMATIC_CORE_ENTITY_UUID");
+        this.uuid = reader.uuid();
     }
 
     protected void tick(long tick) {}
