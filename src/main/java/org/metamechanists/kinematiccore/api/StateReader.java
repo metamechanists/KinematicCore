@@ -11,9 +11,11 @@ import java.util.UUID;
 
 @SuppressWarnings("unused")
 public class StateReader {
+    private final int version;
     private final Map<String, Object> map = new HashMap<>();
 
     StateReader(@NotNull Input input) {
+        version = input.readInt();
         while (input.position() < input.limit()) {
             String key = input.readString();
             Object value = switch (StateType.VALUES[input.readByte()]) {
@@ -30,6 +32,10 @@ public class StateReader {
 
             map.put(key, value);
         }
+    }
+
+    public int version() {
+        return version;
     }
 
     public @Nullable String getString(String key) {

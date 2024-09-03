@@ -29,7 +29,7 @@ public class TestEntity extends KinematicEntity<Pig> {
         this.name = "bob";
     }
 
-    @SuppressWarnings("DataFlowIssue")
+    @SuppressWarnings({"DataFlowIssue", "unused"})
     public TestEntity(@NotNull StateReader reader) {
         super(SCHEMA, reader);
         this.bruh = reader.getInt("bruh");

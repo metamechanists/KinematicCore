@@ -115,6 +115,7 @@ public final class EntityStorage implements Listener {
 
         Input input = new Input();
         input.setBuffer(bytes);
+
         String id = input.readString();
         KinematicEntitySchema schema = schema(id);
         if (schema == null) {
@@ -122,11 +123,12 @@ public final class EntityStorage implements Listener {
             return;
         }
 
+        StateReader reader = new StateReader(input);
         KinematicEntity<?> kinematicEntity;
         try {
-            kinematicEntity = schema.getConstructor().newInstance(input);
-        } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-            KinematicCore.getInstance().getLogger().severe("Error while loading " + uuid + " of type " + id + "!");
+            kinematicEntity = schema.getConstructor().newInstance(reader);
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException | IllegalArgumentException e) {
+            KinematicCore.getInstance().getLogger().severe("Error while loading " + uuid + " of type " + id);
             e.printStackTrace();
             return;
         }
@@ -188,7 +190,7 @@ public final class EntityStorage implements Listener {
             try {
                 tryLoad(entity.getUniqueId());
             } catch (RuntimeException e) {
-                KinematicCore.getInstance().getLogger().severe("Error while loading entity; entity data will be lost!");
+                KinematicCore.getInstance().getLogger().severe("Error while loading entity " + entity.getEntityId());
                 e.printStackTrace();
             }
         }

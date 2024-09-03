@@ -17,6 +17,10 @@ public class TickerTask implements Runnable {
         for (Map.Entry<String, Set<UUID>> kinematicEntityType : EntityStorage.allLoadedEntitiesByType().entrySet()) {
             for (UUID uuid : kinematicEntityType.getValue()) {
                 KinematicEntity<?> kinematicEntity = EntityStorage.kinematicEntity(uuid);
+                if (kinematicEntity.entity() == null) {
+                    return;
+                }
+
                 try {
                     kinematicEntity.tick(tick);
                 } catch (RuntimeException e) {

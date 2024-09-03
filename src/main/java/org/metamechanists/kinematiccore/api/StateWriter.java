@@ -12,6 +12,7 @@ import java.util.UUID;
 public class StateWriter {
     private final String id;
     private final Map<String, Object> map = new HashMap<>();
+    private int version;
 
     StateWriter(String id) {
         this.id = id;
@@ -19,6 +20,7 @@ public class StateWriter {
 
     void write(@NotNull Output output) {
         output.writeString(id);
+        output.writeInt(version);
 
         for (Map.Entry<String, Object> entry : map.entrySet()) {
             output.writeString(entry.getKey());
@@ -54,6 +56,10 @@ public class StateWriter {
                 output.writeLong(cast.getLeastSignificantBits());
             }
         }
+    }
+
+    public void setVersion(int version) {
+        this.version = version;
     }
 
     public void set(String key, String value) {
