@@ -4,11 +4,12 @@ import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.metamechanists.kinematiccore.api.EntityStorage;
+import org.metamechanists.kinematiccore.api.KinematicAddon;
 import org.metamechanists.kinematiccore.api.TestListener;
 import org.metamechanists.kinematiccore.api.TickerTask;
 
 
-public class KinematicCore extends JavaPlugin {
+public class KinematicCore extends JavaPlugin implements KinematicAddon {
     @Getter
     private static KinematicCore instance;
 

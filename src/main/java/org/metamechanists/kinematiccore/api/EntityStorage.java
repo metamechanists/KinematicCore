@@ -20,6 +20,7 @@ import org.mapdb.Serializer;
 import org.metamechanists.kinematiccore.KinematicCore;
 
 import java.io.File;
+import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -33,8 +34,6 @@ public final class EntityStorage implements Listener {
     private static final long MAX_PERSISTENT_ENTITIES_SIZE = 1024 * 1024;
     private static DB db;
 
-//    private static final Output output = new Output();
-//    private static final Input input = new Input();
     private static final Kryo kryo = new Kryo();
 
     private static HTreeMap<UUID, byte[]> entities;
@@ -80,8 +79,8 @@ public final class EntityStorage implements Listener {
     }
 
     public static void register(@NotNull KinematicEntitySchema schema) {
-        kryo.register(schema.kinematicClass());
-        schemas.put(schema.id(), schema);
+        kryo.register(schema.getKinematicClass());
+        schemas.put(schema.getId(), schema);
     }
 
     /*
@@ -92,10 +91,14 @@ public final class EntityStorage implements Listener {
         KinematicCore.getInstance().getLogger().info("Writing to disk " + uuid);
 
         KinematicEntity<?> kinematicEntity = loadedEntities.get(uuid);
+
         Output output = new Output(1024 * 1024);
-        kryo.writeClassAndObject(output, kinematicEntity);
+        StateWriter writer = new StateWriter(kinematicEntity.schema().getId());
+        kinematicEntity.write(writer);
+        writer.write(output);
+
         entities.put(uuid, output.getBuffer());
-        entitiesByType.computeIfAbsent(kinematicEntity.schema().id(), k -> ConcurrentHashMap.newKeySet()).add(uuid);
+        entitiesByType.computeIfAbsent(kinematicEntity.schema().getId(), k -> ConcurrentHashMap.newKeySet()).add(uuid);
     }
 
     /*
@@ -112,9 +115,23 @@ public final class EntityStorage implements Listener {
 
         Input input = new Input();
         input.setBuffer(bytes);
-        KinematicEntity<?> kinematicEntity = (KinematicEntity<?>) kryo.readClassAndObject(input);
+        String id = input.readString();
+        KinematicEntitySchema schema = schema(id);
+        if (schema == null) {
+            KinematicCore.getInstance().getLogger().warning("Failed to load " + uuid + " of type " + id + " (schema not found)");
+            return;
+        }
 
-        loadedEntitiesByType.computeIfAbsent(kinematicEntity.schema().id(), k -> ConcurrentHashMap.newKeySet()).add(uuid);
+        KinematicEntity<?> kinematicEntity;
+        try {
+            kinematicEntity = schema.getConstructor().newInstance(input);
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+            KinematicCore.getInstance().getLogger().severe("Error while loading " + uuid + " of type " + id + "!");
+            e.printStackTrace();
+            return;
+        }
+
+        loadedEntitiesByType.computeIfAbsent(schema.getId(), k -> ConcurrentHashMap.newKeySet()).add(uuid);
         loadedEntities.put(uuid, kinematicEntity);
     }
 
@@ -132,7 +149,7 @@ public final class EntityStorage implements Listener {
 
         save(uuid);
 
-        loadedEntitiesByType.get(kinematicEntity.schema().id()).remove(uuid);
+        loadedEntitiesByType.get(kinematicEntity.schema().getId()).remove(uuid);
         loadedEntities.remove(uuid);
     }
 
@@ -143,7 +160,7 @@ public final class EntityStorage implements Listener {
     public static void add(@NotNull KinematicEntity<?> kinematicEntity) {
         KinematicCore.getInstance().getLogger().info("Add " + kinematicEntity.uuid());
 
-        Set<UUID> uuids = loadedEntitiesByType.computeIfAbsent(kinematicEntity.schema().id(), k -> ConcurrentHashMap.newKeySet());
+        Set<UUID> uuids = loadedEntitiesByType.computeIfAbsent(kinematicEntity.schema().getId(), k -> ConcurrentHashMap.newKeySet());
         uuids.add(kinematicEntity.uuid());
 
         loadedEntities.put(kinematicEntity.uuid(), kinematicEntity);

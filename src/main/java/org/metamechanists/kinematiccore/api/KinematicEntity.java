@@ -12,26 +12,34 @@ import java.util.function.Supplier;
 
 
 public abstract class KinematicEntity<T extends Entity> {
+    private final KinematicEntitySchema schema;
     private final UUID uuid;
     private transient WeakReference<T> entityRef;
 
-    protected KinematicEntity() {
-        uuid = null;
-    }
-
-    protected KinematicEntity(@NotNull Supplier<T> spawnEntity) {
+    protected KinematicEntity(@NotNull KinematicEntitySchema schema, @NotNull Supplier<T> spawnEntity) {
+        this.schema = schema;
         T entity = spawnEntity.get();
-        String provided = entity.getType().getEntityClass().getName();
-        String expected = schema().entityClass().getName();
-        if (!provided.equals(expected)) {
-            throw new RuntimeException("The provided entity (" + provided + ") does not match the entity type specified in the schema (" + expected + ")");
+
+        // Check the spawned entity is the correct type (sadly can't be done at compile-time)
+        Class<?> type = entity.getType().getEntityClass();
+        if (type != null) {
+            // Not sure why the type would be null, but just in case
+            String provided = type.getName();
+            String expected = schema().getEntityClass().getName();
+            if (!provided.equals(expected)) {
+                throw new RuntimeException("The provided entity (" + provided + ") does not match the entity type specified in the schema (" + expected + ")");
+            }
         }
 
         this.uuid = entity.getUniqueId();
-        this.entityRef = new WeakReference<>(entity);
 
         //noinspection ThisEscapedInObjectConstruction
         EntityStorage.add(this);
+    }
+
+    protected KinematicEntity(@NotNull KinematicEntitySchema schema, @NotNull StateReader reader) {
+        this.schema = schema;
+        this.uuid = reader.getUUID("KINEMATIC_CORE_ENTITY_UUID");
     }
 
     protected void tick(long tick) {}
@@ -47,9 +55,9 @@ public abstract class KinematicEntity<T extends Entity> {
 
         // Fall back to getting entity from world, and if found, update the weakref
         Entity entityFromWorld = Bukkit.getEntity(uuid);
-        if (schema().entityClass().isInstance(entityFromWorld)) {
-            // Safe to cast because the schema should always contain the correct entity type
-            T castEntity = (T) schema().entityClass().cast(entityFromWorld);
+        if (schema().getEntityClass().isInstance(entityFromWorld)) {
+            // TODO better checking here
+            T castEntity = (T) schema().getEntityClass().cast(entityFromWorld);
             entityRef = new WeakReference<>(castEntity);
             return castEntity;
         }
@@ -61,5 +69,9 @@ public abstract class KinematicEntity<T extends Entity> {
         return uuid;
     }
 
-    public abstract KinematicEntitySchema schema();
+    public KinematicEntitySchema schema() {
+        return schema;
+    }
+
+    protected abstract void write(@NotNull StateWriter writer);
 }
