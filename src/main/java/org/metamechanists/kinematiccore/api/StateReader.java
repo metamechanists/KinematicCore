@@ -1,6 +1,7 @@
 package org.metamechanists.kinematiccore.api;
 
 import com.esotericsoftware.kryo.io.Input;
+import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -11,13 +12,17 @@ import java.util.UUID;
 
 @SuppressWarnings("unused")
 public class StateReader {
+    private final String id;
     private final int version;
     private final Map<String, Object> map = new HashMap<>();
 
     StateReader(@NotNull Input input) {
+        id = input.readString();
         version = input.readInt();
+
         while (input.position() < input.limit()) {
             String key = input.readString();
+            Bukkit.getLogger().warning(key);
             Object value = switch (StateType.VALUES[input.readByte()]) {
                 case STRING -> input.readString();
                 case BYTE -> input.readByte();
@@ -32,6 +37,10 @@ public class StateReader {
 
             map.put(key, value);
         }
+    }
+
+    String id() {
+        return id;
     }
 
     public int version() {

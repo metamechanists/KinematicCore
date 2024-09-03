@@ -115,20 +115,19 @@ public final class EntityStorage implements Listener {
 
         Input input = new Input();
         input.setBuffer(bytes);
+        StateReader reader = new StateReader(input);
 
-        String id = input.readString();
-        KinematicEntitySchema schema = schema(id);
+        KinematicEntitySchema schema = schema(reader.id());
         if (schema == null) {
-            KinematicCore.getInstance().getLogger().warning("Failed to load " + uuid + " of type " + id + " (schema not found)");
+            KinematicCore.getInstance().getLogger().warning("Failed to load " + uuid + " of type " + reader.id() + " (schema not found)");
             return;
         }
 
-        StateReader reader = new StateReader(input);
         KinematicEntity<?> kinematicEntity;
         try {
             kinematicEntity = schema.getConstructor().newInstance(reader);
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | IllegalArgumentException e) {
-            KinematicCore.getInstance().getLogger().severe("Error while loading " + uuid + " of type " + id);
+            KinematicCore.getInstance().getLogger().severe("Error while loading " + uuid + " of type " + reader.id());
             e.printStackTrace();
             return;
         }
@@ -190,7 +189,7 @@ public final class EntityStorage implements Listener {
             try {
                 tryLoad(entity.getUniqueId());
             } catch (RuntimeException e) {
-                KinematicCore.getInstance().getLogger().severe("Error while loading entity " + entity.getEntityId());
+                KinematicCore.getInstance().getLogger().severe("Error while loading entity " + entity.getUniqueId());
                 e.printStackTrace();
             }
         }
