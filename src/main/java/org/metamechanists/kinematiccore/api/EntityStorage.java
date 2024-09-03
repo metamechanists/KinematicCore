@@ -92,7 +92,7 @@ public final class EntityStorage implements Listener {
 
         KinematicEntity<?> kinematicEntity = loadedEntities.get(uuid);
 
-        Output output = new Output(1024 * 1024);
+        Output output = new Output();
         StateWriter writer = new StateWriter(kinematicEntity.schema().getId());
         kinematicEntity.write(writer);
         writer.write(output);
