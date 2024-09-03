@@ -32,7 +32,7 @@ public final class EntityStorage implements Listener {
     // our own caching according to loaded chunks, so storing a lot of
     // MapDB data in memory is effectively duplicating data
     private static final long MAX_PERSISTENT_ENTITIES_SIZE = 1024 * 1024;
-    private static final int OUTPUT_BUFFER_START_SIZE = 2;
+    private static final int OUTPUT_BUFFER_START_SIZE = 1024;
     private static DB db;
 
     private static final Kryo kryo = new Kryo();
@@ -93,12 +93,12 @@ public final class EntityStorage implements Listener {
 
         KinematicEntity<?> kinematicEntity = loadedEntities.get(uuid);
 
-        Output output = new Output(OUTPUT_BUFFER_START_SIZE);
+        Output output = new Output(OUTPUT_BUFFER_START_SIZE, -1);
         StateWriter writer = new StateWriter(kinematicEntity.schema().getId());
         kinematicEntity.write(writer);
         writer.write(output);
 
-        entities.put(uuid, output.getBuffer());
+        entities.put(uuid, output.toBytes());
         entitiesByType.computeIfAbsent(kinematicEntity.schema().getId(), k -> ConcurrentHashMap.newKeySet()).add(uuid);
     }
 
