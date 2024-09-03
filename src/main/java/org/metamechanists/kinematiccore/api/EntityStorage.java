@@ -32,6 +32,7 @@ public final class EntityStorage implements Listener {
     // our own caching according to loaded chunks, so storing a lot of
     // MapDB data in memory is effectively duplicating data
     private static final long MAX_PERSISTENT_ENTITIES_SIZE = 1024 * 1024;
+    private static final int MAX_OUTPUT_BUFFER_SIZE = 1024 * 1024;
     private static DB db;
 
     private static final Kryo kryo = new Kryo();
@@ -92,7 +93,7 @@ public final class EntityStorage implements Listener {
 
         KinematicEntity<?> kinematicEntity = loadedEntities.get(uuid);
 
-        Output output = new Output();
+        Output output = new Output(0, MAX_OUTPUT_BUFFER_SIZE);
         StateWriter writer = new StateWriter(kinematicEntity.schema().getId());
         kinematicEntity.write(writer);
         writer.write(output);
@@ -148,10 +149,13 @@ public final class EntityStorage implements Listener {
 
         KinematicCore.getInstance().getLogger().info("Unloading " + uuid);
 
-        save(uuid);
-
-        loadedEntitiesByType.get(kinematicEntity.schema().getId()).remove(uuid);
-        loadedEntities.remove(uuid);
+        try {
+            save(uuid);
+        } finally {
+            // Delete entity data even if saving fails
+            loadedEntitiesByType.get(kinematicEntity.schema().getId()).remove(uuid);
+            loadedEntities.remove(uuid);
+        }
     }
 
     /*
