@@ -30,7 +30,10 @@ public final class TestUtil {
     }
 
     public static void unloadChunk(@NotNull Location location) {
-        runSync(() -> location.getWorld().setChunkForceLoaded(location.getBlockX() / 16, location.getBlockZ() / 16, false));
+        runSync(() -> {
+            location.getWorld().setChunkForceLoaded(location.getBlockX() / 16, location.getBlockZ() / 16, false);
+            location.getWorld().unloadChunk(location.getBlockX() / 16, location.getBlockZ() / 16);
+        });
 
         try {
             Thread.sleep(EXTRA_MILLISECONDS_TO_WAIT);

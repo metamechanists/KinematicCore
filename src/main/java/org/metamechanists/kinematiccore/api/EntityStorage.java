@@ -230,10 +230,10 @@ public final class EntityStorage implements Listener {
             }
 
             if (entity.isDead()) {
-                KinematicCore.getInstance().getLogger().warning("dead" + entity.getUniqueId());
+                KinematicCore.getInstance().getLogger().warning("dead " + entity.getUniqueId());
                 remove(kinematicEntity);
             } else {
-                KinematicCore.getInstance().getLogger().warning("not dead" + entity.getUniqueId());
+                KinematicCore.getInstance().getLogger().warning("not dead " + entity.getUniqueId());
                 tryUnload(uuid);
             }
         } catch (RuntimeException e) {
