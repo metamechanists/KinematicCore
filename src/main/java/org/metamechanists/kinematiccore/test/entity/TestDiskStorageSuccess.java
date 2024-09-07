@@ -43,44 +43,48 @@ public class TestDiskStorageSuccess implements BaseTest {
 
     @Override
     public void test(@NotNull Location loaded, @NotNull Location unloaded) {
-        TestUtil.loadChunk(unloaded);
-        TestEntity kinematicEntity = new TestEntity(unloaded);
-        TestUtil.unloadChunk(unloaded);
-        Bukkit.getLogger().warning(String.valueOf(TestUtil.isChunkLoaded(unloaded)));
+        TestUtil.loadChunk(unloaded, () -> {
+            TestEntity kinematicEntity = new TestEntity(unloaded);
 
-        assertThat(EntityStorage.kinematicEntity(kinematicEntity.uuid()))
-                .isNull();
-        assertThat(EntityStorage.schema(TestEntity.SCHEMA.getId()))
-                .isEqualTo(TestEntity.SCHEMA);
-        assertThat(EntityStorage.loadedEntitiesByType(TestEntity.SCHEMA))
-                .isEmpty();
-        assertThat(kinematicEntity.entity())
-                .isNull();
+            TestUtil.unloadChunk(unloaded, () -> {
+                assertThat(EntityStorage.kinematicEntity(kinematicEntity.uuid()))
+                        .isNull();
+                assertThat(EntityStorage.schema(TestEntity.SCHEMA.getId()))
+                        .isEqualTo(TestEntity.SCHEMA);
+                assertThat(EntityStorage.loadedEntitiesByType(TestEntity.SCHEMA))
+                        .isEmpty();
+                assertThat(kinematicEntity.entity())
+                        .isNull();
 
-        TestUtil.loadChunk(unloaded);
+                TestUtil.loadChunk(unloaded, () -> {
+                    assertThat(EntityStorage.kinematicEntity(kinematicEntity.uuid()))
+                            .isEqualTo(kinematicEntity);
+                    assertThat(EntityStorage.schema(TestEntity.SCHEMA.getId()))
+                            .isEqualTo(TestEntity.SCHEMA);
+                    assertThat(EntityStorage.loadedEntitiesByType(TestEntity.SCHEMA))
+                            .hasSize(1)
+                            .contains(kinematicEntity.uuid());
+                    assertThat(kinematicEntity.entity())
+                            .isNotNull();
 
-        assertThat(EntityStorage.kinematicEntity(kinematicEntity.uuid()))
-                .isEqualTo(kinematicEntity);
-        assertThat(EntityStorage.schema(TestEntity.SCHEMA.getId()))
-                .isEqualTo(TestEntity.SCHEMA);
-        assertThat(EntityStorage.loadedEntitiesByType(TestEntity.SCHEMA))
-                .hasSize(1)
-                .contains(kinematicEntity.uuid());
-        assertThat(kinematicEntity.entity())
-                .isNotNull();
+                    kinematicEntity.remove();
 
-        kinematicEntity.remove();
+                    //noinspection CodeBlock2Expr
+                    TestUtil.loadChunk(unloaded, () -> {
 
-        TestUtil.loadChunk(unloaded);
-        TestUtil.unloadChunk(unloaded);
-
-        assertThat(EntityStorage.kinematicEntity(kinematicEntity.uuid()))
-                .isNull();
-        assertThat(EntityStorage.schema(TestEntity.SCHEMA.getId()))
-                .isEqualTo(TestEntity.SCHEMA);
-        assertThat(EntityStorage.loadedEntitiesByType(TestEntity.SCHEMA))
-                .isEmpty();
-        assertThat(kinematicEntity.entity())
-                .isNull();
+                        TestUtil.unloadChunk(unloaded, () -> {
+                            assertThat(EntityStorage.kinematicEntity(kinematicEntity.uuid()))
+                                    .isNull();
+                            assertThat(EntityStorage.schema(TestEntity.SCHEMA.getId()))
+                                    .isEqualTo(TestEntity.SCHEMA);
+                            assertThat(EntityStorage.loadedEntitiesByType(TestEntity.SCHEMA))
+                                    .isEmpty();
+                            assertThat(kinematicEntity.entity())
+                                    .isNull();
+                        });
+                    });
+                });
+            });
+        });
     }
 }
