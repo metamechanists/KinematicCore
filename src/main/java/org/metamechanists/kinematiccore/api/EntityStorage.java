@@ -223,6 +223,7 @@ public final class EntityStorage implements Listener {
     private static void onEntityLoad(@NotNull EntitiesLoadEvent event) {
         for (Entity entity : event.getEntities()) {
             KinematicCore.getInstance().getLogger().warning(String.valueOf(entity.getUniqueId()));
+            KinematicCore.getInstance().getLogger().warning(entities.entrySet().toString());
             try {
                 tryLoad(entity.getUniqueId());
             } catch (RuntimeException e) {
