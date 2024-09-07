@@ -52,6 +52,7 @@ public class TestDiskStorageSuccess implements BaseTest {
         TestUtil.unloadChunk(unloaded);
 
         TestUtil.runSync(() -> {
+            KinematicCore.getInstance().getLogger().warning(String.valueOf(TestUtil.isChunkLoaded(unloaded)));
             assertThat(EntityStorage.kinematicEntity(entity.get().uuid()))
                     .isNull();
             assertThat(EntityStorage.schema(TestEntity.SCHEMA.getId()))
