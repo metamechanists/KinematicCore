@@ -1,6 +1,7 @@
 package org.metamechanists.kinematiccore.test;
 
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.jetbrains.annotations.NotNull;
 
@@ -21,10 +22,11 @@ public final class MainTester {
         loaded = center.clone();
         loaded.setY(310);
 
-        unloaded = loaded.clone();
+        Location unloaded = loaded.clone();
         while (unloaded.getChunk().isLoaded()) {
-            unloaded.add(16, 0, 0);
+            unloaded = unloaded.add(16, 0, 0);
         }
+        this.unloaded = unloaded;
     }
 
     public @NotNull TestResult allNonDestructive() {

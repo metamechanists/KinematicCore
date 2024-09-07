@@ -42,9 +42,7 @@ public class TestMemoryStorageSuccess implements BaseTest  {
 
     @Override
     public void test(@NotNull Location loaded, @NotNull Location unloaded) {
-        Bukkit.getLogger().warning("bruh");
         TestEntity kinematicEntity = new TestEntity(loaded);
-        Bukkit.getLogger().warning("bru");
 
         assertThat(EntityStorage.kinematicEntity(kinematicEntity.uuid()))
                 .isEqualTo(kinematicEntity);
@@ -53,7 +51,5 @@ public class TestMemoryStorageSuccess implements BaseTest  {
         assertThat(EntityStorage.loadedEntitiesByType(TestEntity.SCHEMA.getId()))
                 .hasSize(1)
                 .contains(kinematicEntity.uuid());
-
-        Bukkit.getLogger().warning("br");
     }
 }
