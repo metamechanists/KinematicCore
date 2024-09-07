@@ -27,12 +27,12 @@ public class TestMemoryStorageSuccess implements BaseTest  {
             EntityStorage.register(SCHEMA);
         }
 
-        protected TestEntity(@NotNull Location location) {
+        public TestEntity(@NotNull Location location) {
             super(SCHEMA, () -> location.getWorld().spawn(location, Pig.class));
         }
 
         @SuppressWarnings("unused")
-        protected TestEntity(@NotNull StateReader reader) {
+        public TestEntity(@NotNull StateReader reader) {
             super(SCHEMA, reader);
         }
 
