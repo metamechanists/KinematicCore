@@ -134,7 +134,6 @@
         </dependency>
     </dependencies>
 
-
     <distributionManagement>
         <repository>
             <id>metamechanists-repo</id>
