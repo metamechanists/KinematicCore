@@ -37,10 +37,6 @@ public abstract class KinematicEntity<T extends Entity> {
         EntityStorage.add(this);
     }
 
-    public void remove() {
-        EntityStorage.remove(this);
-    }
-
     protected KinematicEntity(@NotNull KinematicEntitySchema schema, @NotNull StateReader reader) {
         this.schema = schema;
         this.uuid = reader.uuid();

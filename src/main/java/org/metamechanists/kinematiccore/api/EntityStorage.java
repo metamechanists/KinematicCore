@@ -199,7 +199,7 @@ public final class EntityStorage implements Listener {
         return loadedEntitiesByType;
     }
 
-    public static @Nullable Set<UUID> loadedEntitiesByType(KinematicEntitySchema schema) {
+    public static @Nullable Set<UUID> loadedEntitiesByType(@NotNull KinematicEntitySchema schema) {
         return loadedEntitiesByType(schema.getId());
     }
 
@@ -224,13 +224,16 @@ public final class EntityStorage implements Listener {
         try {
             Entity entity = event.getEntity();
             UUID uuid = entity.getUniqueId();
+            KinematicEntity<?> kinematicEntity = kinematicEntity(uuid);
+            if (kinematicEntity == null) {
+                return;
+            }
 
             if (entity.isDead()) {
-                KinematicEntity<?> kinematicEntity = kinematicEntity(uuid);
-                if (kinematicEntity != null) {
-                    kinematicEntity.remove();
-                }
+                KinematicCore.getInstance().getLogger().warning("dead");
+                remove(kinematicEntity);
             } else {
+                KinematicCore.getInstance().getLogger().warning("not dead");
                 tryUnload(uuid);
             }
         } catch (RuntimeException e) {
