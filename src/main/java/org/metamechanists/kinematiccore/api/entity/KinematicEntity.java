@@ -83,5 +83,5 @@ public abstract class KinematicEntity<T extends Entity> {
         return schema;
     }
 
-    protected abstract void write(@NotNull StateWriter writer);
+    public abstract void write(@NotNull StateWriter writer);
 }

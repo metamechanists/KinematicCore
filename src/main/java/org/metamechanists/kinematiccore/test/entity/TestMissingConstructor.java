@@ -27,7 +27,7 @@ public class TestMissingConstructor implements BaseTest {
         }
 
         @Override
-        protected void write(@NotNull StateWriter writer) {}
+        public void write(@NotNull StateWriter writer) {}
     }
 
     @SuppressWarnings({"ResultOfObjectAllocationIgnored", "CodeBlock2Expr"})

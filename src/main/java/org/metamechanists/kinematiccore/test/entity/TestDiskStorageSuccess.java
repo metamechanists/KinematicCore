@@ -39,7 +39,7 @@ public class TestDiskStorageSuccess implements BaseTest {
         }
 
         @Override
-        protected void write(@NotNull StateWriter writer) {}
+        public void write(@NotNull StateWriter writer) {}
     }
 
     @Override
