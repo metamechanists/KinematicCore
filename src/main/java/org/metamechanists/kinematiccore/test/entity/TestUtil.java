@@ -5,9 +5,11 @@ import org.bukkit.Location;
 import org.jetbrains.annotations.NotNull;
 import org.metamechanists.kinematiccore.KinematicCore;
 
+import java.util.concurrent.CompletableFuture;
+
 
 public final class TestUtil {
-    private static final long TICKS_TO_WAIT_AFTER_CHUNK_OPERATION = 3;
+    private static final long EXTRA_MILLISECONDS_TO_WAIT = 50;
 
     private TestUtil() {}
 
@@ -15,13 +17,37 @@ public final class TestUtil {
         return location.getWorld().isChunkLoaded(location.getBlockX() / 16, location.getBlockZ() / 16);
     }
 
-    public static void loadChunk(@NotNull Location location, Runnable onLoad) {
-        location.getWorld().loadChunk(location.getBlockX() / 16, location.getBlockZ() / 16);
-        Bukkit.getScheduler().runTaskLater(KinematicCore.getInstance(), onLoad, TICKS_TO_WAIT_AFTER_CHUNK_OPERATION);
+    public static void loadChunk(@NotNull Location location) {
+        runSync(() -> location.getWorld().loadChunk(location.getBlockX() / 16, location.getBlockZ() / 16));
+
+        try {
+            Thread.sleep(EXTRA_MILLISECONDS_TO_WAIT);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public static void unloadChunk(@NotNull Location location, Runnable onUnload) {
-        location.getWorld().unloadChunk(location.getBlockX() / 16, location.getBlockZ() / 16);
-        Bukkit.getScheduler().runTaskLater(KinematicCore.getInstance(), onUnload, TICKS_TO_WAIT_AFTER_CHUNK_OPERATION);
+    public static void unloadChunk(@NotNull Location location) {
+        runSync(() -> location.getWorld().unloadChunk(location.getBlockX() / 16, location.getBlockZ() / 16));
+
+        try {
+            Thread.sleep(EXTRA_MILLISECONDS_TO_WAIT);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void runSync(@NotNull Runnable runnable) {
+        CompletableFuture<Void> future = new CompletableFuture<>();
+        Bukkit.getScheduler().runTask(KinematicCore.getInstance(), () -> {
+            try {
+                runnable.run();
+            } catch (Exception | AssertionError e) {
+                future.completeExceptionally(e);
+            }
+            future.complete(null);
+        });
+
+        future.join();
     }
 }

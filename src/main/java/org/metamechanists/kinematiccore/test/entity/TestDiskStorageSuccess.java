@@ -1,6 +1,5 @@
 package org.metamechanists.kinematiccore.test.entity;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Pig;
 import org.jetbrains.annotations.NotNull;
@@ -11,6 +10,8 @@ import org.metamechanists.kinematiccore.api.KinematicEntitySchema;
 import org.metamechanists.kinematiccore.api.StateReader;
 import org.metamechanists.kinematiccore.api.StateWriter;
 import org.metamechanists.kinematiccore.test.BaseTest;
+
+import java.util.concurrent.atomic.AtomicReference;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -43,48 +44,55 @@ public class TestDiskStorageSuccess implements BaseTest {
 
     @Override
     public void test(@NotNull Location loaded, @NotNull Location unloaded) {
-        TestUtil.loadChunk(unloaded, () -> {
-            TestEntity kinematicEntity = new TestEntity(unloaded);
+        TestUtil.loadChunk(unloaded);
 
-            TestUtil.unloadChunk(unloaded, () -> {
-                assertThat(EntityStorage.kinematicEntity(kinematicEntity.uuid()))
-                        .isNull();
-                assertThat(EntityStorage.schema(TestEntity.SCHEMA.getId()))
-                        .isEqualTo(TestEntity.SCHEMA);
-                assertThat(EntityStorage.loadedEntitiesByType(TestEntity.SCHEMA))
-                        .isEmpty();
-                assertThat(kinematicEntity.entity())
-                        .isNull();
+        AtomicReference<TestEntity> entity = new AtomicReference<>();
+        TestUtil.runSync(() -> entity.set(new TestEntity(unloaded)));
 
-                TestUtil.loadChunk(unloaded, () -> {
-                    assertThat(EntityStorage.kinematicEntity(kinematicEntity.uuid()))
-                            .isEqualTo(kinematicEntity);
-                    assertThat(EntityStorage.schema(TestEntity.SCHEMA.getId()))
-                            .isEqualTo(TestEntity.SCHEMA);
-                    assertThat(EntityStorage.loadedEntitiesByType(TestEntity.SCHEMA))
-                            .hasSize(1)
-                            .contains(kinematicEntity.uuid());
-                    assertThat(kinematicEntity.entity())
-                            .isNotNull();
+        TestUtil.unloadChunk(unloaded);
 
-                    kinematicEntity.remove();
-
-                    //noinspection CodeBlock2Expr
-                    TestUtil.loadChunk(unloaded, () -> {
-
-                        TestUtil.unloadChunk(unloaded, () -> {
-                            assertThat(EntityStorage.kinematicEntity(kinematicEntity.uuid()))
-                                    .isNull();
-                            assertThat(EntityStorage.schema(TestEntity.SCHEMA.getId()))
-                                    .isEqualTo(TestEntity.SCHEMA);
-                            assertThat(EntityStorage.loadedEntitiesByType(TestEntity.SCHEMA))
-                                    .isEmpty();
-                            assertThat(kinematicEntity.entity())
-                                    .isNull();
-                        });
-                    });
-                });
-            });
+        TestUtil.runSync(() -> {
+            assertThat(EntityStorage.kinematicEntity(entity.get().uuid()))
+                    .isNull();
+            assertThat(EntityStorage.schema(TestEntity.SCHEMA.getId()))
+                    .isEqualTo(TestEntity.SCHEMA);
+            assertThat(EntityStorage.loadedEntitiesByType(TestEntity.SCHEMA))
+                    .isEmpty();
+            assertThat(entity.get().entity())
+                    .isNull();
         });
+
+        TestUtil.loadChunk(unloaded);
+
+        TestUtil.runSync(() -> {
+            assertThat(EntityStorage.kinematicEntity(entity.get().uuid()))
+                    .isEqualTo(entity.get());
+            assertThat(EntityStorage.schema(TestEntity.SCHEMA.getId()))
+                    .isEqualTo(TestEntity.SCHEMA);
+            assertThat(EntityStorage.loadedEntitiesByType(TestEntity.SCHEMA))
+                    .hasSize(1)
+                    .contains(entity.get().uuid());
+            assertThat(entity.get().entity())
+                    .isNotNull();
+        });
+
+        TestUtil.runSync(() -> entity.get().remove());
+
+        TestUtil.loadChunk(unloaded);
+
+        TestUtil.unloadChunk(unloaded);
+
+        TestUtil.runSync(() -> {
+            assertThat(EntityStorage.kinematicEntity(entity.get().uuid()))
+                    .isNull();
+            assertThat(EntityStorage.schema(TestEntity.SCHEMA.getId()))
+                    .isEqualTo(TestEntity.SCHEMA);
+            assertThat(EntityStorage.loadedEntitiesByType(TestEntity.SCHEMA))
+                    .isEmpty();
+            assertThat(entity.get().entity())
+                    .isNull();
+        });
+
+        TestUtil.runSync(() -> assertThat(true).isFalse());
     }
 }

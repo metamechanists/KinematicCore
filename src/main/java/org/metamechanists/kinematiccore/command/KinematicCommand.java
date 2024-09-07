@@ -14,6 +14,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
+import org.metamechanists.kinematiccore.KinematicCore;
 import org.metamechanists.kinematiccore.test.MainTester;
 
 
@@ -41,22 +42,23 @@ public class KinematicCommand extends BaseCommand {
             @Subcommand("all")
             @Description("Run all 'non-destructive' tests.")
             public static void test(@NotNull Player player) {
-                MainTester.TestResult result = new MainTester(player.getLocation()).allNonDestructive();
+                // Tests must be run async
+                Bukkit.getScheduler().runTaskAsynchronously(KinematicCore.getInstance(), () -> {
+                    MainTester.TestResult result = new MainTester(player.getLocation()).allNonDestructive();
 
-                player.sendMessage(ChatColor.GRAY + "[ "
-                        + ChatColor.GREEN + result.passed() + ChatColor.WHITE + " passed"
-                        + ChatColor.GRAY + " | "
-                        + ChatColor.RED + result.failed() + ChatColor.WHITE + " failed"
-                        + ChatColor.GRAY + " | "
-                        + ChatColor.BLUE + result.total() + ChatColor.WHITE + " total"
-                        + ChatColor.GRAY + " ]"
-                );
+                    player.sendMessage(ChatColor.GRAY + "[ "
+                            + ChatColor.GREEN + result.passed() + ChatColor.WHITE + " passed"
+                            + ChatColor.GRAY + " | "
+                            + ChatColor.RED + result.failed() + ChatColor.WHITE + " failed"
+                            + ChatColor.GRAY + " | "
+                            + ChatColor.BLUE + result.total() + ChatColor.WHITE + " total"
+                            + ChatColor.GRAY + " ]"
+                    );
 
-                if (result.failed() != 0) {
                     for (String failure : result.failures()) {
                         player.sendMessage(ChatColor.DARK_GRAY + "- " + ChatColor.DARK_RED + failure);
                     }
-                }
+                });
             }
         }
     }
