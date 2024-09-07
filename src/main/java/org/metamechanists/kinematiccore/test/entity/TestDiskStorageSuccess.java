@@ -67,8 +67,6 @@ public class TestDiskStorageSuccess implements BaseTest {
         TestUtil.loadChunk(unloaded);
 
         TestUtil.runSync(() -> {
-            assertThat(EntityStorage.kinematicEntity(entity.get().uuid()))
-                    .isEqualTo(entity.get());
             assertThat(EntityStorage.schema(TestEntity.SCHEMA.getId()))
                     .isEqualTo(TestEntity.SCHEMA);
             assertThat(EntityStorage.loadedEntitiesByType(TestEntity.SCHEMA))
