@@ -23,7 +23,7 @@ public class KinematicEntitySchema {
             @NotNull Class<? extends KinematicEntity<?>> kinematicClass,
             @NotNull Class<? extends Entity> entityClass
     ) {
-        this.id = addonClass.getName() +":" + id.toLowerCase();
+        this.id = addonClass.getSimpleName().toLowerCase() +":" + id.toLowerCase();
         this.kinematicClass = kinematicClass;
         this.entityClass = entityClass;
 
