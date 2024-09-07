@@ -47,9 +47,7 @@ public class TestEntity extends KinematicEntity<Pig> {
     }
 
     @Override
-    public void tick(long tick) {
-        if (entity() != null) {
-            KinematicCore.getInstance().getLogger().warning(entity().getUniqueId() + name);
-        }
+    public void tick(@NotNull Pig entity, long tick) {
+        KinematicCore.getInstance().getLogger().warning(entity.getUniqueId() + name);
     }
 }
