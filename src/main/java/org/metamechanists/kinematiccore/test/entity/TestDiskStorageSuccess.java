@@ -17,7 +17,7 @@ import static org.assertj.core.api.Assertions.*;
 public class TestDiskStorageSuccess implements BaseTest {
     private static class TestEntity extends KinematicEntity<Pig> {
         private static final KinematicEntitySchema SCHEMA = new KinematicEntitySchema(
-                "test_memory_storage_success",
+                "test_disk_storage_success",
                 KinematicCore.class,
                 TestEntity.class,
                 Pig.class
