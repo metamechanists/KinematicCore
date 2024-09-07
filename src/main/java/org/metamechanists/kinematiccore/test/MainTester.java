@@ -36,6 +36,9 @@ public final class MainTester {
         while (TestUtil.isChunkLoaded(unloaded)) {
             unloaded.add(16, 0, 0);
         }
+
+
+        unloaded.add(200, 0, 0);
     }
 
     public @NotNull TestResult allNonDestructive() {
