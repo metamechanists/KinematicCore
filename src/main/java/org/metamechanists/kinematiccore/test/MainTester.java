@@ -11,7 +11,9 @@ import java.util.List;
 public final class MainTester {
     private final Location loaded;
     private final Location unloaded;
-    private final List<BaseTest> nonDestructiveTests = new ArrayList<>();
+    private final List<BaseTest> nonDestructiveTests = List.of(
+            new TestMemoryStorageSuccess()
+    );
 
     public record TestResult(int total, int passed, int failed, List<String> failures) {}
 
@@ -23,8 +25,6 @@ public final class MainTester {
         while (unloaded.getChunk().isLoaded()) {
             unloaded.add(16, 0, 0);
         }
-
-        nonDestructiveTests.add(new TestMemoryStorageSuccess());
     }
 
     public @NotNull TestResult allNonDestructive() {
