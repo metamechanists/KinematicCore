@@ -22,6 +22,7 @@ public class KinematicCore extends JavaPlugin implements KinematicAddon {
         TickerTask.init();
         Bukkit.getServer().getPluginManager().registerEvents(new TestListener(), this);
         PaperCommandManager manager = new PaperCommandManager(this);
+        manager.enableUnstableAPI("help");
         manager.registerCommand(new KinematicCommand());
     }
 
