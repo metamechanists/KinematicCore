@@ -28,6 +28,6 @@ public class KinematicCore extends JavaPlugin implements KinematicAddon {
 
     @Override
     public void onDisable() {
-        EntityStorage.cleanup();
+        EntityStorage.close();
     }
 }

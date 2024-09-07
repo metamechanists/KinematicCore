@@ -75,7 +75,10 @@ public final class EntityStorage implements Listener {
     }
 
     @ApiStatus.Internal
-    public static void cleanup() {
+    public static void close() {
+        for (UUID uuid : loadedEntities.keySet()) {
+            tryUnload(uuid);
+        }
         db.close();
     }
 
