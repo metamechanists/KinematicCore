@@ -52,7 +52,7 @@ public final class MainTester {
     private boolean test(@NotNull BaseTest test) {
         try {
             test.test(loaded, unloaded);
-        } catch (Exception e) {
+        } catch (Exception | AssertionError e) {
             e.printStackTrace();
             return false;
         }
