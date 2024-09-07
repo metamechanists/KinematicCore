@@ -33,14 +33,13 @@ public class KinematicCommand extends BaseCommand {
     @Description("Commands to help with Kinematic development. DO NOT use this command outside of a test server unless you know exactly what you're doing!")
     public class KinematicDevCommand extends BaseCommand {
 
-        @SuppressWarnings("MethodMayBeStatic")
         @Subcommand("test")
         @Description("Run Kinematic tests.")
-        public static class KinematicTestCommand extends BaseCommand {
+        public class KinematicTestCommand extends BaseCommand {
 
             @Subcommand("all")
             @Description("Run all 'non-destructive' tests.")
-            public void test(@NotNull Player player) {
+            public static void test(@NotNull Player player) {
                 MainTester.TestResult result = new MainTester(player.getLocation()).allNonDestructive();
 
                 player.sendMessage(ChatColor.GRAY + "[ "
