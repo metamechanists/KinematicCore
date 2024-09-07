@@ -163,12 +163,19 @@ public final class EntityStorage implements Listener {
      */
     @ApiStatus.Internal
     public static void add(@NotNull KinematicEntity<?> kinematicEntity) {
-        KinematicCore.getInstance().getLogger().info("Add " + kinematicEntity.uuid());
-
         Set<UUID> uuids = loadedEntitiesByType.computeIfAbsent(kinematicEntity.schema().getId(), k -> ConcurrentHashMap.newKeySet());
         uuids.add(kinematicEntity.uuid());
 
         loadedEntities.put(kinematicEntity.uuid(), kinematicEntity);
+    }
+
+    /*
+     * Adds a completely new KinematicEntity to the cache.
+     */
+    @ApiStatus.Internal
+    public static void remove(@NotNull KinematicEntity<?> kinematicEntity) {
+        loadedEntitiesByType.get(kinematicEntity.schema().getId()).remove(kinematicEntity.uuid());
+        loadedEntities.remove(kinematicEntity.uuid());
     }
 
     public static @Nullable KinematicEntity<?> kinematicEntity(UUID uuid) {
