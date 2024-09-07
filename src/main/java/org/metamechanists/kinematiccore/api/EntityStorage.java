@@ -218,7 +218,17 @@ public final class EntityStorage implements Listener {
     @EventHandler
     private static void onEntityUnload(@NotNull EntityRemoveFromWorldEvent event) {
         try {
-            tryUnload(event.getEntity().getUniqueId());
+            Entity entity = event.getEntity();
+            UUID uuid = entity.getUniqueId();
+
+            if (entity.isDead()) {
+                KinematicEntity<?> kinematicEntity = kinematicEntity(uuid);
+                if (kinematicEntity != null) {
+                    kinematicEntity.remove();
+                }
+            } else {
+                tryUnload(uuid);
+            }
         } catch (RuntimeException e) {
             KinematicCore.getInstance().getLogger().severe("Error while unloading entity; entity data will be lost!");
             e.printStackTrace();
