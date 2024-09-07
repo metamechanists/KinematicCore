@@ -199,6 +199,10 @@ public final class EntityStorage implements Listener {
         return loadedEntitiesByType;
     }
 
+    public static @Nullable Set<UUID> loadedEntitiesByType(KinematicEntitySchema schema) {
+        return loadedEntitiesByType(schema.getId());
+    }
+
     public static @Nullable Set<UUID> loadedEntitiesByType(String type) {
         return loadedEntitiesByType.get(type);
     }
