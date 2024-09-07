@@ -48,7 +48,7 @@ public class TestMemoryStorageSuccess implements BaseTest {
                 .isEqualTo(kinematicEntity);
         assertThat(EntityStorage.schema(TestEntity.SCHEMA.getId()))
                 .isEqualTo(TestEntity.SCHEMA);
-        assertThat(EntityStorage.loadedEntitiesByType(TestEntity.SCHEMA.getId()))
+        assertThat(EntityStorage.loadedEntitiesByType(TestEntity.SCHEMA))
                 .hasSize(1)
                 .contains(kinematicEntity.uuid());
         assertThat(kinematicEntity.entity())
@@ -60,7 +60,7 @@ public class TestMemoryStorageSuccess implements BaseTest {
                 .isNull();
         assertThat(EntityStorage.schema(TestEntity.SCHEMA.getId()))
                 .isEqualTo(TestEntity.SCHEMA);
-        assertThat(EntityStorage.loadedEntitiesByType(TestEntity.SCHEMA.getId()))
+        assertThat(EntityStorage.loadedEntitiesByType(TestEntity.SCHEMA))
                 .isEmpty();
         assertThat(kinematicEntity.entity())
                 .isNull();
