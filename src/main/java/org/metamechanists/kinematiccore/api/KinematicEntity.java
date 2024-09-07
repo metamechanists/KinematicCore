@@ -46,7 +46,14 @@ public abstract class KinematicEntity<T extends Entity> {
         this.uuid = reader.uuid();
     }
 
-    protected void tick(long tick) {}
+    protected final void tick(long tick) {
+        T entity = entity();
+        if (entity != null) {
+            tick(entity, tick);
+        }
+    }
+
+    protected void tick(@NotNull T entity, long tick) {}
 
     public final @Nullable T entity() {
         // Use weakref if available
