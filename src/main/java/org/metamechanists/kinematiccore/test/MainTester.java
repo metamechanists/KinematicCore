@@ -42,7 +42,7 @@ public final class MainTester {
                 passed += 1;
             } else {
                 failed += 1;
-                failures.add(test.getClass().getName());
+                failures.add(test.getClass().getSimpleName());
             }
         }
 

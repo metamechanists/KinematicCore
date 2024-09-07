@@ -64,7 +64,5 @@ public class TestMemoryStorageSuccess implements BaseTest  {
                 .isEmpty();
         assertThat(kinematicEntity.entity())
                 .isNull();
-
-        assertThat(true).isFalse();
     }
 }
