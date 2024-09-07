@@ -44,7 +44,7 @@ public abstract class KinematicEntity<T extends Entity> {
 
     protected void tick(long tick) {}
 
-    protected final @Nullable T entity() {
+    public final @Nullable T entity() {
         // Use weakref if available
         if (entityRef != null) {
             T entityFromRef = entityRef.get();
@@ -65,7 +65,7 @@ public abstract class KinematicEntity<T extends Entity> {
         return null;
     }
 
-    protected final @NotNull UUID uuid() {
+    public final @NotNull UUID uuid() {
         return uuid;
     }
 

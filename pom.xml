@@ -26,6 +26,9 @@
                 <configuration>
                     <source>16</source>
                     <target>16</target>
+                    <compilerArgs>
+                        <arg>-parameters</arg>
+                    </compilerArgs>
                 </configuration>
             </plugin>
             <plugin>
@@ -37,6 +40,14 @@
                         <relocation>
                             <pattern>org.mapdb</pattern>
                             <shadedPattern>org.metamechanists.kinematiccore.org.mapdb</shadedPattern>
+                        </relocation>
+                        <relocation>
+                            <pattern>co.aikar.commands</pattern>
+                            <shadedPattern>org.metamechanists.kinematiccore.acf</shadedPattern> <!-- Replace this -->
+                        </relocation>
+                        <relocation>
+                            <pattern>co.aikar.locales</pattern>
+                            <shadedPattern>org.metamechanists.kinematiccore.locales</shadedPattern> <!-- Replace this -->
                         </relocation>
                     </relocations>
                     <filters>
@@ -76,6 +87,11 @@
             <id>jitpack.io</id>
             <url>https://jitpack.io</url>
         </repository>
+
+        <repository>
+            <id>aikar</id>
+            <url>https://repo.aikar.co/content/groups/aikar/</url>
+        </repository>
     </repositories>
 
     <dependencies>
@@ -104,7 +120,20 @@
             <artifactId>kryo</artifactId>
             <version>5.6.0</version>
         </dependency>
+
+        <dependency>
+            <groupId>co.aikar</groupId>
+            <artifactId>acf-bukkit</artifactId>
+            <version>0.5.1-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <version>3.26.3</version>
+        </dependency>
     </dependencies>
+
 
     <distributionManagement>
         <repository>
