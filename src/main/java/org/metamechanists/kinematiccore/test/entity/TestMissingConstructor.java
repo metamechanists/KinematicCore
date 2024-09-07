@@ -30,14 +30,16 @@ public class TestMissingConstructor implements BaseTest {
         protected void write(@NotNull StateWriter writer) {}
     }
 
-    @SuppressWarnings("ResultOfObjectAllocationIgnored")
+    @SuppressWarnings({"ResultOfObjectAllocationIgnored", "CodeBlock2Expr"})
     @Override
     public void test(@NotNull Location loaded, @NotNull Location unloaded) {
-        assertThatThrownBy(() -> new KinematicEntitySchema(
-                "test_missing_constructor",
-                KinematicCore.class,
-                TestEntity.class,
-                Pig.class
-        )).isInstanceOf(Exceptions.MissingConstructorException.class);
+        TestUtil.runSync(() -> {
+            assertThatThrownBy(() -> new KinematicEntitySchema(
+                    "test_missing_constructor",
+                    KinematicCore.class,
+                    TestEntity.class,
+                    Pig.class
+            )).isInstanceOf(Exceptions.MissingConstructorException.class);
+        });
     }
 }

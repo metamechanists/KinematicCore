@@ -42,10 +42,12 @@ public class TestEntityTypeMismatch implements BaseTest {
         protected void write(@NotNull StateWriter writer) {}
     }
 
-    @SuppressWarnings("ResultOfObjectAllocationIgnored")
+    @SuppressWarnings({"ResultOfObjectAllocationIgnored", "CodeBlock2Expr"})
     @Override
     public void test(@NotNull Location loaded, @NotNull Location unloaded) {
-        assertThatThrownBy(() -> new TestEntity(loaded))
-                .isInstanceOf(Exceptions.EntityTypeMismatchException.class);
+        TestUtil.runSync(() -> {
+            assertThatThrownBy(() -> new TestEntity(loaded))
+                    .isInstanceOf(Exceptions.EntityTypeMismatchException.class);
+        });
     }
 }

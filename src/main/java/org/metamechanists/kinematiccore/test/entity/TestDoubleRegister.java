@@ -41,12 +41,13 @@ public class TestDoubleRegister implements BaseTest {
         protected void write(@NotNull StateWriter writer) {}
     }
 
-    @SuppressWarnings("ResultOfObjectAllocationIgnored")
     @Override
     public void test(@NotNull Location loaded, @NotNull Location unloaded) {
-        EntityStorage.register(TestEntity.SCHEMA);
+        TestUtil.runSync(() -> {
+            EntityStorage.register(TestEntity.SCHEMA);
 
-        assertThatThrownBy(() -> EntityStorage.register(TestEntity.SCHEMA))
-                .isInstanceOf(Exceptions.IdConflictException.class);
+            assertThatThrownBy(() -> EntityStorage.register(TestEntity.SCHEMA))
+                    .isInstanceOf(Exceptions.IdConflictException.class);
+        });
     }
 }

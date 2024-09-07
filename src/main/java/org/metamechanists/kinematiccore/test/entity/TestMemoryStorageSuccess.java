@@ -42,27 +42,29 @@ public class TestMemoryStorageSuccess implements BaseTest {
 
     @Override
     public void test(@NotNull Location loaded, @NotNull Location unloaded) {
-        TestEntity kinematicEntity = new TestEntity(loaded);
+        TestUtil.runSync(() -> {
+            TestEntity kinematicEntity = new TestEntity(loaded);
 
-        assertThat(EntityStorage.kinematicEntity(kinematicEntity.uuid()))
-                .isEqualTo(kinematicEntity);
-        assertThat(EntityStorage.schema(TestEntity.SCHEMA.getId()))
-                .isEqualTo(TestEntity.SCHEMA);
-        assertThat(EntityStorage.loadedEntitiesByType(TestEntity.SCHEMA))
-                .hasSize(1)
-                .contains(kinematicEntity.uuid());
-        assertThat(kinematicEntity.entity())
-                .isNotNull();
+            assertThat(EntityStorage.kinematicEntity(kinematicEntity.uuid()))
+                    .isEqualTo(kinematicEntity);
+            assertThat(EntityStorage.schema(TestEntity.SCHEMA.getId()))
+                    .isEqualTo(TestEntity.SCHEMA);
+            assertThat(EntityStorage.loadedEntitiesByType(TestEntity.SCHEMA))
+                    .hasSize(1)
+                    .contains(kinematicEntity.uuid());
+            assertThat(kinematicEntity.entity())
+                    .isNotNull();
 
-        kinematicEntity.remove();
+            kinematicEntity.remove();
 
-        assertThat(EntityStorage.kinematicEntity(kinematicEntity.uuid()))
-                .isNull();
-        assertThat(EntityStorage.schema(TestEntity.SCHEMA.getId()))
-                .isEqualTo(TestEntity.SCHEMA);
-        assertThat(EntityStorage.loadedEntitiesByType(TestEntity.SCHEMA))
-                .isEmpty();
-        assertThat(kinematicEntity.entity())
-                .isNull();
+            assertThat(EntityStorage.kinematicEntity(kinematicEntity.uuid()))
+                    .isNull();
+            assertThat(EntityStorage.schema(TestEntity.SCHEMA.getId()))
+                    .isEqualTo(TestEntity.SCHEMA);
+            assertThat(EntityStorage.loadedEntitiesByType(TestEntity.SCHEMA))
+                    .isEmpty();
+            assertThat(kinematicEntity.entity())
+                    .isNull();
+        });
     }
 }
