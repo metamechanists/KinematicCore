@@ -107,6 +107,8 @@ public final class EntityStorage implements Listener {
 
         entities.put(uuid, output.toBytes());
         entitiesByType.computeIfAbsent(kinematicEntity.schema().getId(), k -> ConcurrentHashMap.newKeySet()).add(uuid);
+
+        db.commit();
     }
 
     /*
