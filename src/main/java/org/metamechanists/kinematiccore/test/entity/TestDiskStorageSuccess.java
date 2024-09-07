@@ -1,5 +1,6 @@
 package org.metamechanists.kinematiccore.test.entity;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Pig;
 import org.jetbrains.annotations.NotNull;
@@ -45,6 +46,7 @@ public class TestDiskStorageSuccess implements BaseTest {
         TestUtil.loadChunk(unloaded);
         TestEntity kinematicEntity = new TestEntity(unloaded);
         TestUtil.unloadChunk(unloaded);
+        Bukkit.getLogger().warning(String.valueOf(TestUtil.isChunkLoaded(unloaded)));
 
         assertThat(EntityStorage.kinematicEntity(kinematicEntity.uuid()))
                 .isNull();
