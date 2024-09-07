@@ -38,11 +38,6 @@ public abstract class KinematicEntity<T extends Entity> {
     }
 
     public void remove() {
-        Entity entity = entity();
-        if (entity != null) {
-            entity.remove();
-        }
-
         EntityStorage.remove(this);
     }
 

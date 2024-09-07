@@ -174,10 +174,15 @@ public final class EntityStorage implements Listener {
     }
 
     /*
-     * Adds a completely new KinematicEntity to the cache.
+     * Completely destroys a KinematicEntity.
      */
     @ApiStatus.Internal
     public static void remove(@NotNull KinematicEntity<?> kinematicEntity) {
+        Entity entity = kinematicEntity.entity();
+        if (entity != null) {
+            entity.remove();
+        }
+
         loadedEntitiesByType.get(kinematicEntity.schema().getId()).remove(kinematicEntity.uuid());
         loadedEntities.remove(kinematicEntity.uuid());
     }
