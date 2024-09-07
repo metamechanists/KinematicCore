@@ -27,7 +27,7 @@ public abstract class KinematicEntity<T extends Entity> {
             String provided = type.getName();
             String expected = schema().getEntityClass().getName();
             if (!provided.equals(expected)) {
-                throw new RuntimeException("The provided entity (" + provided + ") does not match the entity type specified in the schema (" + expected + ")");
+                throw new Exceptions.EntityTypeMismatchException(this.schema.getId(), provided, expected);
             }
         }
 

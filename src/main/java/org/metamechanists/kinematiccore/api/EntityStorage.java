@@ -80,6 +80,10 @@ public final class EntityStorage implements Listener {
     }
 
     public static void register(@NotNull KinematicEntitySchema schema) {
+        if (schemas.containsKey(schema.getId())) {
+            throw new Exceptions.IdConflictException(schema.getId());
+        }
+
         kryo.register(schema.getKinematicClass());
         schemas.put(schema.getId(), schema);
     }

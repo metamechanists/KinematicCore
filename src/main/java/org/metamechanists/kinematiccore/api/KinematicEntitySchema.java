@@ -3,8 +3,6 @@ package org.metamechanists.kinematiccore.api;
 import lombok.Getter;
 import org.bukkit.entity.Entity;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.metamechanists.kinematiccore.KinematicCore;
 
 import java.lang.reflect.Constructor;
 
@@ -29,7 +27,7 @@ public class KinematicEntitySchema {
         try {
             constructor = kinematicClass.getConstructor(StateReader.class);
         } catch (NoSuchMethodException e) {
-            throw new RuntimeException(id + " must implement a constructor like public SomeKinematicEntity(StateReader reader) { ... }");
+            throw new Exceptions.MissingConstructorException(id);
         }
 
         constructor.setAccessible(true);

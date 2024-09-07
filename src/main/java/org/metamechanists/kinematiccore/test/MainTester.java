@@ -1,9 +1,10 @@
 package org.metamechanists.kinematiccore.test;
 
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.jetbrains.annotations.NotNull;
+import org.metamechanists.kinematiccore.test.entity.TestEntityTypeMismatch;
+import org.metamechanists.kinematiccore.test.entity.TestMemoryStorageSuccess;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +14,8 @@ public final class MainTester {
     private final Location loaded;
     private final Location unloaded;
     private final List<BaseTest> nonDestructiveTests = List.of(
-            new TestMemoryStorageSuccess()
+            new TestMemoryStorageSuccess(),
+            new TestEntityTypeMismatch()
     );
 
     public record TestResult(int total, int passed, int failed, List<String> failures) {}

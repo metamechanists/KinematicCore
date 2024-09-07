@@ -1,6 +1,5 @@
-package org.metamechanists.kinematiccore.test;
+package org.metamechanists.kinematiccore.test.entity;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Pig;
 import org.jetbrains.annotations.NotNull;
@@ -10,14 +9,15 @@ import org.metamechanists.kinematiccore.api.KinematicEntity;
 import org.metamechanists.kinematiccore.api.KinematicEntitySchema;
 import org.metamechanists.kinematiccore.api.StateReader;
 import org.metamechanists.kinematiccore.api.StateWriter;
+import org.metamechanists.kinematiccore.test.BaseTest;
 
 import static org.assertj.core.api.Assertions.*;
 
 
-public class TestMemoryStorageSuccess implements BaseTest  {
+public class TestMemoryStorageSuccess implements BaseTest {
     private static class TestEntity extends KinematicEntity<Pig> {
         private static final KinematicEntitySchema SCHEMA = new KinematicEntitySchema(
-                "test_simple_kinematic_entity",
+                "test_memory_storage_success",
                 KinematicCore.class,
                 TestEntity.class,
                 Pig.class
