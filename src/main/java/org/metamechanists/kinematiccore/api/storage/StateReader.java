@@ -1,7 +1,6 @@
-package org.metamechanists.kinematiccore.api;
+package org.metamechanists.kinematiccore.api.storage;
 
 import com.esotericsoftware.kryo.io.Input;
-import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -40,11 +39,11 @@ public class StateReader {
         }
     }
 
-    String id() {
+    public String id() {
         return id;
     }
 
-    UUID uuid() {
+    public UUID uuid() {
         return uuid;
     }
 

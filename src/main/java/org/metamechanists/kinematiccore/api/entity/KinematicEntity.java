@@ -1,10 +1,14 @@
-package org.metamechanists.kinematiccore.api;
+package org.metamechanists.kinematiccore.api.entity;
 
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.metamechanists.kinematiccore.api.Exceptions;
+import org.metamechanists.kinematiccore.api.storage.EntityStorage;
+import org.metamechanists.kinematiccore.api.storage.StateReader;
+import org.metamechanists.kinematiccore.api.storage.StateWriter;
 
 import java.lang.ref.WeakReference;
 import java.util.UUID;
@@ -42,7 +46,7 @@ public abstract class KinematicEntity<T extends Entity> {
         this.uuid = reader.uuid();
     }
 
-    protected final void tick(long tick) {
+    public final void tick(long tick) {
         T entity = entity();
         if (entity != null) {
             tick(entity, tick);

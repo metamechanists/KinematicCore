@@ -4,11 +4,11 @@ import org.bukkit.Location;
 import org.bukkit.entity.Pig;
 import org.jetbrains.annotations.NotNull;
 import org.metamechanists.kinematiccore.KinematicCore;
-import org.metamechanists.kinematiccore.api.EntityStorage;
-import org.metamechanists.kinematiccore.api.KinematicEntity;
-import org.metamechanists.kinematiccore.api.KinematicEntitySchema;
-import org.metamechanists.kinematiccore.api.StateReader;
-import org.metamechanists.kinematiccore.api.StateWriter;
+import org.metamechanists.kinematiccore.api.storage.EntityStorage;
+import org.metamechanists.kinematiccore.api.entity.KinematicEntity;
+import org.metamechanists.kinematiccore.api.entity.KinematicEntitySchema;
+import org.metamechanists.kinematiccore.api.storage.StateReader;
+import org.metamechanists.kinematiccore.api.storage.StateWriter;
 import org.metamechanists.kinematiccore.test.BaseTest;
 
 import java.util.concurrent.atomic.AtomicReference;

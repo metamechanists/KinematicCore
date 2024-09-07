@@ -1,4 +1,4 @@
-package org.metamechanists.kinematiccore.api;
+package org.metamechanists.kinematiccore.api.storage;
 
 enum StateType {
     STRING,

@@ -1,7 +1,6 @@
-package org.metamechanists.kinematiccore.api;
+package org.metamechanists.kinematiccore.api.storage;
 
 import com.esotericsoftware.kryo.io.Output;
-import com.esotericsoftware.kryo.io.OutputChunked;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;

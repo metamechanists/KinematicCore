@@ -1,14 +1,15 @@
-package org.metamechanists.kinematiccore.api;
+package org.metamechanists.kinematiccore.api.entity;
 
 import org.bukkit.Bukkit;
 import org.metamechanists.kinematiccore.KinematicCore;
+import org.metamechanists.kinematiccore.api.storage.EntityStorage;
 
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
 
-public class TickerTask implements Runnable {
+public class KinematicEntityTicker implements Runnable {
     private static final int INTERVAL = 1;
 
     @Override
@@ -29,6 +30,6 @@ public class TickerTask implements Runnable {
     }
 
     public static void init() {
-        Bukkit.getServer().getScheduler().runTaskTimer(KinematicCore.getInstance(), new TickerTask(), 0, INTERVAL);
+        Bukkit.getServer().getScheduler().runTaskTimer(KinematicCore.getInstance(), new KinematicEntityTicker(), 0, INTERVAL);
     }
 }

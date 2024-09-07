@@ -1,8 +1,11 @@
-package org.metamechanists.kinematiccore.api;
+package org.metamechanists.kinematiccore.api.entity;
 
 import lombok.Getter;
 import org.bukkit.entity.Entity;
 import org.jetbrains.annotations.NotNull;
+import org.metamechanists.kinematiccore.api.Exceptions;
+import org.metamechanists.kinematiccore.api.KinematicAddon;
+import org.metamechanists.kinematiccore.api.storage.StateReader;
 
 import java.lang.reflect.Constructor;
 
