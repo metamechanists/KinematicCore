@@ -14,11 +14,13 @@ public final class TestUtil {
     private TestUtil() {}
 
     public static boolean isChunkLoaded(@NotNull Location location) {
-        return location.getWorld().isChunkLoaded(location.getBlockX() / 16, location.getBlockZ() / 16);
+        // Not sure if isChunkLoaded will always return true if force loaded - I assume so but doing both to be sure
+        return location.getWorld().isChunkLoaded(location.getBlockX() / 16, location.getBlockZ() / 16)
+            || location.getWorld().isChunkForceLoaded(location.getBlockX() / 16, location.getBlockZ() / 16);
     }
 
-    public static void loadChunk(@NotNull Location location) {
-        runSync(() -> location.getWorld().loadChunk(location.getBlockX() / 16, location.getBlockZ() / 16));
+    public static void forceLoadChunk(@NotNull Location location) {
+        runSync(() -> location.getWorld().setChunkForceLoaded(location.getBlockX() / 16, location.getBlockZ() / 16, true));
 
         try {
             Thread.sleep(EXTRA_MILLISECONDS_TO_WAIT);
@@ -27,8 +29,8 @@ public final class TestUtil {
         }
     }
 
-    public static void unloadChunk(@NotNull Location location) {
-        runSync(() -> location.getWorld().unloadChunk(location.getBlockX() / 16, location.getBlockZ() / 16));
+    public static void forceUnloadChunk(@NotNull Location location) {
+        runSync(() -> location.getWorld().unloadChunk(location.getBlockX() / 16, location.getBlockZ() / 16, false));
 
         try {
             Thread.sleep(EXTRA_MILLISECONDS_TO_WAIT);
