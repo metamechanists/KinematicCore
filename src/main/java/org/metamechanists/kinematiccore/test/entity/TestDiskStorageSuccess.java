@@ -90,5 +90,7 @@ public class TestDiskStorageSuccess implements BaseTest {
             assertThat(entity.get().entity())
                     .isNull();
         });
+
+        TestUtil.unloadChunk(unloaded);
     }
 }
