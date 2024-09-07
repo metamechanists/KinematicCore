@@ -55,7 +55,7 @@ public class TestMemoryStorageSuccess implements BaseTest {
             assertThat(kinematicEntity.entity())
                     .isNotNull();
 
-            kinematicEntity.remove();
+            kinematicEntity.entity().remove();
 
             assertThat(EntityStorage.kinematicEntity(kinematicEntity.uuid()))
                     .isNull();
