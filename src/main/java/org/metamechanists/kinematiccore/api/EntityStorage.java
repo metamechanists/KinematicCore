@@ -221,7 +221,6 @@ public final class EntityStorage implements Listener {
 
     @EventHandler
     private static void onEntityUnload(@NotNull EntityRemoveFromWorldEvent event) {
-        KinematicCore.getInstance().getLogger().warning("found " + event.getEntity().getUniqueId());
         try {
             Entity entity = event.getEntity();
             UUID uuid = entity.getUniqueId();
