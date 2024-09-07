@@ -33,6 +33,7 @@ public final class EntityStorage implements Listener {
     // MapDB data in memory is effectively duplicating data
     private static final long MAX_PERSISTENT_ENTITIES_SIZE = 1024 * 1024;
     private static final int OUTPUT_BUFFER_START_SIZE = 1024;
+    private static final long COMMIT_INTERVAL = 20 * 30;
     private static DB db;
 
     private static final Kryo kryo = new Kryo();
@@ -72,6 +73,8 @@ public final class EntityStorage implements Listener {
         entitiesByType = db.hashMap("entitiesByType ", Serializer.STRING, Serializer.JAVA)
                 .expireStoreSize(MAX_PERSISTENT_ENTITIES_SIZE)
                 .createOrOpen();
+
+        Bukkit.getScheduler().runTaskTimerAsynchronously(KinematicCore.getInstance(), () -> db.commit(), 0, COMMIT_INTERVAL);
     }
 
     @ApiStatus.Internal
@@ -79,6 +82,7 @@ public final class EntityStorage implements Listener {
         for (UUID uuid : loadedEntities.keySet()) {
             tryUnload(uuid);
         }
+        db.commit();
         db.close();
     }
 
@@ -224,8 +228,6 @@ public final class EntityStorage implements Listener {
     @EventHandler
     private static void onEntityLoad(@NotNull EntitiesLoadEvent event) {
         for (Entity entity : event.getEntities()) {
-            KinematicCore.getInstance().getLogger().warning(String.valueOf(entity.getUniqueId()));
-            KinematicCore.getInstance().getLogger().warning(entities.entrySet().toString());
             try {
                 tryLoad(entity.getUniqueId());
             } catch (RuntimeException e) {
