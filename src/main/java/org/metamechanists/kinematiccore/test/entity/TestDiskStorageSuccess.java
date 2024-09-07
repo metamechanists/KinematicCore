@@ -49,8 +49,6 @@ public class TestDiskStorageSuccess implements BaseTest {
         AtomicReference<TestEntity> entity = new AtomicReference<>();
         TestUtil.runSync(() -> entity.set(new TestEntity(unloaded)));
 
-        KinematicCore.getInstance().getLogger().warning(String.valueOf(entity.get().uuid()));
-
         TestUtil.unloadChunk(unloaded);
 
         TestUtil.runSync(() -> {
@@ -92,7 +90,5 @@ public class TestDiskStorageSuccess implements BaseTest {
             assertThat(entity.get().entity())
                     .isNull();
         });
-
-        TestUtil.runSync(() -> assertThat(true).isFalse());
     }
 }

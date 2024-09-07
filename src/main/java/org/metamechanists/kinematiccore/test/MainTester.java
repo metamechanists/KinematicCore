@@ -15,6 +15,7 @@ import java.util.List;
 
 
 public final class MainTester {
+    private static final int MIN_UNLOADED_DISTANCE = 256;
     private final Location loaded;
     private final Location unloaded;
     private final List<BaseTest> nonDestructiveTests = List.of(
@@ -33,8 +34,10 @@ public final class MainTester {
 
         unloaded = loaded.clone();
         // Using getChunk() would load the chunk (lol)
-        while (TestUtil.isChunkLoaded(unloaded)) {
+        int distance = 0;
+        while (TestUtil.isChunkLoaded(unloaded) || distance < MIN_UNLOADED_DISTANCE) {
             unloaded.add(16, 0, 0);
+            distance += 16;
         }
 
 
