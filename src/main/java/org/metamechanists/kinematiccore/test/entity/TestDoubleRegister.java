@@ -44,7 +44,9 @@ public class TestDoubleRegister implements BaseTest {
     @Override
     public void test(@NotNull Location loaded, @NotNull Location unloaded) {
         TestUtil.runSync(() -> {
-            EntityStorage.register(TestEntity.SCHEMA);
+            if (EntityStorage.schema(TestEntity.SCHEMA.getId()) == null) {
+                EntityStorage.register(TestEntity.SCHEMA);
+            }
 
             assertThatThrownBy(() -> EntityStorage.register(TestEntity.SCHEMA))
                     .isInstanceOf(Exceptions.IdConflictException.class);

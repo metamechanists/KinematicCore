@@ -187,12 +187,21 @@ public final class EntityStorage implements Listener {
         loadedEntities.remove(kinematicEntity.uuid());
     }
 
-    public static @Nullable KinematicEntity<?> kinematicEntity(UUID uuid) {
+    public static @Nullable KinematicEntity<?> kinematicEntity(@NotNull UUID uuid) {
         return loadedEntities.get(uuid);
     }
 
-    public static @Nullable KinematicEntitySchema schema(String id) {
+    public static @Nullable KinematicEntitySchema schema(@NotNull String id) {
         return schemas.get(id);
+    }
+
+    public static boolean isRegistered(@NotNull String id) {
+        return schema(id) != null;
+    }
+
+
+    public static boolean isRegistered(@NotNull KinematicEntitySchema schema) {
+        return schema(schema.getId()) != null;
     }
 
     public static @NotNull Map<String, Set<UUID>> allLoadedEntitiesByType() {
@@ -203,7 +212,7 @@ public final class EntityStorage implements Listener {
         return loadedEntitiesByType(schema.getId());
     }
 
-    public static @Nullable Set<UUID> loadedEntitiesByType(String type) {
+    public static @Nullable Set<UUID> loadedEntitiesByType(@NotNull String type) {
         return loadedEntitiesByType.get(type);
     }
 
