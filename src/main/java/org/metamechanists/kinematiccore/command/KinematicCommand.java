@@ -46,9 +46,9 @@ public class KinematicCommand extends BaseCommand {
                 player.sendMessage(ChatColor.GRAY + "[ "
                         + ChatColor.GREEN + result.passed() + ChatColor.WHITE + " passed"
                         + ChatColor.GRAY + " | "
-                        + ChatColor.RED + result.passed() + ChatColor.WHITE + " failed"
+                        + ChatColor.RED + result.failed() + ChatColor.WHITE + " failed"
                         + ChatColor.GRAY + " | "
-                        + ChatColor.BLUE + result.passed() + ChatColor.WHITE + " total"
+                        + ChatColor.BLUE + result.total() + ChatColor.WHITE + " total"
                         + ChatColor.GRAY + " ]"
                 );
 
