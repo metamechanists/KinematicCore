@@ -19,7 +19,7 @@ public final class TestUtil {
             || location.getWorld().isChunkForceLoaded(location.getBlockX() / 16, location.getBlockZ() / 16);
     }
 
-    public static void forceLoadChunk(@NotNull Location location) {
+    public static void loadChunk(@NotNull Location location) {
         runSync(() -> location.getWorld().setChunkForceLoaded(location.getBlockX() / 16, location.getBlockZ() / 16, true));
 
         try {
@@ -29,8 +29,8 @@ public final class TestUtil {
         }
     }
 
-    public static void forceUnloadChunk(@NotNull Location location) {
-        runSync(() -> location.getWorld().unloadChunk(location.getBlockX() / 16, location.getBlockZ() / 16, false));
+    public static void unloadChunk(@NotNull Location location) {
+        runSync(() -> location.getWorld().setChunkForceLoaded(location.getBlockX() / 16, location.getBlockZ() / 16, false));
 
         try {
             Thread.sleep(EXTRA_MILLISECONDS_TO_WAIT);

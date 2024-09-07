@@ -44,14 +44,14 @@ public class TestDiskStorageSuccess implements BaseTest {
 
     @Override
     public void test(@NotNull Location loaded, @NotNull Location unloaded) {
-        TestUtil.forceLoadChunk(unloaded);
+        TestUtil.loadChunk(unloaded);
 
         AtomicReference<TestEntity> entity = new AtomicReference<>();
         TestUtil.runSync(() -> entity.set(new TestEntity(unloaded)));
 
         KinematicCore.getInstance().getLogger().warning(String.valueOf(entity.get().uuid()));
 
-        TestUtil.forceUnloadChunk(unloaded);
+        TestUtil.unloadChunk(unloaded);
 
         TestUtil.runSync(() -> {
             assertThat(EntityStorage.kinematicEntity(entity.get().uuid()))
