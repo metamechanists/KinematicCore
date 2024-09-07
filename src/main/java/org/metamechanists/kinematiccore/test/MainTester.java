@@ -22,11 +22,12 @@ public final class MainTester {
         loaded = center.clone();
         loaded.setY(310);
 
-        Location unloaded = loaded.clone();
+        unloaded = loaded.clone();
         while (unloaded.getChunk().isLoaded()) {
-            unloaded = unloaded.add(16, 0, 0);
+            Bukkit.getLogger().warning(unloaded.toString());
+            Bukkit.getLogger().warning(String.valueOf(unloaded.getChunk().isLoaded()));
+            unloaded.add(16, 0, 0);
         }
-        this.unloaded = unloaded;
     }
 
     public @NotNull TestResult allNonDestructive() {
