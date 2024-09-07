@@ -23,9 +23,8 @@ public final class MainTester {
         loaded.setY(310);
 
         unloaded = loaded.clone();
-        while (unloaded.getChunk().isLoaded()) {
-            Bukkit.getLogger().warning(unloaded.toString());
-            Bukkit.getLogger().warning(String.valueOf(unloaded.getChunk().isLoaded()));
+        // Using getChunk() would load the chunk (lol)
+        while (unloaded.getWorld().isChunkLoaded(unloaded.getBlockX() / 16, unloaded.getBlockZ() / 16)) {
             unloaded.add(16, 0, 0);
         }
     }
