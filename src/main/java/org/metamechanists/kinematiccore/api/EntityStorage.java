@@ -174,7 +174,7 @@ public final class EntityStorage implements Listener {
     }
 
     /*
-     * Completely destroys a KinematicEntity.
+     * Completely destroys a KinematicEntity. The entity must be loaded.
      */
     @ApiStatus.Internal
     public static void remove(@NotNull KinematicEntity<?> kinematicEntity) {

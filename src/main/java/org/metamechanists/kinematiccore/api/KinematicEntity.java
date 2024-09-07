@@ -60,7 +60,6 @@ public abstract class KinematicEntity<T extends Entity> {
         // Fall back to getting entity from world, and if found, update the weakref
         Entity entityFromWorld = Bukkit.getEntity(uuid);
         if (schema().getEntityClass().isInstance(entityFromWorld)) {
-            // TODO better checking here
             T castEntity = (T) schema().getEntityClass().cast(entityFromWorld);
             entityRef = new WeakReference<>(castEntity);
             return castEntity;

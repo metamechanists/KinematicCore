@@ -3,10 +3,12 @@ package org.metamechanists.kinematiccore.test;
 
 import org.bukkit.Location;
 import org.jetbrains.annotations.NotNull;
+import org.metamechanists.kinematiccore.test.entity.TestDiskStorageSuccess;
 import org.metamechanists.kinematiccore.test.entity.TestDoubleRegister;
 import org.metamechanists.kinematiccore.test.entity.TestEntityTypeMismatch;
 import org.metamechanists.kinematiccore.test.entity.TestMemoryStorageSuccess;
 import org.metamechanists.kinematiccore.test.entity.TestMissingConstructor;
+import org.metamechanists.kinematiccore.test.entity.TestUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,6 +20,7 @@ public final class MainTester {
     private final List<BaseTest> nonDestructiveTests = List.of(
             new TestDoubleRegister(),
             new TestMemoryStorageSuccess(),
+            new TestDiskStorageSuccess(),
             new TestEntityTypeMismatch(),
             new TestMissingConstructor()
     );
@@ -30,7 +33,7 @@ public final class MainTester {
 
         unloaded = loaded.clone();
         // Using getChunk() would load the chunk (lol)
-        while (unloaded.getWorld().isChunkLoaded(unloaded.getBlockX() / 16, unloaded.getBlockZ() / 16)) {
+        while (TestUtil.isChunkLoaded(unloaded)) {
             unloaded.add(16, 0, 0);
         }
     }
