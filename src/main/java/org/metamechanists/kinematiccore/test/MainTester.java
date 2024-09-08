@@ -38,8 +38,9 @@ public final class MainTester {
 
         Location unloaded = loaded;
         WorldBorder border = unloaded.getWorld().getWorldBorder();
+        int max = (int) Math.min(border.getSize(), 10000);
         while (unloaded.isChunkLoaded()) {
-            unloaded = border.getCenter().clone().add(random.nextInt((int) border.getSize()), 1000, random.nextInt((int) border.getSize()));
+            unloaded = border.getCenter().clone().add(random.nextInt(max), 1000, random.nextInt(max));
         }
         this.unloaded = unloaded;
     }
