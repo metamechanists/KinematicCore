@@ -2,6 +2,7 @@ package org.metamechanists.kinematiccore.test.entity;
 
 import lombok.Getter;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Pig;
 import org.jetbrains.annotations.NotNull;
 import org.metamechanists.kinematiccore.KinematicCore;
@@ -66,11 +67,13 @@ public class TestDiskFieldStorageSuccess implements BaseTest {
 
     @SuppressWarnings("CodeBlock2Expr")
     @Override
-    public void test(@NotNull Location loaded, @NotNull Location unloaded) {
-        TestUtil.loadChunk(unloaded);
+    public void test(World world) {
+        Location location = TestUtil.findUnloadedChunk(world);
+
+        TestUtil.loadChunk(location);
 
         AtomicReference<UUID> uuid = new AtomicReference<>();
-        TestUtil.runSync(() -> uuid.set(new TestEntity(unloaded).uuid()));
+        TestUtil.runSync(() -> uuid.set(new TestEntity(location).uuid()));
 
         TestUtil.runSync(() -> {
             TestEntity testEntity = (TestEntity) EntityStorage.kinematicEntity(uuid.get());
@@ -81,17 +84,17 @@ public class TestDiskFieldStorageSuccess implements BaseTest {
             assertThat(testEntity.getList())
                     .isEmpty();
             assertThat(testEntity.getLocation().x())
-                    .isEqualTo(unloaded.x());
+                    .isEqualTo(location.x());
         });
 
-        TestUtil.unloadChunk(unloaded);
+        TestUtil.unloadChunk(location);
 
         TestUtil.runSync(() -> {
             assertThat(EntityStorage.kinematicEntity(uuid.get()))
                     .isNull();
         });
 
-        TestUtil.loadChunk(unloaded);
+        TestUtil.loadChunk(location);
 
         TestUtil.runSync(() -> {
             TestEntity testEntity = (TestEntity) EntityStorage.kinematicEntity(uuid.get());
@@ -104,7 +107,7 @@ public class TestDiskFieldStorageSuccess implements BaseTest {
             assertThat(testEntity.getList())
                     .hasSize(1);
             assertThat(testEntity.getLocation().x())
-                    .isEqualTo(unloaded.x());
+                    .isEqualTo(location.x());
         });
 
         TestUtil.runSync(() -> {
@@ -116,6 +119,6 @@ public class TestDiskFieldStorageSuccess implements BaseTest {
                     .isNotNull();
         });
 
-        TestUtil.unloadChunk(unloaded);
+        TestUtil.unloadChunk(location);
     }
 }

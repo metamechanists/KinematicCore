@@ -1,10 +1,9 @@
 package org.metamechanists.kinematiccore.test;
 
-import org.bukkit.Location;
-import org.jetbrains.annotations.NotNull;
+import org.bukkit.World;
 
 
 @FunctionalInterface
 public interface BaseTest {
-    void test(@NotNull Location loaded, @NotNull Location unloaded);
+    void test(World world);
 }

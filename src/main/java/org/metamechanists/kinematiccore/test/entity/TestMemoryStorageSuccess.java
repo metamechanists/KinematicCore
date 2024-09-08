@@ -1,6 +1,7 @@
 package org.metamechanists.kinematiccore.test.entity;
 
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Pig;
 import org.jetbrains.annotations.NotNull;
 import org.metamechanists.kinematiccore.KinematicCore;
@@ -42,9 +43,13 @@ public class TestMemoryStorageSuccess implements BaseTest {
     }
 
     @Override
-    public void test(@NotNull Location loaded, @NotNull Location unloaded) {
+    public void test(World world) {
+        Location location = TestUtil.findUnloadedChunk(world);
+
+        TestUtil.loadChunk(location);
+
         TestUtil.runSync(() -> {
-            TestEntity kinematicEntity = new TestEntity(loaded);
+            TestEntity kinematicEntity = new TestEntity(location);
 
             assertThat(EntityStorage.kinematicEntity(kinematicEntity.uuid()))
                     .isEqualTo(kinematicEntity);
@@ -67,5 +72,7 @@ public class TestMemoryStorageSuccess implements BaseTest {
             assertThat(kinematicEntity.entity())
                     .isNull();
         });
+
+        TestUtil.unloadChunk(location);
     }
 }

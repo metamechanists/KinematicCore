@@ -1,6 +1,7 @@
 package org.metamechanists.kinematiccore.test.entity;
 
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Cow;
 import org.bukkit.entity.Pig;
 import org.jetbrains.annotations.NotNull;
@@ -45,10 +46,16 @@ public class TestEntityTypeMismatch implements BaseTest {
 
     @SuppressWarnings({"ResultOfObjectAllocationIgnored", "CodeBlock2Expr"})
     @Override
-    public void test(@NotNull Location loaded, @NotNull Location unloaded) {
+    public void test(World world) {
+        Location location = TestUtil.findUnloadedChunk(world);
+
+        TestUtil.loadChunk(location);
+
         TestUtil.runSync(() -> {
-            assertThatThrownBy(() -> new TestEntity(loaded))
+            assertThatThrownBy(() -> new TestEntity(location))
                     .isInstanceOf(Exceptions.EntityTypeMismatchException.class);
         });
+
+        TestUtil.unloadChunk(location);
     }
 }

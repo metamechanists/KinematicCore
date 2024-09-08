@@ -18,9 +18,6 @@ import java.util.Random;
 
 
 public final class MainTester {
-    private static final Random random = new Random();
-    private final Location loaded;
-    private final Location unloaded;
     private final List<BaseTest> nonDestructiveTests = List.of(
             new TestDoubleRegister(),
             new TestEntityTypeMismatch(),

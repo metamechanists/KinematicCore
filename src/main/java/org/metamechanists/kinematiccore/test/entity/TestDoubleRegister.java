@@ -1,6 +1,7 @@
 package org.metamechanists.kinematiccore.test.entity;
 
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Cow;
 import org.bukkit.entity.Pig;
 import org.jetbrains.annotations.NotNull;
@@ -40,7 +41,7 @@ public class TestDoubleRegister implements BaseTest {
     }
 
     @Override
-    public void test(@NotNull Location loaded, @NotNull Location unloaded) {
+    public void test(World world) {
         TestUtil.runSync(() -> {
             if (EntitySchemas.schema(TestEntity.SCHEMA.getId()) == null) {
                 EntitySchemas.register(TestEntity.SCHEMA);

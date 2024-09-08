@@ -1,6 +1,7 @@
 package org.metamechanists.kinematiccore.test.entity;
 
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.entity.Pig;
 import org.jetbrains.annotations.NotNull;
 import org.metamechanists.kinematiccore.KinematicCore;
@@ -44,15 +45,16 @@ public class TestDiskStorageSuccess implements BaseTest {
         public void write(@NotNull StateWriter writer) {}
     }
 
-    @SuppressWarnings("CodeBlock2Expr")
     @Override
-    public void test(@NotNull Location loaded, @NotNull Location unloaded) {
-        TestUtil.loadChunk(unloaded);
+    public void test(World world) {
+        Location location = TestUtil.findUnloadedChunk(world);
+
+        TestUtil.loadChunk(location);
 
         AtomicReference<UUID> uuid = new AtomicReference<>();
-        TestUtil.runSync(() -> uuid.set(new TestEntity(unloaded).uuid()));
+        TestUtil.runSync(() -> uuid.set(new TestEntity(location).uuid()));
 
-        TestUtil.unloadChunk(unloaded);
+        TestUtil.unloadChunk(location);
 
         TestUtil.runSync(() -> {
             assertThat(EntityStorage.kinematicEntity(uuid.get()))
@@ -61,11 +63,9 @@ public class TestDiskStorageSuccess implements BaseTest {
                     .isEqualTo(TestEntity.SCHEMA);
             assertThat(EntityStorage.loadedEntitiesByType(TestEntity.SCHEMA))
                     .isEmpty();
-            assertThat(uuid.get())
-                    .isNull();
         });
 
-        TestUtil.loadChunk(unloaded);
+        TestUtil.loadChunk(location);
 
         TestUtil.runSync(() -> {
             assertThat(EntitySchemas.schema(TestEntity.SCHEMA.getId()))
@@ -73,17 +73,16 @@ public class TestDiskStorageSuccess implements BaseTest {
             assertThat(EntityStorage.loadedEntitiesByType(TestEntity.SCHEMA))
                     .hasSize(1)
                     .contains(uuid.get());
-            assertThat(uuid.get())
-                    .isNotNull();
         });
 
         TestUtil.runSync(() -> {
+            //noinspection DataFlowIssue
             EntityStorage.kinematicEntity(uuid.get()).entity().remove();
         });
 
-        TestUtil.unloadChunk(unloaded);
+        TestUtil.unloadChunk(location);
 
-        TestUtil.loadChunk(unloaded);
+        TestUtil.loadChunk(location);
 
         TestUtil.runSync(() -> {
             assertThat(EntityStorage.kinematicEntity(uuid.get()))
@@ -92,10 +91,8 @@ public class TestDiskStorageSuccess implements BaseTest {
                     .isEqualTo(TestEntity.SCHEMA);
             assertThat(EntityStorage.loadedEntitiesByType(TestEntity.SCHEMA))
                     .isEmpty();
-            assertThat(uuid.get())
-                    .isNull();
         });
 
-        TestUtil.unloadChunk(unloaded);
+        TestUtil.unloadChunk(location);
     }
 }
