@@ -22,10 +22,12 @@ public class StateReader {
 
     StateReader(byte[] bytes) {
         KryoStorage.read(bytes, (kryo, input) -> {
-            KinematicCore.getInstance().getLogger().severe(Arrays.toString(input.getBuffer()));
             id = input.readString();
             version = input.readInt();
             uuid = new UUID(input.readLong(), input.readLong());
+
+            KinematicCore.getInstance().getLogger().severe(Arrays.toString(input.getBuffer()));
+            KinematicCore.getInstance().getLogger().severe(String.valueOf(input.position()));
 
             while (input.position() < input.limit()) {
                 String key = input.readString();
