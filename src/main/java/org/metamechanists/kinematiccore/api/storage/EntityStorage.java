@@ -34,11 +34,8 @@ public final class EntityStorage implements Listener {
     // our own caching according to loaded chunks, so storing a lot of
     // MapDB data in memory is effectively duplicating data
     private static final long MAX_PERSISTENT_ENTITIES_SIZE = 1024 * 1024;
-    private static final int OUTPUT_BUFFER_START_SIZE = 1024;
     private static final long COMMIT_INTERVAL = 20 * 30;
     private static DB db;
-
-    private static final Kryo kryo = new Kryo();
 
     private static HTreeMap<UUID, byte[]> entities;
     private static HTreeMap<String, Set<UUID>> entitiesByType;
