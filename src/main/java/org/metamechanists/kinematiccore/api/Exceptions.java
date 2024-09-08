@@ -32,7 +32,7 @@ public class Exceptions {
 
     public static class ValueWrongTypeException extends RuntimeException {
         public ValueWrongTypeException (String key, String expected, String actual) {
-            super("Expected value at " + key + " to be " + expected + " but go " + actual);
+            super("Expected value at " + key + " to be " + expected + " but got " + actual);
         }
     }
 }
