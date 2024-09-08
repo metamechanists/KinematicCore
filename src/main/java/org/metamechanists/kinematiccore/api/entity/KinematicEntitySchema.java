@@ -35,8 +35,10 @@ public class KinematicEntitySchema {
         }
 
         constructor.setAccessible(true);
+    }
 
-        //noinspection ThisEscapedInObjectConstruction
+    @SuppressWarnings("unused")
+    public void register() {
         EntitySchemas.register(this);
     }
 }

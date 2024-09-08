@@ -27,7 +27,7 @@ public class TestEntityTypeMismatch implements BaseTest {
         );
 
         static {
-            EntitySchemas.register(SCHEMA);
+            SCHEMA.register();
         }
 
         public TestEntity(@NotNull Location location) {

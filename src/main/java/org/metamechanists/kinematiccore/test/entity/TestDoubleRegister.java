@@ -26,9 +26,6 @@ public class TestDoubleRegister implements BaseTest {
                 Cow.class
         );
 
-        static {
-        }
-
         public TestEntity(@NotNull Location location) {
             super(SCHEMA, () -> location.getWorld().spawn(location, Pig.class));
         }
