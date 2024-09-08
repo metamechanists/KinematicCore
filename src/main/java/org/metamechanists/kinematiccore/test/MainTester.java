@@ -2,6 +2,7 @@ package org.metamechanists.kinematiccore.test;
 
 
 import org.bukkit.Location;
+import org.bukkit.WorldBorder;
 import org.jetbrains.annotations.NotNull;
 import org.metamechanists.kinematiccore.test.entity.TestDiskFieldStorageSuccess;
 import org.metamechanists.kinematiccore.test.entity.TestDiskStorageSuccess;
@@ -13,10 +14,11 @@ import org.metamechanists.kinematiccore.test.entity.TestUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 
 public final class MainTester {
-    private static final int MIN_UNLOADED_DISTANCE = 256;
+    private static final Random random = new Random();
     private final Location loaded;
     private final Location unloaded;
     private final List<BaseTest> nonDestructiveTests = List.of(
@@ -34,16 +36,12 @@ public final class MainTester {
         loaded = center.clone();
         loaded.setY(310);
 
-        unloaded = loaded.clone();
-        // Using getChunk() would load the chunk (lol)
-        int distance = 0;
-        while (TestUtil.isChunkLoaded(unloaded) || distance < MIN_UNLOADED_DISTANCE) {
-            unloaded.add(16, 0, 0);
-            distance += 16;
+        Location unloaded = loaded;
+        WorldBorder border = unloaded.getWorld().getWorldBorder();
+        while (unloaded.isChunkLoaded()) {
+            unloaded = border.getCenter().clone().add(random.nextInt((int) border.getSize()), 1000, random.nextInt((int) border.getSize()));
         }
-
-
-        unloaded.add(200, 0, 0);
+        this.unloaded = unloaded;
     }
 
     public @NotNull TestResult allNonDestructive() {

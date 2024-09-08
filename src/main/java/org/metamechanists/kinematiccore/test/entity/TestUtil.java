@@ -27,6 +27,8 @@ public final class TestUtil {
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+
+        assert location.getWorld().isChunkLoaded(location.getBlockX() / 16, location.getBlockZ() / 16);
     }
 
     public static void unloadChunk(@NotNull Location location) {
@@ -35,11 +37,14 @@ public final class TestUtil {
             location.getWorld().unloadChunk(location.getBlockX() / 16, location.getBlockZ() / 16);
         });
 
+
         try {
             Thread.sleep(EXTRA_MILLISECONDS_TO_WAIT);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
+
+        assert !location.getWorld().isChunkLoaded(location.getBlockX() / 16, location.getBlockZ() / 16);
     }
 
     public static void runSync(@NotNull Runnable runnable) {

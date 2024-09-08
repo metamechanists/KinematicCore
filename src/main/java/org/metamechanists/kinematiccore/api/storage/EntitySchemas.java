@@ -19,7 +19,6 @@ public final class EntitySchemas {
     private EntitySchemas() {}
 
     public static void register(@NotNull KinematicEntitySchema schema) {
-        Bukkit.getLogger().severe(schema.getId());
         if (schemas.containsKey(schema.getId())) {
             throw new Exceptions.IdConflictException(schema.getId());
         }
