@@ -5,6 +5,7 @@ import org.bukkit.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 import org.metamechanists.kinematiccore.api.Exceptions;
 import org.metamechanists.kinematiccore.api.KinematicAddon;
+import org.metamechanists.kinematiccore.api.storage.EntitySchemas;
 import org.metamechanists.kinematiccore.api.storage.StateReader;
 
 import java.lang.reflect.Constructor;
@@ -34,5 +35,8 @@ public class KinematicEntitySchema {
         }
 
         constructor.setAccessible(true);
+
+        //noinspection ThisEscapedInObjectConstruction
+        EntitySchemas.register(this);
     }
 }
