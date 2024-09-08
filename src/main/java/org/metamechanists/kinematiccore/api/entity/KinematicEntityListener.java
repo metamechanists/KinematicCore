@@ -19,7 +19,7 @@ public class KinematicEntityListener implements Listener {
     public static void onRightClick(@NotNull PlayerInteractEntityEvent event) {
         KinematicEntity<?> kinematicEntity = EntityStorage.kinematicEntity(event.getRightClicked().getUniqueId());
         if (kinematicEntity != null) {
-            kinematicEntity.onRightClick();
+            kinematicEntity.onRightClick(event.getPlayer());
         }
     }
 }

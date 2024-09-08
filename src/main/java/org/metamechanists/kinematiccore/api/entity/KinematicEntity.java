@@ -3,6 +3,7 @@ package org.metamechanists.kinematiccore.api.entity;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.metamechanists.kinematiccore.api.Exceptions;
@@ -89,5 +90,5 @@ public abstract class KinematicEntity<T extends Entity> {
     protected void tick(@NotNull T entity, long tick) {}
 
     @SuppressWarnings("unused")
-    public void onRightClick() {}
+    public void onRightClick(Player player) {}
 }
