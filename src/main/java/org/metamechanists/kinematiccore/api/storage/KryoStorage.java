@@ -58,9 +58,9 @@ public final class KryoStorage {
     }
 
     static {
-        register(UUID.class, new DefaultSerializers.UUIDSerializer());
-        register(World.class, new WorldSerializer());
-        register(Location.class, new LocationSerializer());
+        registerDefaultSerializer(UUID.class, new DefaultSerializers.UUIDSerializer());
+        registerDefaultSerializer(World.class, new WorldSerializer());
+        registerDefaultSerializer(Location.class, new LocationSerializer());
         readKryo.setRegistrationRequired(false);
         writeKryo.setRegistrationRequired(false);
     }
@@ -70,9 +70,9 @@ public final class KryoStorage {
         writeKryo.register(clazz);
     }
 
-    public static void register(Class<?> clazz, Serializer<?> serializer) {
-        readKryo.register(clazz, serializer);
-        writeKryo.register(clazz, serializer);
+    public static void registerDefaultSerializer(Class<?> clazz, Serializer<?> serializer) {
+        readKryo.addDefaultSerializer(clazz, serializer);
+        writeKryo.addDefaultSerializer(clazz, serializer);
     }
 
     public static synchronized byte[] write(@NotNull BiConsumer<Kryo, Output> consumer) {
