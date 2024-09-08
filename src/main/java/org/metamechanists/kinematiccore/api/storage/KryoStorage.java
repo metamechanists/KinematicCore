@@ -4,6 +4,7 @@ import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.Serializer;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
+import com.esotericsoftware.kryo.serializers.DefaultSerializers;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -57,6 +58,7 @@ public final class KryoStorage {
     }
 
     static {
+        register(UUID.class, new DefaultSerializers.UUIDSerializer());
         register(World.class, new WorldSerializer());
         register(Location.class, new LocationSerializer());
         readKryo.setRegistrationRequired(false);
