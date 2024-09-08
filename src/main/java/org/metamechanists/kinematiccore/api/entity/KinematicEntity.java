@@ -48,15 +48,7 @@ public abstract class KinematicEntity<T extends Entity> {
         this.uuid = reader.uuid();
     }
 
-    public final void tick(long tick) {
-        T entity = entity();
-        if (entity != null) {
-            tick(entity, tick);
-        }
-    }
-
-    @SuppressWarnings("unused")
-    protected void tick(@NotNull T entity, long tick) {}
+    public abstract void write(@NotNull StateWriter writer);
 
     public final @Nullable T entity() {
         // Use weakref if available
@@ -86,5 +78,16 @@ public abstract class KinematicEntity<T extends Entity> {
         return schema;
     }
 
-    public abstract void write(@NotNull StateWriter writer);
+    public final void tick(long tick) {
+        T entity = entity();
+        if (entity != null) {
+            tick(entity, tick);
+        }
+    }
+
+    @SuppressWarnings("unused")
+    protected void tick(@NotNull T entity, long tick) {}
+
+    @SuppressWarnings("unused")
+    public void onRightClick() {}
 }
