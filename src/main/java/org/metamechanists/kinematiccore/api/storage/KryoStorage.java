@@ -1,20 +1,77 @@
 package org.metamechanists.kinematiccore.api.storage;
 
 import com.esotericsoftware.kryo.Kryo;
+import com.esotericsoftware.kryo.Serializer;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.World;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.UUID;
 import java.util.function.BiConsumer;
 
 
-final class KryoStorage {
+@SuppressWarnings("WeakerAccess")
+public final class KryoStorage {
     private static final Kryo writeKryo = new Kryo();
     private static final Kryo readKryo = new Kryo();
 
     private KryoStorage() {}
 
+    private static class WorldSerializer extends Serializer<World> {
+        @Override
+        public void write(Kryo kryo, Output output, World world) {
+            kryo.writeObject(output, world.getUID());
+        }
+
+        @SuppressWarnings("DataFlowIssue")
+        @Override
+        public World read(Kryo kryo, Input input, Class<? extends World> aClass) {
+            return Bukkit.getWorld(kryo.readObject(input, UUID.class));
+        }
+    }
+
+    private static class LocationSerializer extends Serializer<Location> {
+        @Override
+        public void write(Kryo kryo, Output output, Location location) {
+            output.writeString(location.getWorld().getName());
+            output.writeDouble(location.x());
+            output.writeDouble(location.y());
+            output.writeDouble(location.z());
+            output.writeFloat(location.getYaw());
+            output.writeFloat(location.getPitch());
+        }
+
+        @Override
+        public Location read(Kryo kryo, Input input, Class<? extends Location> clazz) {
+            return new Location(
+                    kryo.readObject(input, World.class),
+                    input.readDouble(),
+                    input.readDouble(),
+                    input.readDouble(),
+                    input.readFloat(),
+                    input.readFloat());
+        }
+    }
+
+    static {
+        register(World.class, new WorldSerializer());
+        register(Location.class, new LocationSerializer());
+    }
+
     public static void register(Class<?> clazz) {
+        readKryo.register(clazz);
+        writeKryo.register(clazz);
+    }
+
+    public static void register(Class<?> clazz, Serializer<?> serializer) {
+        readKryo.register(clazz, serializer);
+        writeKryo.register(clazz, serializer);
+    }
+
+    public static void registerSerializer(Class<?> clazz) {
         readKryo.register(clazz);
         writeKryo.register(clazz);
     }
