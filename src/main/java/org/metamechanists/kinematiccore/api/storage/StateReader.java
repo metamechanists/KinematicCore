@@ -4,6 +4,7 @@ import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.metamechanists.kinematiccore.api.Exceptions;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -45,8 +46,11 @@ public class StateReader {
 
     public @Nullable <T> T get(@NotNull String key, @NotNull Class<T> clazz) {
         Object object = map.get(key);
+        if (object == null) {
+            throw new Exceptions.ValueNotFoundException(key, map.keySet());
+        }
         if (!clazz.isInstance(object)) {
-            throw new ClassCastException("The value at " + key + " is of type " + object.getClass().getSimpleName() + ", not " + clazz.getSimpleName());
+            throw new Exceptions.ValueWrongTypeException(key, clazz.getSimpleName(), object.getClass().getSimpleName());
         }
         return clazz.cast(object);
     }
@@ -54,8 +58,11 @@ public class StateReader {
     @SuppressWarnings("unchecked")
     public @Nullable <T> T get(@NotNull String key, @NotNull T instance) {
         Object object = map.get(key);
+        if (object == null) {
+            throw new Exceptions.ValueNotFoundException(key);
+        }
         if (!instance.getClass().isInstance(object)) {
-            throw new ClassCastException("The value at " + key + " is of type " + object.getClass().getSimpleName() + ", not " + instance.getClass().getSimpleName());
+            throw new Exceptions.ValueWrongTypeException(key, instance.getClass().getSimpleName(), object.getClass().getSimpleName());
         }
         return (T) object;
     }
