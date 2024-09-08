@@ -31,8 +31,8 @@ public class StateReader {
                 KinematicCore.getInstance().getLogger().severe(String.valueOf(input.position()));
 
                 String key = input.readString();
-                Object value = kryo.readClassAndObject(input);
-                map.put(key, value);
+//                Object value = kryo.readClassAndObject(input);
+                map.put(key, 6);
                 KinematicCore.getInstance().getLogger().severe(key);
             }
         });

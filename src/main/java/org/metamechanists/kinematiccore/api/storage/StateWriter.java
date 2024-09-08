@@ -32,7 +32,7 @@ public class StateWriter {
                 KinematicCore.getInstance().getLogger().severe(String.valueOf(output.position()));
 
                 output.writeString(entry.getKey());
-                kryo.writeClassAndObject(output, entry.getValue());
+//                kryo.writeClassAndObject(output, entry.getValue());
             }
 
             output.close();
