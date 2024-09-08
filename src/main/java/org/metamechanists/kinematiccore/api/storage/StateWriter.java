@@ -27,10 +27,10 @@ public class StateWriter {
             output.writeLong(uuid.getMostSignificantBits());
             output.writeLong(uuid.getLeastSignificantBits());
 
-            KinematicCore.getInstance().getLogger().severe(Arrays.toString(output.getBuffer()));
-            KinematicCore.getInstance().getLogger().severe(String.valueOf(output.position()));
-
             for (Map.Entry<String, Object> entry : map.entrySet()) {
+                KinematicCore.getInstance().getLogger().severe(Arrays.toString(output.getBuffer()));
+                KinematicCore.getInstance().getLogger().severe(String.valueOf(output.position()));
+
                 output.writeString(entry.getKey());
                 kryo.writeClassAndObject(output, entry.getValue());
             }
