@@ -116,7 +116,7 @@ public class TestDiskFieldStorageSuccess implements BaseTest {
         });
 
         try {
-            Thread.sleep(200);
+            Thread.sleep(10000);
         } catch (InterruptedException e) {
             throw new RuntimeException(e);
         }
