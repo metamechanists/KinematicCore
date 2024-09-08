@@ -112,6 +112,7 @@ public final class EntityStorage implements Listener {
         KinematicEntitySchema schema = EntitySchemas.schema(reader.id());
         if (schema == null) {
             KinematicCore.getInstance().getLogger().warning("Failed to load " + uuid + " of type " + reader.id() + " (schema not found)");
+            KinematicCore.getInstance().getLogger().warning(EntitySchemas.registeredSchemas().toString());
             return;
         }
 

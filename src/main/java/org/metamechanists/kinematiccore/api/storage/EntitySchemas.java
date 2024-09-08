@@ -1,11 +1,13 @@
 package org.metamechanists.kinematiccore.api.storage;
 
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.metamechanists.kinematiccore.api.Exceptions;
 import org.metamechanists.kinematiccore.api.entity.KinematicEntitySchema;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 
@@ -32,8 +34,11 @@ public final class EntitySchemas {
         return schema(id) != null;
     }
 
-
     public static boolean isRegistered(@NotNull KinematicEntitySchema schema) {
         return schema(schema.getId()) != null;
+    }
+
+    public static @NotNull Set<String> registeredSchemas() {
+        return schemas.keySet();
     }
 }
