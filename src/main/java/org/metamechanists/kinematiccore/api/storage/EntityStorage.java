@@ -2,6 +2,7 @@ package org.metamechanists.kinematiccore.api.storage;
 
 import com.destroystokyo.paper.event.entity.EntityRemoveFromWorldEvent;
 import com.esotericsoftware.kryo.Kryo;
+import com.esotericsoftware.kryo.KryoException;
 import com.esotericsoftware.kryo.serializers.DefaultSerializers;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
@@ -131,6 +132,10 @@ public final class EntityStorage implements Listener {
         KinematicEntity<?> kinematicEntity;
         try {
             kinematicEntity = schema.getConstructor().newInstance(reader);
+        } catch (KryoException e) {
+            KinematicCore.getInstance().getLogger().warning("Class unrecognized when loading " + uuid + " of type " + reader.id()
+                    + "; this indicates an addon/entity type has been removed, and should be nothing to worry about");
+            return;
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | IllegalArgumentException e) {
             KinematicCore.getInstance().getLogger().severe("Error while loading " + uuid + " of type " + reader.id());
             e.printStackTrace();

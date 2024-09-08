@@ -28,7 +28,7 @@ public class TestDiskFieldStorageSuccess implements BaseTest {
         private final Location location;
 
         private static final KinematicEntitySchema SCHEMA = new KinematicEntitySchema(
-                "test_memory_storage_success",
+                "test_disk_field_storage_success",
                 KinematicCore.class,
                 TestEntity.class,
                 Pig.class
