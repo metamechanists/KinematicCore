@@ -4,6 +4,7 @@ import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.metamechanists.kinematiccore.KinematicCore;
 import org.metamechanists.kinematiccore.api.Exceptions;
 
 import java.util.HashMap;
@@ -28,6 +29,7 @@ public class StateReader {
                 String key = input.readString();
                 Object value = kryo.readClassAndObject(input);
                 map.put(key, value);
+                KinematicCore.getInstance().getLogger().severe(key);
             }
         });
     }
