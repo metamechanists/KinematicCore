@@ -37,7 +37,7 @@ public final class KryoStorage {
     private static class LocationSerializer extends Serializer<Location> {
         @Override
         public void write(Kryo kryo, Output output, Location location) {
-            output.writeString(location.getWorld().getName());
+            kryo.writeObject(output, location.getWorld());
             output.writeDouble(location.x());
             output.writeDouble(location.y());
             output.writeDouble(location.z());
