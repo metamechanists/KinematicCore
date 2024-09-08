@@ -1,5 +1,8 @@
 package org.metamechanists.kinematiccore.api.storage;
 
+import org.metamechanists.kinematiccore.KinematicCore;
+
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -28,6 +31,8 @@ public class StateWriter {
                 output.writeString(entry.getKey());
                 kryo.writeClassAndObject(output, entry.getValue());
             }
+
+            KinematicCore.getInstance().getLogger().severe(Arrays.toString(output.toBytes()));
 
             output.close();
         });

@@ -7,6 +7,7 @@ import org.jetbrains.annotations.Nullable;
 import org.metamechanists.kinematiccore.KinematicCore;
 import org.metamechanists.kinematiccore.api.Exceptions;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -21,6 +22,7 @@ public class StateReader {
 
     StateReader(byte[] bytes) {
         KryoStorage.read(bytes, (kryo, input) -> {
+            KinematicCore.getInstance().getLogger().severe(Arrays.toString(input.getBuffer()));
             id = input.readString();
             version = input.readInt();
             uuid = new UUID(input.readLong(), input.readLong());
