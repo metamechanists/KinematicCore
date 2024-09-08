@@ -20,7 +20,7 @@ public final class EntitySchemas {
             throw new Exceptions.IdConflictException(schema.getId());
         }
 
-        EntityStorage.register(schema);
+        KryoStorage.register(schema.getClass());
         schemas.put(schema.getId(), schema);
     }
 
