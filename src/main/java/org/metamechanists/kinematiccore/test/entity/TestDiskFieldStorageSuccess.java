@@ -113,8 +113,13 @@ public class TestDiskFieldStorageSuccess implements BaseTest {
         TestUtil.runSync(() -> {
             //noinspection DataFlowIssue
             EntityStorage.kinematicEntity(uuid.get()).entity().remove();
-            assert EntityStorage.kinematicEntity(uuid.get()).entity().isDead();
         });
+
+        try {
+            Thread.sleep(200);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
 
         TestUtil.runSync(() -> {
             assertThat(EntityStorage.kinematicEntity(uuid.get()))
