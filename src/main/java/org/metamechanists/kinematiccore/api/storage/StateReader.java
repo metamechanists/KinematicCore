@@ -1,5 +1,6 @@
 package org.metamechanists.kinematiccore.api.storage;
 
+import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -11,32 +12,23 @@ import java.util.UUID;
 
 @SuppressWarnings("unused")
 public class StateReader {
-    private final String id;
-    private final UUID uuid;
-    private final int version;
+    private String id;
+    private int version;
+    private UUID uuid;
     private final Map<String, Object> map = new HashMap<>();
 
-    StateReader(@NotNull Input input) {
-        id = input.readString();
-        version = input.readInt();
-        uuid = new UUID(input.readLong(), input.readLong());
+    StateReader(byte[] bytes) {
+        KryoStorage.read(bytes, (kryo, input) -> {
+            id = input.readString();
+            version = input.readInt();
+            uuid = new UUID(input.readLong(), input.readLong());
 
-        while (input.position() < input.limit()) {
-            String key = input.readString();
-            Object value = switch (StateType.VALUES[input.readByte()]) {
-                case STRING -> input.readString();
-                case BYTE -> input.readByte();
-                case BOOLEAN -> input.readBoolean();
-                case SHORT -> input.readShort();
-                case INTEGER -> input.readInt();
-                case LONG -> input.readLong();
-                case FLOAT -> input.readFloat();
-                case DOUBLE -> input.readDouble();
-                case UUID -> new UUID(input.readLong(), input.readLong());
-            };
-
-            map.put(key, value);
-        }
+            while (input.position() < input.limit()) {
+                String key = input.readString();
+                Object value = kryo.readClassAndObject(input);
+                map.put(key, value);
+            }
+        });
     }
 
     public String id() {
@@ -51,39 +43,20 @@ public class StateReader {
         return version;
     }
 
-    public @Nullable String getString(String key) {
-        return map.get(key) instanceof String cast ? cast : null;
+    public @Nullable <T> T get(@NotNull String key, @NotNull Class<T> clazz) {
+        Object object = map.get(key);
+        if (!clazz.isInstance(object)) {
+            throw new ClassCastException("The value at " + key + " is not of type " + clazz.getSimpleName());
+        }
+        return clazz.cast(object);
     }
 
-    public @Nullable Byte getByte(String key) {
-        return map.get(key) instanceof Byte cast ? cast : null;
-    }
-
-    public @Nullable Boolean getBoolean(String key) {
-        return map.get(key) instanceof Boolean cast ? cast : null;
-    }
-
-    public @Nullable Short getShort(String key) {
-        return map.get(key) instanceof Short cast ? cast : null;
-    }
-
-    public @Nullable Integer getInt(String key) {
-        return map.get(key) instanceof Integer cast ? cast : null;
-    }
-
-    public @Nullable Long getLong(String key) {
-        return map.get(key) instanceof Long cast ? cast : null;
-    }
-
-    public @Nullable Float getFloat(String key) {
-        return map.get(key) instanceof Float cast ? cast : null;
-    }
-
-    public @Nullable Double getDouble(String key) {
-        return map.get(key) instanceof Double cast ? cast : null;
-    }
-
-    public @Nullable UUID getUUID(String key) {
-        return map.get(key) instanceof UUID cast ? cast : null;
+    @SuppressWarnings("unchecked")
+    public @Nullable <T> T get(@NotNull String key, @NotNull T instance) {
+        Object object = map.get(key);
+        if (!instance.getClass().isInstance(object)) {
+            throw new ClassCastException("The value at " + key + " is not of type " + instance.getClass().getSimpleName());
+        }
+        return (T) object;
     }
 }

@@ -3,6 +3,7 @@ package org.metamechanists.kinematiccore.test;
 
 import org.bukkit.Location;
 import org.jetbrains.annotations.NotNull;
+import org.metamechanists.kinematiccore.test.entity.TestDiskFieldStorageSuccess;
 import org.metamechanists.kinematiccore.test.entity.TestDiskStorageSuccess;
 import org.metamechanists.kinematiccore.test.entity.TestDoubleRegister;
 import org.metamechanists.kinematiccore.test.entity.TestEntityTypeMismatch;
@@ -20,10 +21,11 @@ public final class MainTester {
     private final Location unloaded;
     private final List<BaseTest> nonDestructiveTests = List.of(
             new TestDoubleRegister(),
+            new TestEntityTypeMismatch(),
+            new TestMissingConstructor(),
             new TestMemoryStorageSuccess(),
             new TestDiskStorageSuccess(),
-            new TestEntityTypeMismatch(),
-            new TestMissingConstructor()
+            new TestDiskFieldStorageSuccess()
     );
 
     public record TestResult(int total, int passed, int failed, List<String> failures) {}
