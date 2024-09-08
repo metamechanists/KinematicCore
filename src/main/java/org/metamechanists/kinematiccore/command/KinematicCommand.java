@@ -40,11 +40,11 @@ public class KinematicCommand extends BaseCommand {
         public class KinematicTestCommand extends BaseCommand {
 
             @Subcommand("all")
-            @Description("Run all 'non-destructive' tests.")
+            @Description("Run all tests.")
             public static void test(@NotNull Player player) {
                 // Tests must be run async
                 Bukkit.getScheduler().runTaskAsynchronously(KinematicCore.getInstance(), () -> {
-                    MainTester.TestResult result = new MainTester(player.getLocation().getWorld()).allNonDestructive();
+                    MainTester.TestResult result = new MainTester(player.getLocation().getWorld()).all();
 
                     player.sendMessage(ChatColor.GRAY + "[ "
                             + ChatColor.GREEN + result.passed() + ChatColor.WHITE + " passed"

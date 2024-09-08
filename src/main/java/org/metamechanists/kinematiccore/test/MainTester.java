@@ -15,7 +15,7 @@ import java.util.List;
 
 
 public final class MainTester {
-    private final List<BaseTest> nonDestructiveTests = List.of(
+    private final List<BaseTest> tests = List.of(
             new TestDoubleRegister(),
             new TestEntityTypeMismatch(),
             new TestMissingConstructor(),
@@ -31,13 +31,13 @@ public final class MainTester {
 
     public record TestResult(int total, int passed, int failed, List<String> failures) {}
 
-    public @NotNull TestResult allNonDestructive() {
+    public @NotNull TestResult all() {
         int total = 0;
         int passed = 0;
         int failed = 0;
         List<String> failures = new ArrayList<>();
 
-        for (BaseTest test : nonDestructiveTests) {
+        for (BaseTest test : tests) {
             boolean success = test(test);
             total += 1;
             if (success) {
