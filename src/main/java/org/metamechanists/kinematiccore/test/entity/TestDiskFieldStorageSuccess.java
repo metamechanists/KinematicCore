@@ -15,6 +15,7 @@ import org.metamechanists.kinematiccore.test.BaseTest;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.atomic.AtomicReference;
 
 import static org.assertj.core.api.Assertions.*;
@@ -68,11 +69,11 @@ public class TestDiskFieldStorageSuccess implements BaseTest {
     public void test(@NotNull Location loaded, @NotNull Location unloaded) {
         TestUtil.loadChunk(unloaded);
 
-        AtomicReference<TestEntity> entity = new AtomicReference<>();
-        TestUtil.runSync(() -> entity.set(new TestEntity(unloaded)));
+        AtomicReference<UUID> uuid = new AtomicReference<>();
+        TestUtil.runSync(() -> uuid.set(new TestEntity(unloaded).uuid()));
 
         TestUtil.runSync(() -> {
-            TestEntity testEntity = (TestEntity) EntityStorage.kinematicEntity(entity.get().uuid());
+            TestEntity testEntity = (TestEntity) EntityStorage.kinematicEntity(uuid.get());
             assertThat(testEntity)
                     .isNotNull();
             assertThat(testEntity.getInteger())
@@ -86,15 +87,14 @@ public class TestDiskFieldStorageSuccess implements BaseTest {
         TestUtil.unloadChunk(unloaded);
 
         TestUtil.runSync(() -> {
-            assertThat(EntityStorage.kinematicEntity(entity.get().uuid()))
+            assertThat(EntityStorage.kinematicEntity(uuid.get()))
                     .isNull();
         });
 
         TestUtil.loadChunk(unloaded);
 
         TestUtil.runSync(() -> {
-            TestEntity testEntity = (TestEntity) EntityStorage.kinematicEntity(entity.get().uuid());
-
+            TestEntity testEntity = (TestEntity) EntityStorage.kinematicEntity(uuid.get());
             assertThat(EntitySchemas.schema(TestEntity.SCHEMA.getId()))
                     .isEqualTo(TestEntity.SCHEMA);
             assertThat(testEntity)
@@ -107,7 +107,14 @@ public class TestDiskFieldStorageSuccess implements BaseTest {
                     .isEqualTo(unloaded.x());
         });
 
-        TestUtil.runSync(() -> entity.get().entity().remove());
+        TestUtil.runSync(() -> {
+            EntityStorage.kinematicEntity(uuid.get()).entity().remove();
+        });
+
+        TestUtil.runSync(() -> {
+            assertThat(EntityStorage.kinematicEntity(uuid.get()))
+                    .isNotNull();
+        });
 
         TestUtil.unloadChunk(unloaded);
     }
