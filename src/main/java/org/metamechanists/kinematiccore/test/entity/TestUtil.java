@@ -13,6 +13,7 @@ import java.util.concurrent.CompletableFuture;
 
 @SuppressWarnings("WeakerAccess")
 public final class TestUtil {
+    private static final long EXTRA_MILLISECONDS_TO_WAIT = 50;
     private static final Random random = new Random();
 
     private TestUtil() {}
@@ -36,6 +37,12 @@ public final class TestUtil {
     public static void loadChunk(@NotNull Location location) {
         runSync(() -> location.getWorld().setChunkForceLoaded(location.getBlockX() / 16, location.getBlockZ() / 16, true));
 
+        try {
+            Thread.sleep(EXTRA_MILLISECONDS_TO_WAIT);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
         assert isChunkLoaded(location);
     }
 
@@ -44,6 +51,12 @@ public final class TestUtil {
             location.getWorld().setChunkForceLoaded(location.getBlockX() / 16, location.getBlockZ() / 16, false);
             location.getWorld().unloadChunk(location.getBlockX() / 16, location.getBlockZ() / 16);
         });
+
+        try {
+            Thread.sleep(EXTRA_MILLISECONDS_TO_WAIT);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
 
         assert !isChunkLoaded(location);
     }
