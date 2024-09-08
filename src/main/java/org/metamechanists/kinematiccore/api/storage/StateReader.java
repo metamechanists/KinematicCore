@@ -59,7 +59,7 @@ public class StateReader {
     public @Nullable <T> T get(@NotNull String key, @NotNull T instance) {
         Object object = map.get(key);
         if (object == null) {
-            throw new Exceptions.ValueNotFoundException(key);
+            throw new Exceptions.ValueNotFoundException(key, map.keySet());
         }
         if (!instance.getClass().isInstance(object)) {
             throw new Exceptions.ValueWrongTypeException(key, instance.getClass().getSimpleName(), object.getClass().getSimpleName());
