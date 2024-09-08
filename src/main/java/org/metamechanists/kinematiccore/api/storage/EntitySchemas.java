@@ -1,5 +1,6 @@
 package org.metamechanists.kinematiccore.api.storage;
 
+import org.bukkit.Bukkit;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -18,6 +19,7 @@ public final class EntitySchemas {
     private EntitySchemas() {}
 
     public static void register(@NotNull KinematicEntitySchema schema) {
+        Bukkit.getLogger().severe(schema.getId());
         if (schemas.containsKey(schema.getId())) {
             throw new Exceptions.IdConflictException(schema.getId());
         }
