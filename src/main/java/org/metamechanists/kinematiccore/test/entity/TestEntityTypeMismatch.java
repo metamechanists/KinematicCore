@@ -5,6 +5,7 @@ import org.bukkit.entity.Cow;
 import org.bukkit.entity.Pig;
 import org.jetbrains.annotations.NotNull;
 import org.metamechanists.kinematiccore.KinematicCore;
+import org.metamechanists.kinematiccore.api.storage.EntitySchemas;
 import org.metamechanists.kinematiccore.api.storage.EntityStorage;
 import org.metamechanists.kinematiccore.api.Exceptions;
 import org.metamechanists.kinematiccore.api.entity.KinematicEntity;
@@ -26,7 +27,7 @@ public class TestEntityTypeMismatch implements BaseTest {
         );
 
         static {
-            EntityStorage.register(SCHEMA);
+            EntitySchemas.register(SCHEMA);
         }
 
         public TestEntity(@NotNull Location location) {

@@ -6,6 +6,7 @@ import org.bukkit.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.metamechanists.kinematiccore.api.Exceptions;
+import org.metamechanists.kinematiccore.api.storage.EntitySchemas;
 import org.metamechanists.kinematiccore.api.storage.EntityStorage;
 import org.metamechanists.kinematiccore.api.storage.StateReader;
 import org.metamechanists.kinematiccore.api.storage.StateWriter;
@@ -15,6 +16,7 @@ import java.util.UUID;
 import java.util.function.Supplier;
 
 
+@SuppressWarnings("WeakerAccess")
 public abstract class KinematicEntity<T extends Entity> {
     private final KinematicEntitySchema schema;
     private final UUID uuid;
@@ -42,7 +44,7 @@ public abstract class KinematicEntity<T extends Entity> {
     }
 
     protected KinematicEntity(@NotNull StateReader reader) {
-        this.schema = EntityStorage.schema(reader.id());
+        this.schema = EntitySchemas.schema(reader.id());
         this.uuid = reader.uuid();
     }
 
@@ -53,6 +55,7 @@ public abstract class KinematicEntity<T extends Entity> {
         }
     }
 
+    @SuppressWarnings("unused")
     protected void tick(@NotNull T entity, long tick) {}
 
     public final @Nullable T entity() {

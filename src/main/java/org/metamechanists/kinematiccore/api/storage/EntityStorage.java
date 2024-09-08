@@ -18,7 +18,6 @@ import org.mapdb.DBMaker;
 import org.mapdb.HTreeMap;
 import org.mapdb.Serializer;
 import org.metamechanists.kinematiccore.KinematicCore;
-import org.metamechanists.kinematiccore.api.Exceptions;
 import org.metamechanists.kinematiccore.api.entity.KinematicEntity;
 import org.metamechanists.kinematiccore.api.entity.KinematicEntitySchema;
 
@@ -30,6 +29,7 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 
+@SuppressWarnings("WeakerAccess")
 public final class EntityStorage implements Listener {
     // 1MB max persistent entities storage in RAM because we are doing
     // our own caching according to loaded chunks, so storing a lot of
@@ -46,10 +46,12 @@ public final class EntityStorage implements Listener {
 
     private static final Map<String, Set<UUID>> loadedEntitiesByType = new ConcurrentHashMap<>();
     private static final Map<UUID, KinematicEntity<?>> loadedEntities = new ConcurrentHashMap<>();
-    private static final Map<String, KinematicEntitySchema> schemas = new ConcurrentHashMap<>();
-
 
     private EntityStorage() {}
+
+    static void register(@NotNull KinematicEntitySchema schema) {
+        kryo.register(schema.getKinematicClass());
+    }
 
     @ApiStatus.Internal
     public static void init() {
@@ -89,14 +91,6 @@ public final class EntityStorage implements Listener {
         db.close();
     }
 
-    public static void register(@NotNull KinematicEntitySchema schema) {
-        if (schemas.containsKey(schema.getId())) {
-            throw new Exceptions.IdConflictException(schema.getId());
-        }
-
-        kryo.register(schema.getKinematicClass());
-        schemas.put(schema.getId(), schema);
-    }
 
     /*
      * Takes an existing KinematicEntity and writes it from memory to disk.
@@ -134,7 +128,7 @@ public final class EntityStorage implements Listener {
         input.setBuffer(bytes);
         StateReader reader = new StateReader(input);
 
-        KinematicEntitySchema schema = schema(reader.id());
+        KinematicEntitySchema schema = EntitySchemas.schema(reader.id());
         if (schema == null) {
             KinematicCore.getInstance().getLogger().warning("Failed to load " + uuid + " of type " + reader.id() + " (schema not found)");
             return;
@@ -201,19 +195,6 @@ public final class EntityStorage implements Listener {
 
     public static @Nullable KinematicEntity<?> kinematicEntity(@NotNull UUID uuid) {
         return loadedEntities.get(uuid);
-    }
-
-    public static @Nullable KinematicEntitySchema schema(@NotNull String id) {
-        return schemas.get(id);
-    }
-
-    public static boolean isRegistered(@NotNull String id) {
-        return schema(id) != null;
-    }
-
-
-    public static boolean isRegistered(@NotNull KinematicEntitySchema schema) {
-        return schema(schema.getId()) != null;
     }
 
     public static @NotNull Map<String, Set<UUID>> allLoadedEntitiesByType() {

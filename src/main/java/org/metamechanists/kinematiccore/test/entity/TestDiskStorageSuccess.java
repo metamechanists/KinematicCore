@@ -4,6 +4,7 @@ import org.bukkit.Location;
 import org.bukkit.entity.Pig;
 import org.jetbrains.annotations.NotNull;
 import org.metamechanists.kinematiccore.KinematicCore;
+import org.metamechanists.kinematiccore.api.storage.EntitySchemas;
 import org.metamechanists.kinematiccore.api.storage.EntityStorage;
 import org.metamechanists.kinematiccore.api.entity.KinematicEntity;
 import org.metamechanists.kinematiccore.api.entity.KinematicEntitySchema;
@@ -26,7 +27,7 @@ public class TestDiskStorageSuccess implements BaseTest {
         );
 
         static {
-            EntityStorage.register(SCHEMA);
+            EntitySchemas.register(SCHEMA);
         }
 
         public TestEntity(@NotNull Location location) {
@@ -54,7 +55,7 @@ public class TestDiskStorageSuccess implements BaseTest {
         TestUtil.runSync(() -> {
             assertThat(EntityStorage.kinematicEntity(entity.get().uuid()))
                     .isNull();
-            assertThat(EntityStorage.schema(TestEntity.SCHEMA.getId()))
+            assertThat(EntitySchemas.schema(TestEntity.SCHEMA.getId()))
                     .isEqualTo(TestEntity.SCHEMA);
             assertThat(EntityStorage.loadedEntitiesByType(TestEntity.SCHEMA))
                     .isEmpty();
@@ -65,7 +66,7 @@ public class TestDiskStorageSuccess implements BaseTest {
         TestUtil.loadChunk(unloaded);
 
         TestUtil.runSync(() -> {
-            assertThat(EntityStorage.schema(TestEntity.SCHEMA.getId()))
+            assertThat(EntitySchemas.schema(TestEntity.SCHEMA.getId()))
                     .isEqualTo(TestEntity.SCHEMA);
             assertThat(EntityStorage.loadedEntitiesByType(TestEntity.SCHEMA))
                     .hasSize(1)
@@ -83,7 +84,7 @@ public class TestDiskStorageSuccess implements BaseTest {
         TestUtil.runSync(() -> {
             assertThat(EntityStorage.kinematicEntity(entity.get().uuid()))
                     .isNull();
-            assertThat(EntityStorage.schema(TestEntity.SCHEMA.getId()))
+            assertThat(EntitySchemas.schema(TestEntity.SCHEMA.getId()))
                     .isEqualTo(TestEntity.SCHEMA);
             assertThat(EntityStorage.loadedEntitiesByType(TestEntity.SCHEMA))
                     .isEmpty();

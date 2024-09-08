@@ -5,6 +5,7 @@ import org.bukkit.entity.Cow;
 import org.bukkit.entity.Pig;
 import org.jetbrains.annotations.NotNull;
 import org.metamechanists.kinematiccore.KinematicCore;
+import org.metamechanists.kinematiccore.api.storage.EntitySchemas;
 import org.metamechanists.kinematiccore.api.storage.EntityStorage;
 import org.metamechanists.kinematiccore.api.Exceptions;
 import org.metamechanists.kinematiccore.api.entity.KinematicEntity;
@@ -44,11 +45,11 @@ public class TestDoubleRegister implements BaseTest {
     @Override
     public void test(@NotNull Location loaded, @NotNull Location unloaded) {
         TestUtil.runSync(() -> {
-            if (EntityStorage.schema(TestEntity.SCHEMA.getId()) == null) {
-                EntityStorage.register(TestEntity.SCHEMA);
+            if (EntitySchemas.schema(TestEntity.SCHEMA.getId()) == null) {
+                EntitySchemas.register(TestEntity.SCHEMA);
             }
 
-            assertThatThrownBy(() -> EntityStorage.register(TestEntity.SCHEMA))
+            assertThatThrownBy(() -> EntitySchemas.register(TestEntity.SCHEMA))
                     .isInstanceOf(Exceptions.IdConflictException.class);
         });
     }
