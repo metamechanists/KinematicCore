@@ -132,10 +132,6 @@ public final class EntityStorage implements Listener {
         KinematicEntity<?> kinematicEntity;
         try {
             kinematicEntity = schema.getConstructor().newInstance(reader);
-        } catch (KryoException e) {
-            KinematicCore.getInstance().getLogger().warning("Class unrecognized when loading " + uuid + " of type " + reader.id()
-                    + "; this indicates an addon/entity type has been removed, and should be nothing to worry about");
-            return;
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | IllegalArgumentException e) {
             KinematicCore.getInstance().getLogger().severe("Error while loading " + uuid + " of type " + reader.id());
             e.printStackTrace();
@@ -160,6 +156,10 @@ public final class EntityStorage implements Listener {
 
         try {
             save(uuid);
+        } catch (IllegalArgumentException e) {
+            KinematicCore.getInstance().getLogger()
+                    .severe("The class " + e.getClass().getSimpleName() + " cannot be serialized (in entity " + kinematicEntity.schema().getId() + ")");
+            e.printStackTrace();
         } finally {
             // Delete entity data even if saving fails
             loadedEntitiesByType.get(kinematicEntity.schema().getId()).remove(uuid);
@@ -213,6 +213,10 @@ public final class EntityStorage implements Listener {
         for (Entity entity : event.getEntities()) {
             try {
                 tryLoad(entity.getUniqueId());
+            } catch (KryoException e) {
+                KinematicCore.getInstance().getLogger().warning("Class unrecognized when loading " + entity.getUniqueId()
+                        + "; this indicates an addon/entity type has been removed, and should be nothing to worry about");
+                return;
             } catch (RuntimeException e) {
                 KinematicCore.getInstance().getLogger().severe("Error while loading entity " + entity.getUniqueId());
                 e.printStackTrace();
