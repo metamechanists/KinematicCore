@@ -27,13 +27,11 @@ public class StateReader {
             uuid = new UUID(input.readLong(), input.readLong());
 
             while (input.position() < input.limit()) {
-                KinematicCore.getInstance().getLogger().severe(Arrays.toString(input.getBuffer()));
-                KinematicCore.getInstance().getLogger().severe(String.valueOf(input.position()));
-
                 String key = input.readString();
-//                Object value = kryo.readClassAndObject(input);
+                Object value = kryo.readClassAndObject(input);
                 map.put(key, 6);
                 KinematicCore.getInstance().getLogger().severe(key);
+                KinematicCore.getInstance().getLogger().severe(String.valueOf(value));
             }
         });
     }
