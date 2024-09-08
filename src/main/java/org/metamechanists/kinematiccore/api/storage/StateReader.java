@@ -46,7 +46,7 @@ public class StateReader {
     public @Nullable <T> T get(@NotNull String key, @NotNull Class<T> clazz) {
         Object object = map.get(key);
         if (!clazz.isInstance(object)) {
-            throw new ClassCastException("The value at " + key + " is not of type " + clazz.getSimpleName());
+            throw new ClassCastException("The value at " + key + " is of type " + object.getClass().getSimpleName() + ", not " + clazz.getSimpleName());
         }
         return clazz.cast(object);
     }
@@ -55,7 +55,7 @@ public class StateReader {
     public @Nullable <T> T get(@NotNull String key, @NotNull T instance) {
         Object object = map.get(key);
         if (!instance.getClass().isInstance(object)) {
-            throw new ClassCastException("The value at " + key + " is not of type " + instance.getClass().getSimpleName());
+            throw new ClassCastException("The value at " + key + " is of type " + object.getClass().getSimpleName() + ", not " + instance.getClass().getSimpleName());
         }
         return (T) object;
     }
