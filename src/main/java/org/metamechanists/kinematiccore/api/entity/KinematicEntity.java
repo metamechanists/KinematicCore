@@ -17,7 +17,7 @@ import java.util.UUID;
 import java.util.function.Supplier;
 
 
-@SuppressWarnings("WeakerAccess")
+@SuppressWarnings({"WeakerAccess", "unused"})
 public abstract class KinematicEntity<T extends Entity> {
     private final KinematicEntitySchema schema;
     private final UUID uuid;
@@ -77,6 +77,10 @@ public abstract class KinematicEntity<T extends Entity> {
 
     public KinematicEntitySchema schema() {
         return schema;
+    }
+
+    public void remove() {
+        EntityStorage.remove(this);
     }
 
     public final void tick(long tick) {
