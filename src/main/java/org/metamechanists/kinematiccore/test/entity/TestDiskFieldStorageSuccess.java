@@ -111,6 +111,7 @@ public class TestDiskFieldStorageSuccess implements BaseTest {
         });
 
         TestUtil.runSync(() -> {
+            //noinspection DataFlowIssue
             EntityStorage.kinematicEntity(uuid.get()).entity().remove();
         });
 

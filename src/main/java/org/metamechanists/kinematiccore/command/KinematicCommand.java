@@ -44,7 +44,7 @@ public class KinematicCommand extends BaseCommand {
             public static void test(@NotNull Player player) {
                 // Tests must be run async
                 Bukkit.getScheduler().runTaskAsynchronously(KinematicCore.getInstance(), () -> {
-                    MainTester.TestResult result = new MainTester(player.getLocation()).allNonDestructive();
+                    MainTester.TestResult result = new MainTester(player.getLocation().getWorld()).allNonDestructive();
 
                     player.sendMessage(ChatColor.GRAY + "[ "
                             + ChatColor.GREEN + result.passed() + ChatColor.WHITE + " passed"

@@ -61,6 +61,7 @@ public class TestMemoryStorageSuccess implements BaseTest {
             assertThat(kinematicEntity.entity())
                     .isNotNull();
 
+            //noinspection DataFlowIssue
             kinematicEntity.entity().remove();
 
             assertThat(EntityStorage.kinematicEntity(kinematicEntity.uuid()))
