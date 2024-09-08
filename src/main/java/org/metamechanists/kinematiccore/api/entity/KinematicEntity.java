@@ -41,8 +41,8 @@ public abstract class KinematicEntity<T extends Entity> {
         EntityStorage.add(this);
     }
 
-    protected KinematicEntity(@NotNull KinematicEntitySchema schema, @NotNull StateReader reader) {
-        this.schema = schema;
+    protected KinematicEntity(@NotNull StateReader reader) {
+        this.schema = EntityStorage.schema(reader.id());
         this.uuid = reader.uuid();
     }
 

@@ -33,7 +33,7 @@ public class TestMemoryStorageSuccess implements BaseTest {
 
         @SuppressWarnings("unused")
         public TestEntity(@NotNull StateReader reader) {
-            super(SCHEMA, reader);
+            super(reader);
         }
 
         @Override

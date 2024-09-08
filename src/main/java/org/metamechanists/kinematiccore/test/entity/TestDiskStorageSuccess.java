@@ -35,7 +35,7 @@ public class TestDiskStorageSuccess implements BaseTest {
 
         @SuppressWarnings("unused")
         public TestEntity(@NotNull StateReader reader) {
-            super(SCHEMA, reader);
+            super(reader);
         }
 
         @Override
