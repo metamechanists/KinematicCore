@@ -18,7 +18,7 @@ import static org.assertj.core.api.Assertions.*;
 
 
 public class TestDoubleRegister implements BaseTest {
-    private static class TestEntity extends KinematicEntity<Pig> {
+    private static class TestEntity extends KinematicEntity<Pig, KinematicEntitySchema> {
         private static final KinematicEntitySchema SCHEMA = new KinematicEntitySchema(
                 "test_double_register",
                 KinematicCore.class,

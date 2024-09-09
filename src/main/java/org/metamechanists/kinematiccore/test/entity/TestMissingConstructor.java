@@ -15,7 +15,7 @@ import static org.assertj.core.api.Assertions.*;
 
 
 public class TestMissingConstructor implements BaseTest {
-    private static class TestEntity extends KinematicEntity<Pig> {
+    private static class TestEntity extends KinematicEntity<Pig, KinematicEntitySchema> {
         private static final KinematicEntitySchema SCHEMA = new KinematicEntitySchema(
                 "test_missing_constructor",
                 KinematicCore.class,

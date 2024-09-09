@@ -24,7 +24,7 @@ import static org.assertj.core.api.Assertions.*;
 
 public class TestDiskFieldStorageSuccess implements BaseTest {
     @Getter
-    private static class TestEntity extends KinematicEntity<Pig> {
+    private static class TestEntity extends KinematicEntity<Pig, KinematicEntitySchema> {
         private int integer;
         private final List<String> list;
         private final Location location;

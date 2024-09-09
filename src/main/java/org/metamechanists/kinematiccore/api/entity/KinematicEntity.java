@@ -18,12 +18,12 @@ import java.util.function.Supplier;
 
 
 @SuppressWarnings({"WeakerAccess", "unused"})
-public abstract class KinematicEntity<T extends Entity> {
-    private final KinematicEntitySchema schema;
+public abstract class KinematicEntity<T extends Entity, S extends KinematicEntitySchema> {
+    private final S schema;
     private final UUID uuid;
     private transient WeakReference<T> entityRef;
 
-    protected KinematicEntity(@NotNull KinematicEntitySchema schema, @NotNull Supplier<T> spawnEntity) {
+    protected KinematicEntity(@NotNull S schema, @NotNull Supplier<T> spawnEntity) {
         this.schema = schema;
         T entity = spawnEntity.get();
 
@@ -45,7 +45,8 @@ public abstract class KinematicEntity<T extends Entity> {
     }
 
     protected KinematicEntity(@NotNull StateReader reader) {
-        this.schema = EntitySchemas.schema(reader.id());
+        //noinspection unchecked
+        schema = (S) EntitySchemas.schema(reader.id());
         this.uuid = reader.uuid();
     }
 
@@ -63,6 +64,7 @@ public abstract class KinematicEntity<T extends Entity> {
         // Fall back to getting entity from world, and if found, update the weakref
         Entity entityFromWorld = Bukkit.getEntity(uuid);
         if (schema().getEntityClass().isInstance(entityFromWorld)) {
+            //noinspection unchecked
             T castEntity = (T) schema().getEntityClass().cast(entityFromWorld);
             entityRef = new WeakReference<>(castEntity);
             return castEntity;
@@ -75,7 +77,7 @@ public abstract class KinematicEntity<T extends Entity> {
         return uuid;
     }
 
-    public KinematicEntitySchema schema() {
+    public S schema() {
         return schema;
     }
 
