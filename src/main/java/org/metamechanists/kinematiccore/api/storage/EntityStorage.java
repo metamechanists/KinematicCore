@@ -39,7 +39,7 @@ public final class EntityStorage implements Listener {
     private static HTreeMap<String, Set<UUID>> entitiesByType;
 
     private static final Map<String, Set<UUID>> loadedEntitiesByType = new ConcurrentHashMap<>();
-    private static final Map<UUID, KinematicEntity<?>> loadedEntities = new ConcurrentHashMap<>();
+    private static final Map<UUID, KinematicEntity<?, ?>> loadedEntities = new ConcurrentHashMap<>();
 
     private EntityStorage() {}
 
@@ -84,7 +84,7 @@ public final class EntityStorage implements Listener {
     private static void save(UUID uuid) {
         KinematicCore.getInstance().getLogger().info("Writing to disk " + uuid);
 
-        KinematicEntity<?> kinematicEntity = loadedEntities.get(uuid);
+        KinematicEntity<?, ?> kinematicEntity = loadedEntities.get(uuid);
 
         StateWriter writer = new StateWriter(kinematicEntity.schema().getId(), uuid);
         kinematicEntity.write(writer);
@@ -116,7 +116,7 @@ public final class EntityStorage implements Listener {
             return;
         }
 
-        KinematicEntity<?> kinematicEntity;
+        KinematicEntity<?, ?> kinematicEntity;
         try {
             kinematicEntity = schema.getConstructor().newInstance(reader);
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException | IllegalArgumentException e) {
@@ -134,7 +134,7 @@ public final class EntityStorage implements Listener {
      * The KinematicEntity referenced by the UUID can be null.
      */
     private static void tryUnload(UUID uuid) {
-        KinematicEntity<?> kinematicEntity = kinematicEntity(uuid);
+        KinematicEntity<?, ?> kinematicEntity = kinematicEntity(uuid);
         if (kinematicEntity == null) {
             return;
         }
@@ -158,7 +158,7 @@ public final class EntityStorage implements Listener {
      * Adds a completely new KinematicEntity to the cache.
      */
     @ApiStatus.Internal
-    public static void add(@NotNull KinematicEntity<?> kinematicEntity) {
+    public static void add(@NotNull KinematicEntity<?, ?> kinematicEntity) {
         Set<UUID> uuids = loadedEntitiesByType.computeIfAbsent(kinematicEntity.schema().getId(), k -> ConcurrentHashMap.newKeySet());
         uuids.add(kinematicEntity.uuid());
 
@@ -168,7 +168,7 @@ public final class EntityStorage implements Listener {
     /*
      * Completely destroys a KinematicEntity. The entity must be loaded.
      */
-    public static void remove(@NotNull KinematicEntity<?> kinematicEntity) {
+    public static void remove(@NotNull KinematicEntity<?, ?> kinematicEntity) {
         Entity entity = kinematicEntity.entity();
         if (entity != null) {
             entity.remove();
@@ -178,7 +178,7 @@ public final class EntityStorage implements Listener {
         loadedEntities.remove(kinematicEntity.uuid());
     }
 
-    public static @Nullable KinematicEntity<?> kinematicEntity(@NotNull UUID uuid) {
+    public static @Nullable KinematicEntity<?, ?> kinematicEntity(@NotNull UUID uuid) {
         return loadedEntities.get(uuid);
     }
 
@@ -215,7 +215,7 @@ public final class EntityStorage implements Listener {
         try {
             Entity entity = event.getEntity();
             UUID uuid = entity.getUniqueId();
-            KinematicEntity<?> kinematicEntity = kinematicEntity(uuid);
+            KinematicEntity<?, ?> kinematicEntity = kinematicEntity(uuid);
             if (kinematicEntity == null) {
                 return;
             }

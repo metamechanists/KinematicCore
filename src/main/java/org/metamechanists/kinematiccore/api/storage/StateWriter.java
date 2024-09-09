@@ -1,8 +1,5 @@
 package org.metamechanists.kinematiccore.api.storage;
 
-import org.metamechanists.kinematiccore.KinematicCore;
-
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;

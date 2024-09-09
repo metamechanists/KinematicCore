@@ -17,7 +17,7 @@ public class KinematicEntityTicker implements Runnable {
         long tick = Bukkit.getCurrentTick();
         for (Map.Entry<String, Set<UUID>> kinematicEntityType : EntityStorage.allLoadedEntitiesByType().entrySet()) {
             for (UUID uuid : kinematicEntityType.getValue()) {
-                KinematicEntity<?> kinematicEntity = EntityStorage.kinematicEntity(uuid);
+                KinematicEntity<?, ?> kinematicEntity = EntityStorage.kinematicEntity(uuid);
 
                 try {
                     kinematicEntity.tick(tick);
