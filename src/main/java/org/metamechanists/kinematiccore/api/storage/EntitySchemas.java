@@ -23,8 +23,11 @@ public final class EntitySchemas {
             throw new Exceptions.IdConflictException(schema.getId());
         }
 
-        KryoStorage.register(schema.getClass());
         schemas.put(schema.getId(), schema);
+    }
+
+    public static void unregister(@NotNull String id) {
+        schemas.remove(id);
     }
 
     public static @Nullable KinematicEntitySchema schema(@NotNull String id) {
