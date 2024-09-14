@@ -19,12 +19,12 @@ import java.util.function.Supplier;
 
 @SuppressWarnings({"WeakerAccess", "unused"})
 public abstract class KinematicEntity<T extends Entity, S extends KinematicEntitySchema> {
-    private final S schema;
+    private final String schema;
     private final UUID uuid;
     private transient WeakReference<T> entityRef;
 
     protected KinematicEntity(@NotNull S schema, @NotNull Supplier<T> spawnEntity) {
-        this.schema = schema;
+        this.schema = schema.getId();
         T entity = spawnEntity.get();
 
         // Check the spawned entity is the correct type (sadly can't be done at compile-time)
@@ -34,7 +34,7 @@ public abstract class KinematicEntity<T extends Entity, S extends KinematicEntit
             String provided = type.getName();
             String expected = schema().getEntityClass().getName();
             if (!provided.equals(expected)) {
-                throw new Exceptions.EntityTypeMismatchException(this.schema.getId(), provided, expected);
+                throw new Exceptions.EntityTypeMismatchException(schema.getId(), provided, expected);
             }
         }
 
@@ -45,8 +45,7 @@ public abstract class KinematicEntity<T extends Entity, S extends KinematicEntit
     }
 
     protected KinematicEntity(@NotNull StateReader reader) {
-        //noinspection unchecked
-        schema = (S) EntitySchemas.schema(reader.id());
+        this.schema = reader.id();
         this.uuid = reader.uuid();
     }
 
@@ -78,7 +77,7 @@ public abstract class KinematicEntity<T extends Entity, S extends KinematicEntit
     }
 
     public S schema() {
-        return schema;
+        return (S) EntitySchemas.schema(schema);
     }
 
     public void remove() {
