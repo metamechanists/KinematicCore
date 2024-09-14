@@ -28,10 +28,6 @@ public class TestDiskStorageSuccess implements BaseTest {
                 Pig.class
         );
 
-        static {
-            SCHEMA.register();
-        }
-
         public TestEntity(@NotNull Location location) {
             super(SCHEMA, () -> location.getWorld().spawn(location, Pig.class));
         }

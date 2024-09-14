@@ -25,10 +25,6 @@ public class TestEntityTypeMismatch implements BaseTest {
                 Cow.class
         );
 
-        static {
-            SCHEMA.register();
-        }
-
         public TestEntity(@NotNull Location location) {
             super(SCHEMA, () -> location.getWorld().spawn(location, Pig.class));
         }

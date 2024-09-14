@@ -36,10 +36,6 @@ public class TestDiskFieldStorageSuccess implements BaseTest {
                 Pig.class
         );
 
-        static {
-            SCHEMA.register();
-        }
-
         public TestEntity(@NotNull Location location) {
             super(SCHEMA, () -> location.getWorld().spawn(location, Pig.class));
             this.integer = 5;
