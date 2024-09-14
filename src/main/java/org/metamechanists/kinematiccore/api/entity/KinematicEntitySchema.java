@@ -6,6 +6,7 @@ import org.jetbrains.annotations.NotNull;
 import org.metamechanists.kinematiccore.api.Exceptions;
 import org.metamechanists.kinematiccore.api.KinematicAddon;
 import org.metamechanists.kinematiccore.api.storage.EntitySchemas;
+import org.metamechanists.kinematiccore.api.storage.EntityStorage;
 import org.metamechanists.kinematiccore.api.storage.StateReader;
 
 import java.lang.reflect.Constructor;
@@ -35,13 +36,9 @@ public class KinematicEntitySchema {
         }
 
         constructor.setAccessible(true);
-    }
 
-    @SuppressWarnings("unused")
-    public void register() {
         EntitySchemas.register(this);
     }
-
 
     @SuppressWarnings("unused")
     public void unregister() {
