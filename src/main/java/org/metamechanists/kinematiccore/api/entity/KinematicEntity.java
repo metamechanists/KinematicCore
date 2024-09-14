@@ -49,7 +49,9 @@ public abstract class KinematicEntity<T extends Entity, S extends KinematicEntit
         this.uuid = reader.uuid();
     }
 
-    public void write(@NotNull StateWriter writer) {}
+    public void write(@NotNull StateWriter writer) {
+        writer.set("schema", schema);
+    }
 
     public final @Nullable T entity() {
         // Use weakref if available
