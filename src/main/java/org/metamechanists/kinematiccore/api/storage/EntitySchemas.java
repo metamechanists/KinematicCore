@@ -1,7 +1,6 @@
 package org.metamechanists.kinematiccore.api.storage;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.metamechanists.kinematiccore.api.Exceptions;
 import org.metamechanists.kinematiccore.api.entity.KinematicEntitySchema;
 
@@ -28,7 +27,7 @@ public final class EntitySchemas {
         schemas.remove(id);
     }
 
-    public static @Nullable KinematicEntitySchema schema(@NotNull String id) {
+    public static KinematicEntitySchema schema(@NotNull String id) {
         return schemas.get(id);
     }
 
