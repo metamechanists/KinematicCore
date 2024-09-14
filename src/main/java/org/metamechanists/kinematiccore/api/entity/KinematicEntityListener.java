@@ -17,8 +17,10 @@ public class KinematicEntityListener implements Listener {
 
     @EventHandler
     public static void onRightClick(@NotNull PlayerInteractEntityEvent event) {
+        Bukkit.getLogger().severe("1");
         KinematicEntity<?, ?> kinematicEntity = EntityStorage.kinematicEntity(event.getRightClicked().getUniqueId());
         if (kinematicEntity != null) {
+            Bukkit.getLogger().severe("2");
             kinematicEntity.onRightClick(event.getPlayer());
         }
     }
