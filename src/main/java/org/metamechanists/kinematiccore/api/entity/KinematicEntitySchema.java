@@ -41,4 +41,10 @@ public class KinematicEntitySchema {
     public void register() {
         EntitySchemas.register(this);
     }
+
+
+    @SuppressWarnings("unused")
+    public void unregister() {
+        EntitySchemas.unregister(id);
+    }
 }
