@@ -56,6 +56,12 @@ public class TestMemoryStorageSuccess implements BaseTest {
             //noinspection DataFlowIssue
             kinematicEntity.entity().remove();
 
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+
             assertThat(EntityStorage.kinematicEntity(kinematicEntity.uuid()))
                     .isNull();
             assertThat(EntitySchemas.schema(TestEntity.SCHEMA.getId()))

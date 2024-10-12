@@ -111,6 +111,12 @@ public class TestDiskFieldStorageSuccess implements BaseTest {
             EntityStorage.kinematicEntity(uuid.get()).entity().remove();
         });
 
+        try {
+            Thread.sleep(100);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+
         TestUtil.runSync(() -> {
             assertThat(EntityStorage.kinematicEntity(uuid.get()))
                     .isNull();
