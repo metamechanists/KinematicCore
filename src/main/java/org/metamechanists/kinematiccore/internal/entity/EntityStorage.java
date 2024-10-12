@@ -234,7 +234,7 @@ public final class EntityStorage implements Listener {
             return;
         }
 
-        if (entity.isValid()) {
+        if (!entity.isValid()) {
             remove(kinematicEntity);
         }
 
