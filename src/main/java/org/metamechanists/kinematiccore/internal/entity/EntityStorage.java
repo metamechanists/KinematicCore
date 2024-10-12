@@ -216,7 +216,7 @@ public final class EntityStorage implements Listener {
         loadedEntitiesByType.get(kinematicEntity.schema().getId()).remove(kinematicEntity.uuid());
         loadedEntities.remove(kinematicEntity.uuid());
 
-        if (!entity.isDead()) {
+        if (entity.isValid()) {
             Bukkit.getScheduler().runTaskAsynchronously(KinematicCore.getInstance(), () -> trySave(kinematicEntity));
         }
     }
