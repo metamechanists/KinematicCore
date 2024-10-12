@@ -100,16 +100,14 @@ public final class EntityStorage implements Listener {
      * Takes an existing KinematicEntity and writes it from memory to disk.
      * The KinematicEntity referenced by the UUID must NOT be null.
      */
-    private static void save(UUID uuid) {
-        KinematicCore.getInstance().getLogger().info("Writing to disk " + uuid);
+    private static void save(@NotNull KinematicEntity<?, ?> kinematicEntity) {
+        KinematicCore.getInstance().getLogger().info("Writing to disk " + kinematicEntity.uuid());
 
-        KinematicEntity<?, ?> kinematicEntity = loadedEntities.get(uuid);
-
-        StateWriter writer = new StateWriter(kinematicEntity.schema().getId(), uuid);
+        StateWriter writer = new StateWriter(kinematicEntity.schema().getId(), kinematicEntity.uuid());
         kinematicEntity.write(writer);
 
-        entities.put(uuid, writer.toBytes());
-        entitiesByType.computeIfAbsent(kinematicEntity.schema().getId(), k -> ConcurrentHashMap.newKeySet()).add(uuid);
+        entities.put(kinematicEntity.uuid(), writer.toBytes());
+        entitiesByType.computeIfAbsent(kinematicEntity.schema().getId(), k -> ConcurrentHashMap.newKeySet()).add(kinematicEntity.uuid());
     }
 
     /*
@@ -161,7 +159,7 @@ public final class EntityStorage implements Listener {
         KinematicCore.getInstance().getLogger().info("Unloading " + uuid);
 
         try {
-            save(uuid);
+            save(kinematicEntity);
         } catch (IllegalArgumentException e) {
             KinematicCore.getInstance().getLogger()
                     .severe("The class " + e.getClass().getSimpleName() + " cannot be serialized (in entity " + kinematicEntity.schema().getId() + ")");
