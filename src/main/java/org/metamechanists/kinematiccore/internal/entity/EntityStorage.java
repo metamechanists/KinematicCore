@@ -203,6 +203,10 @@ public final class EntityStorage implements Listener {
         }
     }
 
+    // TODO: This currently does not differentiate between unloaded and dead entities because the API is fucking broken and
+    // isDead does not actually return if the entity is dead (for some reason). When this PR
+    // https://github.com/PaperMC/Paper/pull/10149#issuecomment-2403735366
+    // is merged, this can be fixed, but currently it saves entities WHEN THEY ARE KILLED and there is no easy workaround
     @EventHandler
     private static void onEntityUnload(@NotNull EntityRemoveFromWorldEvent event) {
         Entity entity = event.getEntity();
