@@ -9,6 +9,7 @@ import org.metamechanists.kinematiccore.internal.entity.EntitySchemas;
 import org.metamechanists.kinematiccore.api.state.StateReader;
 
 import java.lang.reflect.Constructor;
+import java.util.UUID;
 
 
 @Getter
@@ -44,5 +45,9 @@ public class KinematicEntitySchema {
     @SuppressWarnings("unused")
     public void unregister() {
         EntitySchemas.unregister(id);
+    }
+
+    public static KinematicEntitySchema get(String id) {
+        return EntitySchemas.schema(id);
     }
 }

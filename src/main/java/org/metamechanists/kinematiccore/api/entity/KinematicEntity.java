@@ -96,4 +96,8 @@ public abstract class KinematicEntity<T extends Entity, S extends KinematicEntit
 
     @SuppressWarnings("unused")
     public void onRightClick(Player player) {}
+
+    public static KinematicEntity<?, ?> get(UUID uuid) {
+        return EntityStorage.kinematicEntity(uuid);
+    }
 }
