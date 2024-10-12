@@ -105,7 +105,7 @@ public final class EntityStorage implements Listener {
      * Takes an existing KinematicEntity and writes it from memory to disk.
      */
     private static void trySave(@NotNull KinematicEntity<?, ?> kinematicEntity) {
-        KinematicCore.getInstance().getLogger().info("Writing to disk " + kinematicEntity.uuid());
+        KinematicCore.getInstance().getLogger().info("Saving to disk " + kinematicEntity.uuid());
 
         try {
             StateWriter writer = new StateWriter(kinematicEntity.schema().getId(), kinematicEntity.uuid());
@@ -214,7 +214,7 @@ public final class EntityStorage implements Listener {
         loadedEntitiesByType.get(kinematicEntity.schema().getId()).remove(kinematicEntity.uuid());
         loadedEntities.remove(kinematicEntity.uuid());
 
-        if (entity.isValid()) {
+        if (!entity.isDead()) {
             Bukkit.getScheduler().runTaskAsynchronously(KinematicCore.getInstance(), () -> trySave(kinematicEntity));
         }
     }
