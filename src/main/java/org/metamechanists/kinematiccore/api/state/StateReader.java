@@ -1,8 +1,9 @@
-package org.metamechanists.kinematiccore.api.storage;
+package org.metamechanists.kinematiccore.api.state;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.metamechanists.kinematiccore.api.Exceptions;
+import org.metamechanists.kinematiccore.internal.state.KryoStorage;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,7 +17,7 @@ public class StateReader {
     private UUID uuid;
     private final Map<String, Object> map = new HashMap<>();
 
-    StateReader(byte[] bytes) {
+    public StateReader(byte[] bytes) {
         KryoStorage.read(bytes, (kryo, input) -> {
             id = input.readString();
             version = input.readInt();

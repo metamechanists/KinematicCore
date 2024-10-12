@@ -1,4 +1,4 @@
-package org.metamechanists.kinematiccore.api.storage;
+package org.metamechanists.kinematiccore.internal.entity;
 
 import com.destroystokyo.paper.event.entity.EntityRemoveFromWorldEvent;
 import com.esotericsoftware.kryo.KryoException;
@@ -15,8 +15,11 @@ import org.mapdb.DBMaker;
 import org.mapdb.HTreeMap;
 import org.mapdb.Serializer;
 import org.metamechanists.kinematiccore.KinematicCore;
+import org.metamechanists.kinematiccore.api.addon.KinematicAddon;
 import org.metamechanists.kinematiccore.api.entity.KinematicEntity;
 import org.metamechanists.kinematiccore.api.entity.KinematicEntitySchema;
+import org.metamechanists.kinematiccore.api.state.StateReader;
+import org.metamechanists.kinematiccore.api.state.StateWriter;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
@@ -67,15 +70,31 @@ public final class EntityStorage implements Listener {
         Bukkit.getScheduler().runTaskTimerAsynchronously(KinematicCore.getInstance(), () -> db.commit(), 0, COMMIT_INTERVAL);
     }
 
+    /*
+     * This DOES NOT save any entities! That's the job of cleanup and its callers
+     */
     @ApiStatus.Internal
     public static void close() {
-        for (UUID uuid : loadedEntities.keySet()) {
-            tryUnload(uuid);
-        }
         db.commit();
         db.close();
     }
 
+    @ApiStatus.Internal
+    public static void cleanup(KinematicAddon addon) {
+        Set<String> schemasToCleanup = EntitySchemas.registeredSchemasByAddon(addon);
+
+        for (String type : schemasToCleanup) {
+            Set<UUID> uuids = loadedEntitiesByType(type);
+            if (uuids == null) {
+                KinematicCore.getInstance().getLogger().warning("Failed to save loaded entities of type " + type);
+                continue;
+            }
+
+            for (UUID uuid : uuids) {
+                tryUnload(uuid);
+            }
+        }
+    }
 
     /*
      * Takes an existing KinematicEntity and writes it from memory to disk.

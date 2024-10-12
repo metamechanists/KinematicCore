@@ -5,7 +5,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 import org.jetbrains.annotations.NotNull;
 import org.metamechanists.kinematiccore.KinematicCore;
-import org.metamechanists.kinematiccore.api.KinematicAddon;
+import org.metamechanists.kinematiccore.api.addon.KinematicAddon;
 
 import java.util.List;
 

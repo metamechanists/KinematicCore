@@ -1,4 +1,4 @@
-package org.metamechanists.kinematiccore.api.storage;
+package org.metamechanists.kinematiccore.internal.state;
 
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.Serializer;
