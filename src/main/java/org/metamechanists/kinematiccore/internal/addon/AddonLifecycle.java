@@ -18,7 +18,7 @@ import org.metamechanists.kinematiccore.internal.entity.EntityStorage;
  */
 public class AddonLifecycle implements Listener {
     public static void init() {
-        Bukkit.getPluginManager().registerEvents(new AddonStorage(), KinematicCore.getInstance());
+        Bukkit.getPluginManager().registerEvents(new AddonLifecycle(), KinematicCore.getInstance());
     }
 
     @EventHandler
