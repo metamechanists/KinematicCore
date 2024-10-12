@@ -153,6 +153,8 @@ public final class EntityStorage implements Listener {
             return;
         }
 
+        Bukkit.getLogger().severe(kinematicEntity.schema().getId());
+
         loadedEntitiesByType.computeIfAbsent(schema.getId(), k -> ConcurrentHashMap.newKeySet()).add(uuid);
         loadedEntities.put(uuid, kinematicEntity);
     }
