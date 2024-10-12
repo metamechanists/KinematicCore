@@ -216,40 +216,41 @@ public final class EntityStorage implements Listener {
     @EventHandler
     private static void onEntityLoad(@NotNull EntitiesLoadEvent event) {
         for (Entity entity : event.getEntities()) {
-            try {
-                tryLoad(entity.getUniqueId());
-            } catch (KryoException e) {
-                KinematicCore.getInstance().getLogger().warning("Class unrecognized when loading " + entity.getUniqueId()
-                        + "; this indicates an addon/entity type has been removed, and should be nothing to worry about");
-                return;
-            } catch (RuntimeException e) {
-                KinematicCore.getInstance().getLogger().severe("Error while loading entity " + entity.getUniqueId());
-                e.printStackTrace();
-            }
+            Bukkit.getScheduler().runTaskAsynchronously(KinematicCore.getInstance(), () -> {
+                try {
+                    tryLoad(entity.getUniqueId());
+                } catch (KryoException e) {
+                    KinematicCore.getInstance().getLogger().warning("Class unrecognized when loading " + entity.getUniqueId()
+                            + "; this indicates an addon/entity type has been removed, and should be nothing to worry about");
+                } catch (RuntimeException e) {
+                    KinematicCore.getInstance().getLogger().severe("Error while loading entity " + entity.getUniqueId());
+                    e.printStackTrace();
+                }
+            });
         }
     }
 
     @EventHandler
     private static void onEntityUnload(@NotNull EntityRemoveFromWorldEvent event) {
-        try {
-            Entity entity = event.getEntity();
-            UUID uuid = entity.getUniqueId();
-            KinematicEntity<?, ?> kinematicEntity = kinematicEntity(uuid);
-            if (kinematicEntity == null) {
-                return;
-            }
+        Entity entity = event.getEntity();
+        UUID uuid = entity.getUniqueId();
 
-            KinematicCore.getInstance().getLogger().severe("getting there");
+        Bukkit.getScheduler().runTaskAsynchronously(KinematicCore.getInstance(), () -> {
+            try {
+                KinematicEntity<?, ?> kinematicEntity = kinematicEntity(uuid);
+                if (kinematicEntity == null) {
+                    return;
+                }
 
-            if (entity.isValid()) {
-                KinematicCore.getInstance().getLogger().severe("entity dead");
-                remove(kinematicEntity);
-            } else {
-                tryUnload(uuid);
+                if (entity.isValid()) {
+                    remove(kinematicEntity);
+                } else {
+                    tryUnload(uuid);
+                }
+            } catch (RuntimeException e) {
+                KinematicCore.getInstance().getLogger().severe("Error while unloading entity; entity data will be lost!");
+                e.printStackTrace();
             }
-        } catch (RuntimeException e) {
-            KinematicCore.getInstance().getLogger().severe("Error while unloading entity; entity data will be lost!");
-            e.printStackTrace();
-        }
+        });
     }
 }
