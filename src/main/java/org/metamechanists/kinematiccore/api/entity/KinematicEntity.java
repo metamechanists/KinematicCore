@@ -80,10 +80,6 @@ public abstract class KinematicEntity<T extends Entity, S extends KinematicEntit
         return (S) EntitySchemas.schema(schema);
     }
 
-    public void remove() {
-        EntityStorage.remove(this);
-    }
-
     public final void tick(long tick) {
         T entity = entity();
         if (entity != null) {

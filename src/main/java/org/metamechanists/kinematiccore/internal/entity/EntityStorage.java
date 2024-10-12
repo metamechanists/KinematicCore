@@ -91,23 +91,36 @@ public final class EntityStorage implements Listener {
             }
 
             for (UUID uuid : uuids) {
-                tryUnload(uuid);
+                KinematicEntity<?, ?> kinematicEntity = loadedEntities.remove(uuid);
+                if (kinematicEntity == null) {
+                    return;
+                }
+
+                trySave(kinematicEntity);
             }
         }
     }
 
     /*
      * Takes an existing KinematicEntity and writes it from memory to disk.
-     * The KinematicEntity referenced by the UUID must NOT be null.
      */
-    private static void save(@NotNull KinematicEntity<?, ?> kinematicEntity) {
+    private static void trySave(@NotNull KinematicEntity<?, ?> kinematicEntity) {
         KinematicCore.getInstance().getLogger().info("Writing to disk " + kinematicEntity.uuid());
 
-        StateWriter writer = new StateWriter(kinematicEntity.schema().getId(), kinematicEntity.uuid());
-        kinematicEntity.write(writer);
+        try {
+            StateWriter writer = new StateWriter(kinematicEntity.schema().getId(), kinematicEntity.uuid());
+            kinematicEntity.write(writer);
 
-        entities.put(kinematicEntity.uuid(), writer.toBytes());
-        entitiesByType.computeIfAbsent(kinematicEntity.schema().getId(), k -> ConcurrentHashMap.newKeySet()).add(kinematicEntity.uuid());
+            entities.put(kinematicEntity.uuid(), writer.toBytes());
+            entitiesByType.computeIfAbsent(kinematicEntity.schema().getId(), k -> ConcurrentHashMap.newKeySet()).add(kinematicEntity.uuid());
+        } catch (IllegalArgumentException e) {
+            KinematicCore.getInstance().getLogger()
+                    .severe("The class " + e.getClass().getSimpleName() + " cannot be serialized (in entity " + kinematicEntity.schema().getId() + ")");
+            e.printStackTrace();
+        } catch (Exception e) {
+            KinematicCore.getInstance().getLogger().severe("Error while saving entity " + kinematicEntity.uuid() + " of type " + kinematicEntity.schema().getId());
+            e.printStackTrace();
+        }
     }
 
     /*
@@ -145,29 +158,6 @@ public final class EntityStorage implements Listener {
     }
 
     /*
-     * Takes an existing KinematicEntity and transfers it from memory to disk.
-     * The KinematicEntity referenced by the UUID can be null.
-     */
-    private static void tryUnload(UUID uuid) {
-        KinematicEntity<?, ?> kinematicEntity = loadedEntities.remove(uuid);
-        if (kinematicEntity == null) {
-            return;
-        }
-
-        loadedEntitiesByType.get(kinematicEntity.schema().getId()).remove(uuid);
-
-        KinematicCore.getInstance().getLogger().info("Unloading " + uuid);
-
-        try {
-            save(kinematicEntity);
-        } catch (IllegalArgumentException e) {
-            KinematicCore.getInstance().getLogger()
-                    .severe("The class " + e.getClass().getSimpleName() + " cannot be serialized (in entity " + kinematicEntity.schema().getId() + ")");
-            e.printStackTrace();
-        }
-    }
-
-    /*
      * Adds a completely new KinematicEntity to the cache.
      */
     @ApiStatus.Internal
@@ -176,19 +166,6 @@ public final class EntityStorage implements Listener {
         uuids.add(kinematicEntity.uuid());
 
         loadedEntities.put(kinematicEntity.uuid(), kinematicEntity);
-    }
-
-    /*
-     * Completely destroys a KinematicEntity. The entity must be loaded.
-     */
-    public static void remove(@NotNull KinematicEntity<?, ?> kinematicEntity) {
-        Entity entity = kinematicEntity.entity();
-        if (entity != null) {
-            entity.remove();
-        }
-
-        loadedEntitiesByType.get(kinematicEntity.schema().getId()).remove(kinematicEntity.uuid());
-        loadedEntities.remove(kinematicEntity.uuid());
     }
 
     public static @Nullable KinematicEntity<?, ?> kinematicEntity(@NotNull UUID uuid) {
@@ -234,10 +211,11 @@ public final class EntityStorage implements Listener {
             return;
         }
 
-        if (!entity.isValid()) {
-            remove(kinematicEntity);
-        }
+        loadedEntitiesByType.get(kinematicEntity.schema().getId()).remove(kinematicEntity.uuid());
+        loadedEntities.remove(kinematicEntity.uuid());
 
-        Bukkit.getScheduler().runTaskAsynchronously(KinematicCore.getInstance(), () -> tryUnload(uuid));
+        if (entity.isValid()) {
+            Bukkit.getScheduler().runTaskAsynchronously(KinematicCore.getInstance(), () -> trySave(kinematicEntity));
+        }
     }
 }
