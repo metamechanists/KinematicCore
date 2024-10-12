@@ -4,6 +4,7 @@ import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.event.server.PluginEnableEvent;
 import org.jetbrains.annotations.NotNull;
 import org.metamechanists.kinematiccore.KinematicCore;
@@ -30,7 +31,7 @@ public class AddonStorage implements Listener {
     }
 
     @EventHandler
-    private static void onAddonDisable(@NotNull PluginEnableEvent event) {
+    private static void onAddonDisable(@NotNull PluginDisableEvent event) {
         if (event.getPlugin() instanceof KinematicAddon addon) {
             Bukkit.getLogger().severe("bruh");
             loadedAddons.remove(addon);
