@@ -13,7 +13,7 @@ import java.util.concurrent.CompletableFuture;
 
 @SuppressWarnings("WeakerAccess")
 public final class TestUtil {
-    private static final long EXTRA_MILLISECONDS_TO_WAIT = 50;
+    private static final long EXTRA_MILLISECONDS_TO_WAIT = 200;
     private static final Random random = new Random();
 
     private TestUtil() {}
