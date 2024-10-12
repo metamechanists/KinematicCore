@@ -24,6 +24,7 @@ public class AddonStorage implements Listener {
     @EventHandler
     private static void onAddonEnable(@NotNull PluginEnableEvent event) {
         if (event.getPlugin() instanceof KinematicAddon addon) {
+            Bukkit.getLogger().severe("oh no");
             loadedAddons.add(addon);
         }
     }
@@ -31,7 +32,8 @@ public class AddonStorage implements Listener {
     @EventHandler
     private static void onAddonDisable(@NotNull PluginEnableEvent event) {
         if (event.getPlugin() instanceof KinematicAddon addon) {
-            loadedAddons.add(addon);
+            Bukkit.getLogger().severe("bruh");
+            loadedAddons.remove(addon);
         }
     }
 }
