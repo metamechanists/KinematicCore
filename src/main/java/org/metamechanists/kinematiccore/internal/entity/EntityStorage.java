@@ -239,7 +239,10 @@ public final class EntityStorage implements Listener {
                 return;
             }
 
-            if (entity.isDead()) {
+            KinematicCore.getInstance().getLogger().severe("getting there");
+
+            if (entity.isValid()) {
+                KinematicCore.getInstance().getLogger().severe("entity dead");
                 remove(kinematicEntity);
             } else {
                 tryUnload(uuid);
