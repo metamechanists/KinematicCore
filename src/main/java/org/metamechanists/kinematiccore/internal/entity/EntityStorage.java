@@ -35,7 +35,7 @@ public final class EntityStorage implements Listener {
     // our own caching according to loaded chunks, so storing a lot of
     // MapDB data in memory is effectively duplicating data
     private static final long MAX_PERSISTENT_ENTITIES_SIZE = 1024 * 1024;
-    private static final long COMMIT_INTERVAL = 20 * 30;
+    private static final long COMMIT_INTERVAL = 10 * 20;
     private static DB db;
 
     private static HTreeMap<UUID, byte[]> entities;
@@ -110,8 +110,6 @@ public final class EntityStorage implements Listener {
 
         entities.put(uuid, writer.toBytes());
         entitiesByType.computeIfAbsent(kinematicEntity.schema().getId(), k -> ConcurrentHashMap.newKeySet()).add(uuid);
-
-        db.commit();
     }
 
     /*
@@ -235,22 +233,15 @@ public final class EntityStorage implements Listener {
         Entity entity = event.getEntity();
         UUID uuid = entity.getUniqueId();
 
-        Bukkit.getScheduler().runTaskAsynchronously(KinematicCore.getInstance(), () -> {
-            try {
-                KinematicEntity<?, ?> kinematicEntity = kinematicEntity(uuid);
-                if (kinematicEntity == null) {
-                    return;
-                }
+        KinematicEntity<?, ?> kinematicEntity = kinematicEntity(uuid);
+        if (kinematicEntity == null) {
+            return;
+        }
 
-                if (entity.isValid()) {
-                    remove(kinematicEntity);
-                } else {
-                    tryUnload(uuid);
-                }
-            } catch (RuntimeException e) {
-                KinematicCore.getInstance().getLogger().severe("Error while unloading entity; entity data will be lost!");
-                e.printStackTrace();
-            }
-        });
+        if (entity.isValid()) {
+            remove(kinematicEntity);
+        }
+
+        Bukkit.getScheduler().runTaskAsynchronously(KinematicCore.getInstance(), () -> tryUnload(uuid));
     }
 }
