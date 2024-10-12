@@ -151,10 +151,12 @@ public final class EntityStorage implements Listener {
      * The KinematicEntity referenced by the UUID can be null.
      */
     private static void tryUnload(UUID uuid) {
-        KinematicEntity<?, ?> kinematicEntity = kinematicEntity(uuid);
+        KinematicEntity<?, ?> kinematicEntity = loadedEntities.remove(uuid);
         if (kinematicEntity == null) {
             return;
         }
+
+        loadedEntitiesByType.get(kinematicEntity.schema().getId()).remove(uuid);
 
         KinematicCore.getInstance().getLogger().info("Unloading " + uuid);
 
@@ -164,10 +166,6 @@ public final class EntityStorage implements Listener {
             KinematicCore.getInstance().getLogger()
                     .severe("The class " + e.getClass().getSimpleName() + " cannot be serialized (in entity " + kinematicEntity.schema().getId() + ")");
             e.printStackTrace();
-        } finally {
-            // Delete entity data even if saving fails
-            loadedEntitiesByType.get(kinematicEntity.schema().getId()).remove(uuid);
-            loadedEntities.remove(uuid);
         }
     }
 
