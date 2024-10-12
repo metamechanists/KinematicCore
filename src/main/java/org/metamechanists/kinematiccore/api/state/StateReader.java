@@ -43,7 +43,11 @@ public class StateReader {
         return version;
     }
 
-    public @Nullable <T> T getNullable(@NotNull String key, @NotNull Class<T> clazz) {
+    public @Nullable <T> T get(@NotNull String key, @NotNull Class<T> clazz) {
+        if (!map.containsKey(key)) {
+            throw new Exceptions.ValueNotFoundException(key, map.keySet());
+        }
+
         Object object = map.get(key);
         if (object == null) {
             return null;
@@ -54,34 +58,15 @@ public class StateReader {
         return clazz.cast(object);
     }
 
-    public @NotNull <T> T get(@NotNull String key, @NotNull Class<T> clazz) {
-        Object object = map.get(key);
-        if (object == null) {
+    @SuppressWarnings("unchecked")
+    public @Nullable <T> T get(@NotNull String key, @NotNull T instance) {
+        if (!map.containsKey(key)) {
             throw new Exceptions.ValueNotFoundException(key, map.keySet());
         }
-        if (!clazz.isInstance(object)) {
-            throw new Exceptions.ValueWrongTypeException(key, clazz.getSimpleName(), object.getClass().getSimpleName());
-        }
-        return clazz.cast(object);
-    }
 
-    @SuppressWarnings("unchecked")
-    public @Nullable <T> T getNullable(@NotNull String key, @NotNull T instance) {
         Object object = map.get(key);
         if (object == null) {
             return null;
-        }
-        if (!instance.getClass().isInstance(object)) {
-            throw new Exceptions.ValueWrongTypeException(key, instance.getClass().getSimpleName(), object.getClass().getSimpleName());
-        }
-        return (T) object;
-    }
-
-    @SuppressWarnings("unchecked")
-    public @NotNull <T> T get(@NotNull String key, @NotNull T instance) {
-        Object object = map.get(key);
-        if (object == null) {
-            throw new Exceptions.ValueNotFoundException(key, map.keySet());
         }
         if (!instance.getClass().isInstance(object)) {
             throw new Exceptions.ValueWrongTypeException(key, instance.getClass().getSimpleName(), object.getClass().getSimpleName());
