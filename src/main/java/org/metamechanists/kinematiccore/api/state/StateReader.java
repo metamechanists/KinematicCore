@@ -43,7 +43,18 @@ public class StateReader {
         return version;
     }
 
-    public @Nullable <T> T get(@NotNull String key, @NotNull Class<T> clazz) {
+    public @Nullable <T> T getNullable(@NotNull String key, @NotNull Class<T> clazz) {
+        Object object = map.get(key);
+        if (object == null) {
+            return null;
+        }
+        if (!clazz.isInstance(object)) {
+            throw new Exceptions.ValueWrongTypeException(key, clazz.getSimpleName(), object.getClass().getSimpleName());
+        }
+        return clazz.cast(object);
+    }
+
+    public @NotNull <T> T get(@NotNull String key, @NotNull Class<T> clazz) {
         Object object = map.get(key);
         if (object == null) {
             throw new Exceptions.ValueNotFoundException(key, map.keySet());
@@ -55,7 +66,19 @@ public class StateReader {
     }
 
     @SuppressWarnings("unchecked")
-    public @Nullable <T> T get(@NotNull String key, @NotNull T instance) {
+    public @Nullable <T> T getNullable(@NotNull String key, @NotNull T instance) {
+        Object object = map.get(key);
+        if (object == null) {
+            return null;
+        }
+        if (!instance.getClass().isInstance(object)) {
+            throw new Exceptions.ValueWrongTypeException(key, instance.getClass().getSimpleName(), object.getClass().getSimpleName());
+        }
+        return (T) object;
+    }
+
+    @SuppressWarnings("unchecked")
+    public @NotNull <T> T get(@NotNull String key, @NotNull T instance) {
         Object object = map.get(key);
         if (object == null) {
             throw new Exceptions.ValueNotFoundException(key, map.keySet());

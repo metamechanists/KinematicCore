@@ -24,14 +24,14 @@ public class AddonLifecycle implements Listener {
     @EventHandler
     public static void onAddonDisable(@NotNull PluginDisableEvent event) {
         if (event.getPlugin() instanceof KinematicAddon addon) {
-            Bukkit.getLogger().info("Cleaning up addon " + addon.getClass().getSimpleName());
+            KinematicCore.getInstance().getLogger().info("Cleaning up addon " + addon.getClass().getSimpleName());
             EntityStorage.cleanup(addon);
         }
     }
 
     public static void cleanup() {
         for (KinematicAddon addon : AddonStorage.getLoadedAddons()) {
-            Bukkit.getLogger().info("Cleaning up addon " + addon.getClass().getSimpleName());
+            KinematicCore.getInstance().getLogger().info("Cleaning up addon " + addon.getClass().getSimpleName());
             EntityStorage.cleanup(addon);
         }
     }
