@@ -22,7 +22,7 @@ public class EntityTicker implements Runnable {
                 try {
                     kinematicEntity.tick(tick);
                 } catch (RuntimeException e) {
-                    KinematicCore.getInstance().getLogger().severe("Failed to tick " + kinematicEntity.schema().getId());
+                    KinematicCore.getInstance().getLogger().severe("Failed to tick " + uuid);
                     e.printStackTrace();
                 }
             }
