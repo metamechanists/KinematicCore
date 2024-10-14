@@ -1,4 +1,4 @@
-package org.metamechanists.kinematiccore.api.entity;
+package org.metamechanists.kinematiccore.internal.entity;
 
 
 import org.bukkit.Bukkit;
@@ -7,12 +7,12 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.jetbrains.annotations.NotNull;
 import org.metamechanists.kinematiccore.KinematicCore;
-import org.metamechanists.kinematiccore.api.storage.EntityStorage;
+import org.metamechanists.kinematiccore.api.entity.KinematicEntity;
 
 
-public class KinematicEntityListener implements Listener {
+public class EntityListener implements Listener {
     public static void init() {
-        Bukkit.getPluginManager().registerEvents(new KinematicEntityListener(), KinematicCore.getInstance());
+        Bukkit.getPluginManager().registerEvents(new EntityListener(), KinematicCore.getInstance());
     }
 
     @EventHandler

@@ -1,4 +1,4 @@
-package org.metamechanists.kinematiccore.command;
+package org.metamechanists.kinematiccore.internal.command;
 
 import co.aikar.commands.BaseCommand;
 import co.aikar.commands.CommandHelp;

@@ -1,12 +1,14 @@
-package org.metamechanists.kinematiccore.api.storage;
+package org.metamechanists.kinematiccore.internal.entity;
 
 import org.jetbrains.annotations.NotNull;
 import org.metamechanists.kinematiccore.api.Exceptions;
+import org.metamechanists.kinematiccore.api.addon.KinematicAddon;
 import org.metamechanists.kinematiccore.api.entity.KinematicEntitySchema;
 
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 
 @SuppressWarnings("unused")
@@ -41,5 +43,14 @@ public final class EntitySchemas {
 
     public static @NotNull Set<String> registeredSchemas() {
         return schemas.keySet();
+    }
+
+    public static @NotNull Set<String> registeredSchemasByAddon(@NotNull KinematicAddon addonClass) {
+        String addon = addonClass.getClass().getSimpleName().toLowerCase();
+        return schemas.entrySet()
+                .stream()
+                .filter(schema -> schema.getValue().getAddonName().equals(addon))
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toSet());
     }
 }

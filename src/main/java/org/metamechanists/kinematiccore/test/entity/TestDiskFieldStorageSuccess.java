@@ -8,10 +8,10 @@ import org.jetbrains.annotations.NotNull;
 import org.metamechanists.kinematiccore.KinematicCore;
 import org.metamechanists.kinematiccore.api.entity.KinematicEntity;
 import org.metamechanists.kinematiccore.api.entity.KinematicEntitySchema;
-import org.metamechanists.kinematiccore.api.storage.EntitySchemas;
-import org.metamechanists.kinematiccore.api.storage.EntityStorage;
-import org.metamechanists.kinematiccore.api.storage.StateReader;
-import org.metamechanists.kinematiccore.api.storage.StateWriter;
+import org.metamechanists.kinematiccore.internal.entity.EntitySchemas;
+import org.metamechanists.kinematiccore.internal.entity.EntityStorage;
+import org.metamechanists.kinematiccore.api.state.StateReader;
+import org.metamechanists.kinematiccore.api.state.StateWriter;
 import org.metamechanists.kinematiccore.test.BaseTest;
 
 import java.util.ArrayList;

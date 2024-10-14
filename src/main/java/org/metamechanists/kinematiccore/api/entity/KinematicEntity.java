@@ -7,10 +7,10 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.metamechanists.kinematiccore.api.Exceptions;
-import org.metamechanists.kinematiccore.api.storage.EntitySchemas;
-import org.metamechanists.kinematiccore.api.storage.EntityStorage;
-import org.metamechanists.kinematiccore.api.storage.StateReader;
-import org.metamechanists.kinematiccore.api.storage.StateWriter;
+import org.metamechanists.kinematiccore.internal.entity.EntitySchemas;
+import org.metamechanists.kinematiccore.internal.entity.EntityStorage;
+import org.metamechanists.kinematiccore.api.state.StateReader;
+import org.metamechanists.kinematiccore.api.state.StateWriter;
 
 import java.lang.ref.WeakReference;
 import java.util.UUID;
@@ -80,10 +80,6 @@ public abstract class KinematicEntity<T extends Entity, S extends KinematicEntit
         return (S) EntitySchemas.schema(schema);
     }
 
-    public void remove() {
-        EntityStorage.remove(this);
-    }
-
     public final void tick(long tick) {
         T entity = entity();
         if (entity != null) {
@@ -96,4 +92,8 @@ public abstract class KinematicEntity<T extends Entity, S extends KinematicEntit
 
     @SuppressWarnings("unused")
     public void onRightClick(Player player) {}
+
+    public static KinematicEntity<?, ?> get(UUID uuid) {
+        return EntityStorage.kinematicEntity(uuid);
+    }
 }

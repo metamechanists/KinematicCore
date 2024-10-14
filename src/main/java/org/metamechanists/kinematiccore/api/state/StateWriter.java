@@ -1,4 +1,6 @@
-package org.metamechanists.kinematiccore.api.storage;
+package org.metamechanists.kinematiccore.api.state;
+
+import org.metamechanists.kinematiccore.internal.state.KryoStorage;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -12,12 +14,12 @@ public class StateWriter {
     private final Map<String, Object> map = new HashMap<>();
     private int version;
 
-    StateWriter(String id, UUID uuid) {
+    public StateWriter(String id, UUID uuid) {
         this.id = id;
         this.uuid = uuid;
     }
 
-    byte[] toBytes() {
+    public byte[] toBytes() {
         return KryoStorage.write((kryo, output) -> {
             output.writeString(id);
             output.writeInt(version);

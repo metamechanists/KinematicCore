@@ -1,8 +1,8 @@
-package org.metamechanists.kinematiccore.api.entity;
+package org.metamechanists.kinematiccore.internal.entity;
 
 import org.bukkit.Bukkit;
 import org.metamechanists.kinematiccore.KinematicCore;
-import org.metamechanists.kinematiccore.api.storage.EntityStorage;
+import org.metamechanists.kinematiccore.api.entity.KinematicEntity;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,6 +12,7 @@ import java.util.Set;
 import java.util.UUID;
 
 
+public class EntityTicker implements Runnable {
 public class KinematicEntityTicker implements Runnable {
     private static class ErrorTracker {
         private static final int MAX_ERRORS = 5;
@@ -57,6 +58,7 @@ public class KinematicEntityTicker implements Runnable {
                     //noinspection DataFlowIssue
                     kinematicEntity.tick(tick);
                 } catch (RuntimeException e) {
+                    KinematicCore.getInstance().getLogger().severe("Failed to tick " + uuid);
                     if (kinematicEntity.schema() != null) {
                         KinematicCore.getInstance().getLogger().severe("Failed to tick " + kinematicEntity.schema().getId());
                     } else {
@@ -85,6 +87,6 @@ public class KinematicEntityTicker implements Runnable {
     }
 
     public static void init() {
-        Bukkit.getServer().getScheduler().runTaskTimer(KinematicCore.getInstance(), new KinematicEntityTicker(), 0, INTERVAL);
+        Bukkit.getServer().getScheduler().runTaskTimer(KinematicCore.getInstance(), new EntityTicker(), 0, INTERVAL);
     }
 }

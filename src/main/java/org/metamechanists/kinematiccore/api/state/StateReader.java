@@ -1,8 +1,9 @@
-package org.metamechanists.kinematiccore.api.storage;
+package org.metamechanists.kinematiccore.api.state;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.metamechanists.kinematiccore.api.Exceptions;
+import org.metamechanists.kinematiccore.internal.state.KryoStorage;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,7 +17,7 @@ public class StateReader {
     private UUID uuid;
     private final Map<String, Object> map = new HashMap<>();
 
-    StateReader(byte[] bytes) {
+    public StateReader(byte[] bytes) {
         KryoStorage.read(bytes, (kryo, input) -> {
             id = input.readString();
             version = input.readInt();
@@ -43,9 +44,13 @@ public class StateReader {
     }
 
     public @Nullable <T> T get(@NotNull String key, @NotNull Class<T> clazz) {
+        if (!map.containsKey(key)) {
+            throw new Exceptions.ValueNotFoundException(key, map.keySet());
+        }
+
         Object object = map.get(key);
         if (object == null) {
-            throw new Exceptions.ValueNotFoundException(key, map.keySet());
+            return null;
         }
         if (!clazz.isInstance(object)) {
             throw new Exceptions.ValueWrongTypeException(key, clazz.getSimpleName(), object.getClass().getSimpleName());
@@ -55,9 +60,13 @@ public class StateReader {
 
     @SuppressWarnings("unchecked")
     public @Nullable <T> T get(@NotNull String key, @NotNull T instance) {
+        if (!map.containsKey(key)) {
+            throw new Exceptions.ValueNotFoundException(key, map.keySet());
+        }
+
         Object object = map.get(key);
         if (object == null) {
-            throw new Exceptions.ValueNotFoundException(key, map.keySet());
+            return null;
         }
         if (!instance.getClass().isInstance(object)) {
             throw new Exceptions.ValueWrongTypeException(key, instance.getClass().getSimpleName(), object.getClass().getSimpleName());

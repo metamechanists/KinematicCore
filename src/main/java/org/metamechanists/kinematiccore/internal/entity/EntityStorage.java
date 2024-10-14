@@ -1,4 +1,4 @@
-package org.metamechanists.kinematiccore.api.storage;
+package org.metamechanists.kinematiccore.internal.entity;
 
 import com.destroystokyo.paper.event.entity.EntityRemoveFromWorldEvent;
 import com.esotericsoftware.kryo.KryoException;
@@ -15,8 +15,11 @@ import org.mapdb.DBMaker;
 import org.mapdb.HTreeMap;
 import org.mapdb.Serializer;
 import org.metamechanists.kinematiccore.KinematicCore;
+import org.metamechanists.kinematiccore.api.addon.KinematicAddon;
 import org.metamechanists.kinematiccore.api.entity.KinematicEntity;
 import org.metamechanists.kinematiccore.api.entity.KinematicEntitySchema;
+import org.metamechanists.kinematiccore.api.state.StateReader;
+import org.metamechanists.kinematiccore.api.state.StateWriter;
 
 import java.io.File;
 import java.lang.reflect.InvocationTargetException;
@@ -32,7 +35,7 @@ public final class EntityStorage implements Listener {
     // our own caching according to loaded chunks, so storing a lot of
     // MapDB data in memory is effectively duplicating data
     private static final long MAX_PERSISTENT_ENTITIES_SIZE = 1024 * 1024;
-    private static final long COMMIT_INTERVAL = 20 * 30;
+    private static final long COMMIT_INTERVAL = 10 * 20;
     private static DB db;
 
     private static HTreeMap<UUID, byte[]> entities;
@@ -67,32 +70,57 @@ public final class EntityStorage implements Listener {
         Bukkit.getScheduler().runTaskTimerAsynchronously(KinematicCore.getInstance(), () -> db.commit(), 0, COMMIT_INTERVAL);
     }
 
+    /*
+     * This DOES NOT save any entities! That's the job of cleanup and its callers
+     */
     @ApiStatus.Internal
     public static void close() {
-        for (UUID uuid : loadedEntities.keySet()) {
-            tryUnload(uuid);
-        }
         db.commit();
         db.close();
     }
 
+    @ApiStatus.Internal
+    public static void cleanup(KinematicAddon addon) {
+        Set<String> schemasToCleanup = EntitySchemas.registeredSchemasByAddon(addon);
+
+        for (String type : schemasToCleanup) {
+            Set<UUID> uuids = loadedEntitiesByType(type);
+            if (uuids == null) {
+                KinematicCore.getInstance().getLogger().warning("Failed to save loaded entities of type " + type);
+                continue;
+            }
+
+            for (UUID uuid : uuids) {
+                KinematicEntity<?, ?> kinematicEntity = loadedEntities.remove(uuid);
+                if (kinematicEntity == null) {
+                    return;
+                }
+
+                trySave(kinematicEntity);
+            }
+        }
+    }
 
     /*
      * Takes an existing KinematicEntity and writes it from memory to disk.
-     * The KinematicEntity referenced by the UUID must NOT be null.
      */
-    private static void save(UUID uuid) {
-        KinematicCore.getInstance().getLogger().info("Writing to disk " + uuid);
+    private static void trySave(@NotNull KinematicEntity<?, ?> kinematicEntity) {
+        KinematicCore.getInstance().getLogger().info("Saving to disk " + kinematicEntity.uuid());
 
-        KinematicEntity<?, ?> kinematicEntity = loadedEntities.get(uuid);
+        try {
+            StateWriter writer = new StateWriter(kinematicEntity.schema().getId(), kinematicEntity.uuid());
+            kinematicEntity.write(writer);
 
-        StateWriter writer = new StateWriter(kinematicEntity.schema().getId(), uuid);
-        kinematicEntity.write(writer);
-
-        entities.put(uuid, writer.toBytes());
-        entitiesByType.computeIfAbsent(kinematicEntity.schema().getId(), k -> ConcurrentHashMap.newKeySet()).add(uuid);
-
-        db.commit();
+            entities.put(kinematicEntity.uuid(), writer.toBytes());
+            entitiesByType.computeIfAbsent(kinematicEntity.schema().getId(), k -> ConcurrentHashMap.newKeySet()).add(kinematicEntity.uuid());
+        } catch (IllegalArgumentException e) {
+            KinematicCore.getInstance().getLogger()
+                    .severe("The class " + e.getClass().getSimpleName() + " cannot be serialized (in entity " + kinematicEntity.schema().getId() + ")");
+            e.printStackTrace();
+        } catch (Exception e) {
+            KinematicCore.getInstance().getLogger().severe("Error while saving entity " + kinematicEntity.uuid() + " of type " + kinematicEntity.schema().getId());
+            e.printStackTrace();
+        }
     }
 
     /*
@@ -130,31 +158,6 @@ public final class EntityStorage implements Listener {
     }
 
     /*
-     * Takes an existing KinematicEntity and transfers it from memory to disk.
-     * The KinematicEntity referenced by the UUID can be null.
-     */
-    private static void tryUnload(UUID uuid) {
-        KinematicEntity<?, ?> kinematicEntity = kinematicEntity(uuid);
-        if (kinematicEntity == null) {
-            return;
-        }
-
-        KinematicCore.getInstance().getLogger().info("Unloading " + uuid);
-
-        try {
-            save(uuid);
-        } catch (IllegalArgumentException e) {
-            KinematicCore.getInstance().getLogger()
-                    .severe("The class " + e.getClass().getSimpleName() + " cannot be serialized (in entity " + kinematicEntity.schema().getId() + ")");
-            e.printStackTrace();
-        } finally {
-            // Delete entity data even if saving fails
-            loadedEntitiesByType.get(kinematicEntity.schema().getId()).remove(uuid);
-            loadedEntities.remove(uuid);
-        }
-    }
-
-    /*
      * Adds a completely new KinematicEntity to the cache.
      */
     @ApiStatus.Internal
@@ -163,19 +166,6 @@ public final class EntityStorage implements Listener {
         uuids.add(kinematicEntity.uuid());
 
         loadedEntities.put(kinematicEntity.uuid(), kinematicEntity);
-    }
-
-    /*
-     * Completely destroys a KinematicEntity. The entity must be loaded.
-     */
-    public static void remove(@NotNull KinematicEntity<?, ?> kinematicEntity) {
-        Entity entity = kinematicEntity.entity();
-        if (entity != null) {
-            entity.remove();
-        }
-
-        loadedEntitiesByType.get(kinematicEntity.schema().getId()).remove(kinematicEntity.uuid());
-        loadedEntities.remove(kinematicEntity.uuid());
     }
 
     public static @Nullable KinematicEntity<?, ?> kinematicEntity(@NotNull UUID uuid) {
@@ -197,37 +187,37 @@ public final class EntityStorage implements Listener {
     @EventHandler
     private static void onEntityLoad(@NotNull EntitiesLoadEvent event) {
         for (Entity entity : event.getEntities()) {
-            try {
-                tryLoad(entity.getUniqueId());
-            } catch (KryoException e) {
-                KinematicCore.getInstance().getLogger().warning("Class unrecognized when loading " + entity.getUniqueId()
-                        + "; this indicates an addon/entity type has been removed, and should be nothing to worry about");
-                return;
-            } catch (RuntimeException e) {
-                KinematicCore.getInstance().getLogger().severe("Error while loading entity " + entity.getUniqueId());
-                e.printStackTrace();
-            }
+            Bukkit.getScheduler().runTaskAsynchronously(KinematicCore.getInstance(), () -> {
+                try {
+                    tryLoad(entity.getUniqueId());
+                } catch (KryoException e) {
+                    KinematicCore.getInstance().getLogger().warning("Class unrecognized when loading " + entity.getUniqueId()
+                            + "; this indicates an addon/entity type has been removed, and should be nothing to worry about");
+                } catch (RuntimeException e) {
+                    KinematicCore.getInstance().getLogger().severe("Error while loading entity " + entity.getUniqueId());
+                    e.printStackTrace();
+                }
+            });
         }
     }
 
+    // TODO: This currently does not differentiate between unloaded and dead entities because the API is fucking broken and
+    // isDead does not actually return if the entity is dead (for some reason). When this PR
+    // https://github.com/PaperMC/Paper/pull/10149#issuecomment-2403735366
+    // is merged, this can be fixed, but currently it saves entities WHEN THEY ARE KILLED and there is no easy workaround
     @EventHandler
     private static void onEntityUnload(@NotNull EntityRemoveFromWorldEvent event) {
-        try {
-            Entity entity = event.getEntity();
-            UUID uuid = entity.getUniqueId();
-            KinematicEntity<?, ?> kinematicEntity = kinematicEntity(uuid);
-            if (kinematicEntity == null) {
-                return;
-            }
+        Entity entity = event.getEntity();
+        UUID uuid = entity.getUniqueId();
 
-            if (entity.isDead()) {
-                remove(kinematicEntity);
-            } else {
-                tryUnload(uuid);
-            }
-        } catch (RuntimeException e) {
-            KinematicCore.getInstance().getLogger().severe("Error while unloading entity; entity data will be lost!");
-            e.printStackTrace();
+        KinematicEntity<?, ?> kinematicEntity = kinematicEntity(uuid);
+        if (kinematicEntity == null) {
+            return;
         }
+
+        loadedEntitiesByType.get(kinematicEntity.schema().getId()).remove(kinematicEntity.uuid());
+        loadedEntities.remove(kinematicEntity.uuid());
+
+        Bukkit.getScheduler().runTaskAsynchronously(KinematicCore.getInstance(), () -> trySave(kinematicEntity));
     }
 }
