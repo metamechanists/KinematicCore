@@ -38,6 +38,7 @@ public class TestDoubleRegister implements BaseTest {
 
     @Override
     public void test(World world) {
+        Bukkit.getLogger().info("fuck this");
         TestUtil.runSync(() -> {
             if (KinematicEntitySchema.get(TestEntity.SCHEMA.getId()) == null) {
                 Bukkit.getLogger().info("1");
