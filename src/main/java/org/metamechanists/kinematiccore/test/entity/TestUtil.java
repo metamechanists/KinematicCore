@@ -67,6 +67,7 @@ public final class TestUtil {
             try {
                 runnable.run();
             } catch (Exception | AssertionError e) {
+                Bukkit.getLogger().info("a");
                 future.completeExceptionally(e);
             }
             future.complete(null);

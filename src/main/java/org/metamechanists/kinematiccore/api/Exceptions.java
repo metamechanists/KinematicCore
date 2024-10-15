@@ -23,7 +23,6 @@ public class Exceptions {
         }
     }
 
-
     public static class ValueNotFoundException extends RuntimeException {
         public ValueNotFoundException (String key, Set<String> available) {
             super("No value found at " + key + "; available values are: " + String.join(" ", available));

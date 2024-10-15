@@ -1,5 +1,6 @@
 package org.metamechanists.kinematiccore.test.entity;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.Cow;
@@ -39,11 +40,14 @@ public class TestDoubleRegister implements BaseTest {
     public void test(World world) {
         TestUtil.runSync(() -> {
             if (KinematicEntitySchema.get(TestEntity.SCHEMA.getId()) == null) {
+                Bukkit.getLogger().info("1");
                 KinematicEntitySchema.register(TestEntity.SCHEMA);
             }
+            Bukkit.getLogger().info("2");
 
             assertThatThrownBy(() -> KinematicEntitySchema.register(TestEntity.SCHEMA))
                     .isInstanceOf(Exceptions.IdConflictException.class);
+            Bukkit.getLogger().info("3");
         });
     }
 }
