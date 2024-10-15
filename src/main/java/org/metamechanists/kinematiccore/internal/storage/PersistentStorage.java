@@ -61,6 +61,8 @@ public abstract class PersistentStorage<K extends Comparable<K>, V> {
             String type = pair.getKey();
             V value = pair.getValue();
 
+            Bukkit.getLogger().warning("loaded " + pair.getKey());
+
             loadedDataByType.computeIfAbsent(type, k -> ConcurrentHashMap.newKeySet()).add(key);
             loadedData.put(key, value);
         } catch (Exception e) {
@@ -77,6 +79,7 @@ public abstract class PersistentStorage<K extends Comparable<K>, V> {
             byte[] bytes = serialize(value);
             peristentData.put(key, bytes);
             persistentDataByType.computeIfAbsent(type, k -> ConcurrentHashMap.newKeySet()).add(key);
+            Bukkit.getLogger().warning("saved " + key);
         } catch (IllegalArgumentException e) {
             String message = errorMessage(value, "The class " + e.getClass().getSimpleName() + " cannot be serialized.");
             KinematicCore.getInstance().getLogger().severe(message);
