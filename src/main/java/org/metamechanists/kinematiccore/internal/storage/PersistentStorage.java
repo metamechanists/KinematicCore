@@ -111,16 +111,13 @@ public abstract class PersistentStorage<K extends Comparable<K>, V> {
      * Do not call on the main thread
      */
     private void commit() {
-        while (loadQueue.poll() != null) {
-            //noinspection DataFlowIssue
+        while (loadQueue.peek() != null) {
             commitLoad(loadQueue.poll());
         }
-        while (saveQueue.poll() != null) {
-            //noinspection DataFlowIssue
+        while (saveQueue.peek() != null) {
             commitSave(saveQueue.poll());
         }
-        while (deletionQueue.poll() != null) {
-            //noinspection DataFlowIssue
+        while (deletionQueue.peek() != null) {
             commitDelete(deletionQueue.poll());
         }
         db.commit();
