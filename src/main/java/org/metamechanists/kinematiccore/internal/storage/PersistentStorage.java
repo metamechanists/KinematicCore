@@ -51,7 +51,6 @@ public abstract class PersistentStorage<K extends Comparable<K>, V> {
 
     private void commitLoad(K key) {
         try {
-            Bukkit.getLogger().warning("loaded " + peristentData.keySet());
             byte[] bytes = peristentData.get(key);
             if (bytes == null) {
                 return;
@@ -62,6 +61,7 @@ public abstract class PersistentStorage<K extends Comparable<K>, V> {
             String type = pair.getKey();
             V value = pair.getValue();
 
+            Bukkit.getLogger().warning("entities " + peristentData.keySet());
             Bukkit.getLogger().warning("loaded " + pair.getKey());
 
             loadedDataByType.computeIfAbsent(type, k -> ConcurrentHashMap.newKeySet()).add(key);
