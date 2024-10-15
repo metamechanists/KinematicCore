@@ -22,7 +22,7 @@ public abstract class PersistentStorage<K extends Comparable<K>, V> {
     // 1MB max persistent because we are doing our own caching chunks, so storing a lot of
     // MapDB data in memory is effectively duplicating data
     private static final long MAX_DB_CACHE_SIZE = 1024 * 1024;
-    private static final long COMMIT_INTERVAL_TICKS = 1;
+    private static final long COMMIT_INTERVAL_TICKS = 20;
 
     private final DB db;
 
@@ -51,7 +51,6 @@ public abstract class PersistentStorage<K extends Comparable<K>, V> {
 
     private void commitLoad(K key) {
         try {
-            Bukkit.getLogger().warning("attempting to load " + key);
             byte[] bytes = peristentData.get(key);
             if (bytes == null) {
                 return;
@@ -61,8 +60,6 @@ public abstract class PersistentStorage<K extends Comparable<K>, V> {
             assert pair != null;
             String type = pair.getKey();
             V value = pair.getValue();
-
-            Bukkit.getLogger().warning("loaded " + pair.getKey());
 
             loadedDataByType.computeIfAbsent(type, k -> ConcurrentHashMap.newKeySet()).add(key);
             loadedData.put(key, value);
@@ -80,7 +77,6 @@ public abstract class PersistentStorage<K extends Comparable<K>, V> {
             byte[] bytes = serialize(value);
             peristentData.put(key, bytes);
             persistentDataByType.computeIfAbsent(type, k -> ConcurrentHashMap.newKeySet()).add(key);
-            Bukkit.getLogger().warning("saved " + key);
         } catch (IllegalArgumentException e) {
             String message = errorMessage(value, "The class " + e.getClass().getSimpleName() + " cannot be serialized.");
             KinematicCore.getInstance().getLogger().severe(message);
