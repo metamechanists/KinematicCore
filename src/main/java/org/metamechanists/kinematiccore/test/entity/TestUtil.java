@@ -64,7 +64,9 @@ public final class TestUtil {
     public static void runSync(@NotNull Runnable runnable) {
         CompletableFuture<Void> future = new CompletableFuture<>();
         Bukkit.getScheduler().runTask(KinematicCore.getInstance(), () -> {
+            Bukkit.getLogger().severe("fuck");
             try {
+                Bukkit.getLogger().severe("shit");
                 runnable.run();
             } catch (Exception | AssertionError e) {
                 Bukkit.getLogger().info("a");
