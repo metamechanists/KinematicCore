@@ -12,12 +12,13 @@ import java.util.UUID;
 
 @SuppressWarnings("unused")
 public class StateReader {
-    private UUID uuid; // Not stored - auxiliary information
+    private final UUID uuid; // Not stored - auxiliary information
     private String id;
     private int version;
     private final Map<String, Object> map = new HashMap<>();
 
     public StateReader(UUID uuid, byte[] bytes) {
+        this.uuid = uuid;
         KryoStorage.read(bytes, (kryo, input) -> {
             id = input.readString();
             version = input.readInt();
