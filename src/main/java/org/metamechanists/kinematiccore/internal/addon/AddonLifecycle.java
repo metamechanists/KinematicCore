@@ -7,7 +7,10 @@ import org.bukkit.event.server.PluginDisableEvent;
 import org.jetbrains.annotations.NotNull;
 import org.metamechanists.kinematiccore.KinematicCore;
 import org.metamechanists.kinematiccore.api.addon.KinematicAddon;
+import org.metamechanists.kinematiccore.api.entity.KinematicEntitySchema;
 import org.metamechanists.kinematiccore.internal.entity.EntityStorage;
+
+import java.util.Set;
 
 
 /*
@@ -25,14 +28,16 @@ public class AddonLifecycle implements Listener {
     public static void onAddonDisable(@NotNull PluginDisableEvent event) {
         if (event.getPlugin() instanceof KinematicAddon addon) {
             KinematicCore.getInstance().getLogger().info("Cleaning up addon " + addon.getClass().getSimpleName());
-            EntityStorage.cleanup(addon);
+            Set<String> schemas = KinematicEntitySchema.registeredSchemasByAddon(addon);
+            EntityStorage.getInstance().cleanup(schemas);
         }
     }
 
     public static void cleanup() {
         for (KinematicAddon addon : AddonStorage.getLoadedAddons()) {
             KinematicCore.getInstance().getLogger().info("Cleaning up addon " + addon.getClass().getSimpleName());
-            EntityStorage.cleanup(addon);
+            Set<String> schemas = KinematicEntitySchema.registeredSchemasByAddon(addon);
+            EntityStorage.getInstance().cleanup(schemas);
         }
     }
 }

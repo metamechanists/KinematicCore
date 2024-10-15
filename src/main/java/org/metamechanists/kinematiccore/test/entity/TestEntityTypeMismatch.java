@@ -24,12 +24,12 @@ public class TestEntityTypeMismatch implements BaseTest {
                 Cow.class
         );
 
-        public TestEntity(@NotNull Location location) {
+        private TestEntity(@NotNull Location location) {
             super(SCHEMA, () -> location.getWorld().spawn(location, Pig.class));
         }
 
         @SuppressWarnings("unused")
-        public TestEntity(@NotNull StateReader reader) {
+        private TestEntity(@NotNull StateReader reader) {
             super(reader);
         }
     }

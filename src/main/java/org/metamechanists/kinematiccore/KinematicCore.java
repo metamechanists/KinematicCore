@@ -10,6 +10,7 @@ import org.metamechanists.kinematiccore.internal.entity.EntityStorage;
 import org.metamechanists.kinematiccore.api.addon.KinematicAddon;
 import org.metamechanists.kinematiccore.internal.entity.EntityTicker;
 import org.metamechanists.kinematiccore.internal.command.KinematicCommand;
+import org.metamechanists.kinematiccore.internal.storage.EntityStorageListener;
 
 
 public class KinematicCore extends JavaPlugin implements KinematicAddon {
@@ -22,6 +23,7 @@ public class KinematicCore extends JavaPlugin implements KinematicAddon {
         AddonStorage.init();
         AddonLifecycle.init();
         EntityStorage.init();
+        EntityStorageListener.init();
         EntityTicker.init();
         EntityListener.init();
         PaperCommandManager manager = new PaperCommandManager(this);
@@ -32,6 +34,11 @@ public class KinematicCore extends JavaPlugin implements KinematicAddon {
     @Override
     public void onDisable() {
         AddonLifecycle.cleanup();
-        EntityStorage.close();
+        EntityStorage.getInstance().close();
+    }
+
+    @Override
+    public String name() {
+        return "KinematicCore";
     }
 }

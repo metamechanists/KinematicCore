@@ -14,7 +14,7 @@ import static org.assertj.core.api.Assertions.*;
 
 
 public class TestMissingConstructor implements BaseTest {
-    private static class TestEntity extends KinematicEntity<Pig, KinematicEntitySchema> {
+    private static final class TestEntity extends KinematicEntity<Pig, KinematicEntitySchema> {
         private static final KinematicEntitySchema SCHEMA = new KinematicEntitySchema(
                 "test_missing_constructor",
                 KinematicCore.class,
@@ -22,7 +22,7 @@ public class TestMissingConstructor implements BaseTest {
                 Pig.class
         );
 
-        public TestEntity(@NotNull Location location) {
+        private TestEntity(@NotNull Location location) {
             super(SCHEMA, () -> location.getWorld().spawn(location, Pig.class));
         }
     }

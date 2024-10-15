@@ -8,8 +8,6 @@ import org.jetbrains.annotations.NotNull;
 import org.metamechanists.kinematiccore.KinematicCore;
 import org.metamechanists.kinematiccore.api.entity.KinematicEntity;
 import org.metamechanists.kinematiccore.api.entity.KinematicEntitySchema;
-import org.metamechanists.kinematiccore.internal.entity.EntitySchemas;
-import org.metamechanists.kinematiccore.internal.entity.EntityStorage;
 import org.metamechanists.kinematiccore.api.state.StateReader;
 import org.metamechanists.kinematiccore.api.state.StateWriter;
 import org.metamechanists.kinematiccore.test.BaseTest;
@@ -36,7 +34,7 @@ public class TestDiskFieldStorageSuccess implements BaseTest {
                 Pig.class
         );
 
-        public TestEntity(@NotNull Location location) {
+        private TestEntity(@NotNull Location location) {
             super(SCHEMA, () -> location.getWorld().spawn(location, Pig.class));
             this.integer = 5;
             this.list = new ArrayList<>();
@@ -44,7 +42,7 @@ public class TestDiskFieldStorageSuccess implements BaseTest {
         }
 
         @SuppressWarnings({"unused", "DataFlowIssue"})
-        public TestEntity(@NotNull StateReader reader) {
+        private TestEntity(@NotNull StateReader reader) {
             super(reader);
             integer = reader.get("integer", Integer.class);
             list = reader.get("list", new ArrayList<>());
@@ -72,7 +70,7 @@ public class TestDiskFieldStorageSuccess implements BaseTest {
         TestUtil.runSync(() -> uuid.set(new TestEntity(location).uuid()));
 
         TestUtil.runSync(() -> {
-            TestEntity testEntity = (TestEntity) EntityStorage.kinematicEntity(uuid.get());
+            TestEntity testEntity = (TestEntity) KinematicEntity.get(uuid.get());
             assertThat(testEntity)
                     .isNotNull();
             assertThat(testEntity.getInteger())
@@ -86,15 +84,15 @@ public class TestDiskFieldStorageSuccess implements BaseTest {
         TestUtil.unloadChunk(location);
 
         TestUtil.runSync(() -> {
-            assertThat(EntityStorage.kinematicEntity(uuid.get()))
+            assertThat(KinematicEntity.get(uuid.get()))
                     .isNull();
         });
 
         TestUtil.loadChunk(location);
 
         TestUtil.runSync(() -> {
-            TestEntity testEntity = (TestEntity) EntityStorage.kinematicEntity(uuid.get());
-            assertThat(EntitySchemas.schema(TestEntity.SCHEMA.getId()))
+            TestEntity testEntity = (TestEntity) KinematicEntity.get(uuid.get());
+            assertThat(KinematicEntitySchema.get(TestEntity.SCHEMA.getId()))
                     .isEqualTo(TestEntity.SCHEMA);
             assertThat(testEntity)
                     .isNotNull();
@@ -108,11 +106,11 @@ public class TestDiskFieldStorageSuccess implements BaseTest {
 
         TestUtil.runSync(() -> {
             //noinspection DataFlowIssue
-            EntityStorage.kinematicEntity(uuid.get()).entity().remove();
+            KinematicEntity.get(uuid.get()).entity().remove();
         });
 
         TestUtil.runSync(() -> {
-            assertThat(EntityStorage.kinematicEntity(uuid.get()))
+            assertThat(KinematicEntity.get(uuid.get()))
                     .isNull();
         });
 

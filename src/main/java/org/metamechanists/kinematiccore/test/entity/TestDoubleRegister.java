@@ -6,7 +6,6 @@ import org.bukkit.entity.Cow;
 import org.bukkit.entity.Pig;
 import org.jetbrains.annotations.NotNull;
 import org.metamechanists.kinematiccore.KinematicCore;
-import org.metamechanists.kinematiccore.internal.entity.EntitySchemas;
 import org.metamechanists.kinematiccore.api.Exceptions;
 import org.metamechanists.kinematiccore.api.entity.KinematicEntity;
 import org.metamechanists.kinematiccore.api.entity.KinematicEntitySchema;
@@ -26,12 +25,12 @@ public class TestDoubleRegister implements BaseTest {
         );
 
         @SuppressWarnings("unused")
-        public TestEntity(@NotNull Location location) {
+        private TestEntity(@NotNull Location location) {
             super(SCHEMA, () -> location.getWorld().spawn(location, Pig.class));
         }
 
         @SuppressWarnings("unused")
-        public TestEntity(@NotNull StateReader reader) {
+        private TestEntity(@NotNull StateReader reader) {
             super(reader);
         }
     }
@@ -39,11 +38,11 @@ public class TestDoubleRegister implements BaseTest {
     @Override
     public void test(World world) {
         TestUtil.runSync(() -> {
-            if (EntitySchemas.schema(TestEntity.SCHEMA.getId()) == null) {
-                EntitySchemas.register(TestEntity.SCHEMA);
+            if (KinematicEntitySchema.get(TestEntity.SCHEMA.getId()) == null) {
+                KinematicEntitySchema.register(TestEntity.SCHEMA);
             }
 
-            assertThatThrownBy(() -> EntitySchemas.register(TestEntity.SCHEMA))
+            assertThatThrownBy(() -> KinematicEntitySchema.register(TestEntity.SCHEMA))
                     .isInstanceOf(Exceptions.IdConflictException.class);
         });
     }

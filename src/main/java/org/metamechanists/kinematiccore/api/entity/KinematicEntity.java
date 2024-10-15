@@ -7,12 +7,13 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.metamechanists.kinematiccore.api.Exceptions;
-import org.metamechanists.kinematiccore.internal.entity.EntitySchemas;
 import org.metamechanists.kinematiccore.internal.entity.EntityStorage;
 import org.metamechanists.kinematiccore.api.state.StateReader;
 import org.metamechanists.kinematiccore.api.state.StateWriter;
 
 import java.lang.ref.WeakReference;
+import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.function.Supplier;
 
@@ -41,7 +42,7 @@ public abstract class KinematicEntity<T extends Entity, S extends KinematicEntit
         this.uuid = entity.getUniqueId();
 
         //noinspection ThisEscapedInObjectConstruction
-        EntityStorage.add(this);
+        EntityStorage.getInstance().create(this);
     }
 
     protected KinematicEntity(@NotNull StateReader reader) {
@@ -76,10 +77,6 @@ public abstract class KinematicEntity<T extends Entity, S extends KinematicEntit
         return uuid;
     }
 
-    public S schema() {
-        return (S) EntitySchemas.schema(schema);
-    }
-
     public final void tick(long tick) {
         T entity = entity();
         if (entity != null) {
@@ -93,7 +90,24 @@ public abstract class KinematicEntity<T extends Entity, S extends KinematicEntit
     @SuppressWarnings("unused")
     public void onRightClick(Player player) {}
 
-    public static KinematicEntity<?, ?> get(UUID uuid) {
-        return EntityStorage.kinematicEntity(uuid);
+    public S schema() {
+        //noinspection unchecked
+        return (S) KinematicEntitySchema.get(schema);
+    }
+
+    public static @Nullable KinematicEntity<?, ?> get(UUID uuid) {
+        return EntityStorage.getInstance().get(uuid);
+    }
+
+    public static @NotNull Map<String, Set<UUID>> loaded() {
+        return EntityStorage.getInstance().loaded();
+    }
+
+    public static @Nullable Set<UUID> loadedByType(@NotNull String type) {
+        return EntityStorage.getInstance().loadedByType(type);
+    }
+
+    public static @Nullable Set<UUID> loadedByType(@NotNull KinematicEntitySchema schema) {
+        return loadedByType(schema.getId());
     }
 }

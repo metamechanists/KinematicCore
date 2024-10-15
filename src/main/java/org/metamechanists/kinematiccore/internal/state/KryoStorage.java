@@ -65,11 +65,6 @@ public final class KryoStorage {
         writeKryo.setRegistrationRequired(false);
     }
 
-    public static void register(Class<?> clazz) {
-        readKryo.register(clazz);
-        writeKryo.register(clazz);
-    }
-
     public static void registerDefaultSerializer(Class<?> clazz, Serializer<?> serializer) {
         readKryo.addDefaultSerializer(clazz, serializer);
         writeKryo.addDefaultSerializer(clazz, serializer);
