@@ -51,6 +51,7 @@ public abstract class PersistentStorage<K extends Comparable<K>, V> {
 
     private void commitLoad(K key) {
         try {
+            Bukkit.getLogger().warning("loaded " + peristentData.keySet());
             byte[] bytes = peristentData.get(key);
             if (bytes == null) {
                 return;
