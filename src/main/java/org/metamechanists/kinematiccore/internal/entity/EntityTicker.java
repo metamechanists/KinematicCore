@@ -46,11 +46,17 @@ public class EntityTicker implements Runnable {
         errorTrackers.forEach((k, v) -> v.tick());
         errorTrackers.entrySet()
                 .removeIf(pair -> pair.getValue().shouldRemoveTracker());
-        //noinspection SimplifyForEach
         errorTrackers.entrySet()
                 .stream()
                 .filter(pair -> pair.getValue().shouldDeleteEntity())
                 .forEach(pair -> {
+                    KinematicCore.getInstance().getLogger().severe("Removed the entity " + pair.getKey()
+                            + " because it threw " + EntityErrorTracker.MAX_ERRORS
+                            + " errors in under " + EntityErrorTracker.TRACKER_TIME + " ticks");
+                    KinematicEntity<?, ?> kinematicEntity = KinematicEntity.get(pair.getKey());
+                    if (kinematicEntity != null) {
+                        EntityStorage.getInstance().delete(kinematicEntity);
+                    }
                     Entity entity = Bukkit.getEntity(pair.getKey());
                     assert entity != null;
                     entity.remove();
