@@ -22,7 +22,8 @@ import java.util.stream.Collectors;
 public class KinematicEntitySchema {
     private static final Map<String, KinematicEntitySchema> schemas = new ConcurrentHashMap<>();
 
-    private final String idAfterColon;
+    @Getter
+    private final String idWithoutNamespace;
     private KinematicAddon addon;
     @Getter
     private final EntityType entityType;
@@ -31,7 +32,7 @@ public class KinematicEntitySchema {
     private final Constructor<? extends KinematicEntity<?, ?>> constructor;
 
     public KinematicEntitySchema(@NotNull String id, @NotNull EntityType entityType, @NotNull Class<? extends KinematicEntity<?, ?>> kinematicClass) {
-        this.idAfterColon = id;
+        this.idWithoutNamespace = id;
         this.entityType = entityType;
         this.kinematicClass = kinematicClass;
 
@@ -46,9 +47,9 @@ public class KinematicEntitySchema {
 
     public @NotNull String id() {
         if (addon == null) {
-            throw new Exceptions.NotRegisteredException(idAfterColon);
+            throw new Exceptions.NotRegisteredException(idWithoutNamespace);
         }
-        return addon.name() + ":" + idAfterColon;
+        return addon.name() + ":" + idWithoutNamespace;
     }
 
     @ApiStatus.Internal
@@ -57,7 +58,7 @@ public class KinematicEntitySchema {
     }
 
     public void register(@NotNull KinematicAddon addon) {
-        String newId = addon.name() + ":" + idAfterColon;
+        String newId = addon.name() + ":" + idWithoutNamespace;
         if (schemas.containsKey(newId)) {
             throw new Exceptions.IdConflictException(newId);
         }
