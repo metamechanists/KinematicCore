@@ -7,6 +7,7 @@ import org.metamechanists.kinematiccore.test.entity.TestDiskFieldStorageSuccess;
 import org.metamechanists.kinematiccore.test.entity.TestDiskStorageSuccess;
 import org.metamechanists.kinematiccore.test.entity.TestDoubleRegister;
 import org.metamechanists.kinematiccore.test.entity.TestEntityTypeMismatch;
+import org.metamechanists.kinematiccore.test.entity.TestMassiveDiskStorageSuccess;
 import org.metamechanists.kinematiccore.test.entity.TestMemoryStorageSuccess;
 import org.metamechanists.kinematiccore.test.entity.TestMissingConstructor;
 
@@ -21,7 +22,8 @@ public final class MainTester {
             new TestMissingConstructor(),
             new TestMemoryStorageSuccess(),
             new TestDiskStorageSuccess(),
-            new TestDiskFieldStorageSuccess()
+            new TestDiskFieldStorageSuccess(),
+            new TestMassiveDiskStorageSuccess()
     );
     private final World world;
 
