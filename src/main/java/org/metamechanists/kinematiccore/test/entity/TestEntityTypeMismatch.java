@@ -20,7 +20,7 @@ public class TestEntityTypeMismatch implements BaseTest {
     private static final class TestEntity extends KinematicEntity<Pig, KinematicEntitySchema> {
         private static final KinematicEntitySchema SCHEMA = new KinematicEntitySchema(
                 "test_entity_type_mismatch",
-                EntityType.PIG,
+                EntityType.COW,
                 TestEntity.class
         );
 
