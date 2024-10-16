@@ -1,8 +1,11 @@
 package org.metamechanists.kinematiccore.api.entity;
 
 import lombok.Getter;
-import org.bukkit.entity.Entity;
+import lombok.experimental.Accessors;
+import org.bukkit.entity.EntityType;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.metamechanists.kinematiccore.api.Exceptions;
 import org.metamechanists.kinematiccore.api.addon.KinematicAddon;
 import org.metamechanists.kinematiccore.api.state.StateReader;
@@ -14,27 +17,23 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 
-@Getter
+@Accessors(fluent = true)
 @SuppressWarnings("unused")
 public class KinematicEntitySchema {
     private static final Map<String, KinematicEntitySchema> schemas = new ConcurrentHashMap<>();
 
-    private final String id;
-    private final String addonName;
+    private final String idAfterColon;
+    private KinematicAddon addon;
+    @Getter
+    private final EntityType entityType;
+    @Getter
     private final Class<? extends KinematicEntity<?, ?>> kinematicClass;
-    private final Class<? extends Entity> entityClass;
     private final Constructor<? extends KinematicEntity<?, ?>> constructor;
 
-    public KinematicEntitySchema(
-            @NotNull String id,
-            @NotNull Class<? extends KinematicAddon> addonClass,
-            @NotNull Class<? extends KinematicEntity<?, ?>> kinematicClass,
-            @NotNull Class<? extends Entity> entityClass
-    ) {
-        this.addonName = addonClass.getSimpleName().toLowerCase();
-        this.id = addonName + ":" + id.toLowerCase();
+    public KinematicEntitySchema(@NotNull String id, @NotNull EntityType entityType, @NotNull Class<? extends KinematicEntity<?, ?>> kinematicClass) {
+        this.idAfterColon = id;
+        this.entityType = entityType;
         this.kinematicClass = kinematicClass;
-        this.entityClass = entityClass;
 
         try {
             constructor = kinematicClass.getConstructor(StateReader.class);
@@ -43,24 +42,39 @@ public class KinematicEntitySchema {
         }
 
         constructor.setAccessible(true);
-
-        register(this);
     }
 
-    @SuppressWarnings("unused")
-    public void unregister() {
-        schemas.remove(id);
+    public @NotNull String id() {
+        if (addon == null) {
+            throw new Exceptions.NotRegisteredException(idAfterColon);
+        }
+        return addon.name() + ":" + idAfterColon;
     }
 
-    public static void register(@NotNull KinematicEntitySchema schema) {
-        if (schemas.containsKey(schema.id)) {
-            throw new Exceptions.IdConflictException(schema.id);
+    @ApiStatus.Internal
+    public @NotNull Constructor<? extends KinematicEntity<?, ?>> constructor() {
+        return constructor;
+    }
+
+    public void register(@NotNull KinematicAddon addon) {
+        String newId = addon.name() + ":" + idAfterColon;
+        if (schemas.containsKey(newId)) {
+            throw new Exceptions.IdConflictException(newId);
         }
 
-        schemas.put(schema.id, schema);
+        this.addon = addon;
+        schemas.put(newId, this);
     }
 
-    public static KinematicEntitySchema get(@NotNull String id) {
+    public void unregister() {
+        schemas.remove(id());
+    }
+
+    public boolean isRegistered(@NotNull KinematicEntitySchema schema) {
+        return isRegistered(id());
+    }
+
+    public static @Nullable KinematicEntitySchema get(@NotNull String id) {
         return schemas.get(id);
     }
 
@@ -68,19 +82,15 @@ public class KinematicEntitySchema {
         return get(id) != null;
     }
 
-    public static boolean isRegistered(@NotNull KinematicEntitySchema schema) {
-        return get(schema.id) != null;
-    }
-
     public static @NotNull Set<String> registeredSchemas() {
         return schemas.keySet();
     }
 
-    public static @NotNull Set<String> registeredSchemasByAddon(@NotNull KinematicAddon addonClass) {
-        String addon = addonClass.getClass().getSimpleName().toLowerCase();
+    public static @NotNull Set<String> registeredSchemasByAddon(@NotNull KinematicAddon addon) {
+        //noinspection ObjectEquality
         return schemas.entrySet()
                 .stream()
-                .filter(schema -> schema.getValue().addonName.equals(addon))
+                .filter(schema -> schema.getValue().addon == addon)
                 .map(Map.Entry::getKey)
                 .collect(Collectors.toSet());
     }

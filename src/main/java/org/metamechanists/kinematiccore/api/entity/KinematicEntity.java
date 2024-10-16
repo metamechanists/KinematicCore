@@ -20,23 +20,17 @@ import java.util.function.Supplier;
 
 @SuppressWarnings({"WeakerAccess", "unused"})
 public abstract class KinematicEntity<T extends Entity, S extends KinematicEntitySchema> {
-    private final String schema;
+    private final String id;
     private final UUID uuid;
     private transient WeakReference<T> entityRef;
 
     protected KinematicEntity(@NotNull S schema, @NotNull Supplier<T> spawnEntity) {
-        this.schema = schema.getId();
+        this.id = schema.id();
         T entity = spawnEntity.get();
 
-        // Check the spawned entity is the correct type (sadly can't be done at compile-time)
-        Class<?> type = entity.getType().getEntityClass();
-        if (type != null) {
-            // Not sure why the type would be null, but just in case
-            String provided = type.getName();
-            String expected = schema().getEntityClass().getName();
-            if (!provided.equals(expected)) {
-                throw new Exceptions.EntityTypeMismatchException(schema.getId(), provided, expected);
-            }
+        // Check the spawned entity is the correct type (sadly can't be done at compile-time because... Java)
+        if (entity.getType() == schema.entityType()) {
+            throw new Exceptions.EntityTypeMismatchException(id, entity.getType(), schema.entityType());
         }
 
         this.uuid = entity.getUniqueId();
@@ -46,7 +40,7 @@ public abstract class KinematicEntity<T extends Entity, S extends KinematicEntit
     }
 
     protected KinematicEntity(@NotNull StateReader reader) {
-        this.schema = reader.id();
+        this.id = reader.id();
         this.uuid = reader.uuid();
     }
 
@@ -63,9 +57,12 @@ public abstract class KinematicEntity<T extends Entity, S extends KinematicEntit
 
         // Fall back to getting entity from world, and if found, update the weakref
         Entity entityFromWorld = Bukkit.getEntity(uuid);
-        if (schema().getEntityClass().isInstance(entityFromWorld)) {
+        if (entityFromWorld != null && schema().entityType() == entityFromWorld.getType()) {
+            Class<?> entityClass = schema().entityType().getEntityClass();
+            assert entityClass != null;
+            assert entityClass.isInstance(entityFromWorld);
             //noinspection unchecked
-            T castEntity = (T) schema().getEntityClass().cast(entityFromWorld);
+            T castEntity = (T) entityClass.cast(entityFromWorld);
             entityRef = new WeakReference<>(castEntity);
             return castEntity;
         }
@@ -84,15 +81,18 @@ public abstract class KinematicEntity<T extends Entity, S extends KinematicEntit
         }
     }
 
-    @SuppressWarnings("unused")
     protected void tick(@NotNull T entity, long tick) {}
 
-    @SuppressWarnings("unused")
     public void onRightClick(Player player) {}
 
+    /*
+     * Not marked as nullable because in almost all cases we can assume this to be not null
+     */
     public S schema() {
+        KinematicEntitySchema schema = KinematicEntitySchema.get(id);
+        assert schema != null;
         //noinspection unchecked
-        return (S) KinematicEntitySchema.get(schema);
+        return (S) schema;
     }
 
     public static @Nullable KinematicEntity<?, ?> get(UUID uuid) {
@@ -103,11 +103,11 @@ public abstract class KinematicEntity<T extends Entity, S extends KinematicEntit
         return EntityStorage.getInstance().loaded();
     }
 
-    public static @Nullable Set<UUID> loadedByType(@NotNull String type) {
-        return EntityStorage.getInstance().loadedByType(type);
+    public static @Nullable Set<UUID> loadedById(@NotNull String id) {
+        return EntityStorage.getInstance().loadedById(id);
     }
 
-    public static @Nullable Set<UUID> loadedByType(@NotNull KinematicEntitySchema schema) {
-        return loadedByType(schema.getId());
+    public static @Nullable Set<UUID> loadedById(@NotNull KinematicEntitySchema schema) {
+        return loadedById(schema.id());
     }
 }

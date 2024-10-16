@@ -2,6 +2,7 @@ package org.metamechanists.kinematiccore.test.entity;
 
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Pig;
 import org.jetbrains.annotations.NotNull;
 import org.metamechanists.kinematiccore.KinematicCore;
@@ -17,12 +18,11 @@ import static org.assertj.core.api.Assertions.*;
 
 
 public class TestDiskStorageSuccess implements BaseTest {
-    private static class TestEntity extends KinematicEntity<Pig, KinematicEntitySchema> {
+    private static final class TestEntity extends KinematicEntity<Pig, KinematicEntitySchema> {
         private static final KinematicEntitySchema SCHEMA = new KinematicEntitySchema(
                 "test_disk_storage_success",
-                KinematicCore.class,
-                TestEntity.class,
-                Pig.class
+                EntityType.PIG,
+                TestEntity.class
         );
 
         private TestEntity(@NotNull Location location) {
@@ -37,6 +37,8 @@ public class TestDiskStorageSuccess implements BaseTest {
 
     @Override
     public void test(World world) {
+        TestEntity.SCHEMA.register(KinematicCore.getInstance());
+
         Location location = TestUtil.findUnloadedChunk(world);
 
         TestUtil.loadChunk(location);
@@ -49,18 +51,18 @@ public class TestDiskStorageSuccess implements BaseTest {
         TestUtil.runSync(() -> {
             assertThat(KinematicEntity.get(uuid.get()))
                     .isNull();
-            assertThat(KinematicEntitySchema.get(TestEntity.SCHEMA.getId()))
+            assertThat(KinematicEntitySchema.get(TestEntity.SCHEMA.id()))
                     .isEqualTo(TestEntity.SCHEMA);
-            assertThat(KinematicEntity.loadedByType(TestEntity.SCHEMA))
+            assertThat(KinematicEntity.loadedById(TestEntity.SCHEMA))
                     .isEmpty();
         });
 
         TestUtil.loadChunk(location);
 
         TestUtil.runSync(() -> {
-            assertThat(KinematicEntitySchema.get(TestEntity.SCHEMA.getId()))
+            assertThat(KinematicEntitySchema.get(TestEntity.SCHEMA.id()))
                     .isEqualTo(TestEntity.SCHEMA);
-            assertThat(KinematicEntity.loadedByType(TestEntity.SCHEMA))
+            assertThat(KinematicEntity.loadedById(TestEntity.SCHEMA))
                     .hasSize(1)
                     .contains(uuid.get());
         });
@@ -77,9 +79,9 @@ public class TestDiskStorageSuccess implements BaseTest {
         TestUtil.runSync(() -> {
             assertThat(KinematicEntity.get(uuid.get()))
                     .isNull();
-            assertThat(KinematicEntitySchema.get(TestEntity.SCHEMA.getId()))
+            assertThat(KinematicEntitySchema.get(TestEntity.SCHEMA.id()))
                     .isEqualTo(TestEntity.SCHEMA);
-            assertThat(KinematicEntity.loadedByType(TestEntity.SCHEMA))
+            assertThat(KinematicEntity.loadedById(TestEntity.SCHEMA))
                     .isEmpty();
         });
 

@@ -18,7 +18,7 @@ public class EntityTicker implements Runnable {
 
     private static void handleError(UUID uuid, @NotNull KinematicEntity<?, ?> kinematicEntity, Exception e) {
         if (kinematicEntity.schema() != null) {
-            KinematicCore.getInstance().getLogger().severe("Failed to tick " + kinematicEntity.schema().getId());
+            KinematicCore.getInstance().getLogger().severe("Failed to tick " + kinematicEntity.schema().id());
         } else {
             KinematicCore.getInstance().getLogger().severe("Failed to tick " + uuid);
         }
@@ -30,8 +30,8 @@ public class EntityTicker implements Runnable {
     @Override
     public void run() {
         long tick = Bukkit.getCurrentTick();
-        for (Map.Entry<String, Set<UUID>> kinematicEntityType : KinematicEntity.loaded().entrySet()) {
-            for (UUID uuid : kinematicEntityType.getValue()) {
+        for (Map.Entry<String, Set<UUID>> kinematicEntityId : KinematicEntity.loaded().entrySet()) {
+            for (UUID uuid : kinematicEntityId.getValue()) {
                 KinematicEntity<?, ?> kinematicEntity = KinematicEntity.get(uuid);
 
                 try {

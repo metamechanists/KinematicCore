@@ -2,6 +2,7 @@ package org.metamechanists.kinematiccore.test.entity;
 
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Pig;
 import org.jetbrains.annotations.NotNull;
 import org.metamechanists.kinematiccore.KinematicCore;
@@ -17,9 +18,8 @@ public class TestMissingConstructor implements BaseTest {
     private static final class TestEntity extends KinematicEntity<Pig, KinematicEntitySchema> {
         private static final KinematicEntitySchema SCHEMA = new KinematicEntitySchema(
                 "test_missing_constructor",
-                KinematicCore.class,
-                TestEntity.class,
-                Pig.class
+                EntityType.PIG,
+                TestEntity.class
         );
 
         private TestEntity(@NotNull Location location) {
@@ -30,12 +30,12 @@ public class TestMissingConstructor implements BaseTest {
     @SuppressWarnings({"ResultOfObjectAllocationIgnored", "CodeBlock2Expr"})
     @Override
     public void test(World world) {
+        TestEntity.SCHEMA.register(KinematicCore.getInstance());
         TestUtil.runSync(() -> {
             assertThatThrownBy(() -> new KinematicEntitySchema(
                     "test_missing_constructor",
-                    KinematicCore.class,
-                    TestEntity.class,
-                    Pig.class
+                    EntityType.PIG,
+                    TestEntity.class
             )).isInstanceOf(Exceptions.MissingConstructorException.class);
         });
     }

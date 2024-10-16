@@ -33,18 +33,18 @@ public abstract class PersistentStorage<K extends Comparable<K>, V> {
     private final Set<K> scheduledForDeletion = new ConcurrentSkipListSet<>();
 
     private final HTreeMap<K, byte[]> peristentData;
-    private final HTreeMap<String, Set<K>> persistentDataByType;
+    private final HTreeMap<String, Set<K>> persistentDataById;
 
     private final Map<K, V> loadedData = new ConcurrentHashMap<>();
-    private final Map<String, Set<K>> loadedDataByType = new ConcurrentHashMap<>();
+    private final Map<String, Set<K>> loadedDataById = new ConcurrentHashMap<>();
 
     private String errorMessage(V value, String message) {
         String errorMessage = message;
         K key = key(value);
-        String type = type(value);
+        String id = id(value);
         errorMessage += " Key: " + key + ".";
-        if (type != null) {
-            errorMessage += " Type " + type + ".";
+        if (id != null) {
+            errorMessage += " ID: " + id + ".";
         }
         return errorMessage;
     }
@@ -58,10 +58,10 @@ public abstract class PersistentStorage<K extends Comparable<K>, V> {
 
             Map.Entry<String, V> pair = deserialize(key, bytes);
             assert pair != null;
-            String type = pair.getKey();
+            String id = pair.getKey();
             V value = pair.getValue();
 
-            loadedDataByType.computeIfAbsent(type, k -> ConcurrentHashMap.newKeySet()).add(key);
+            loadedDataById.computeIfAbsent(id, k -> ConcurrentHashMap.newKeySet()).add(key);
             loadedData.put(key, value);
         } catch (Exception e) {
             KinematicCore.getInstance().getLogger().severe("Error while loading " + key);
@@ -72,11 +72,11 @@ public abstract class PersistentStorage<K extends Comparable<K>, V> {
     private void commitSave(V value) {
         try {
             K key = key(value);
-            String type = type(value);
-            assert type != null;
+            String id = id(value);
+            assert id != null;
             byte[] bytes = serialize(value);
             peristentData.put(key, bytes);
-            persistentDataByType.computeIfAbsent(type, k -> ConcurrentHashMap.newKeySet()).add(key);
+            persistentDataById.computeIfAbsent(id, k -> ConcurrentHashMap.newKeySet()).add(key);
         } catch (IllegalArgumentException e) {
             String message = errorMessage(value, "The class " + e.getClass().getSimpleName() + " cannot be serialized.");
             KinematicCore.getInstance().getLogger().severe(message);
@@ -92,10 +92,10 @@ public abstract class PersistentStorage<K extends Comparable<K>, V> {
         try {
             K key = key(value);
             loadedData.remove(key);
-            loadedDataByType.computeIfAbsent(type(value), k -> ConcurrentHashMap.newKeySet())
+            loadedDataById.computeIfAbsent(id(value), k -> ConcurrentHashMap.newKeySet())
                     .remove(key);
             peristentData.remove(key);
-            persistentDataByType.computeIfAbsent(type(value), k -> ConcurrentHashMap.newKeySet())
+            persistentDataById.computeIfAbsent(id(value), k -> ConcurrentHashMap.newKeySet())
                     .remove(key);
         } catch (Exception e) {
             String message = errorMessage(value,"Error while deleting.");
@@ -138,7 +138,7 @@ public abstract class PersistentStorage<K extends Comparable<K>, V> {
                 .createOrOpen();
 
         //noinspection unchecked
-        persistentDataByType = db.hashMap("dataByType ", Serializer.STRING, Serializer.JAVA)
+        persistentDataById = db.hashMap("dataByType ", Serializer.STRING, Serializer.JAVA)
                 .expireStoreSize(MAX_DB_CACHE_SIZE)
                 .createOrOpen();
 
@@ -152,7 +152,7 @@ public abstract class PersistentStorage<K extends Comparable<K>, V> {
      * the plugin providing the entity was deleted. The entity no longer has a schema
      * and thus also has no type.
      */
-    protected abstract @Nullable String type(@NotNull V value);
+    protected abstract @Nullable String id(@NotNull V value);
 
     protected abstract @Nullable Map.Entry<String, V> deserialize(K key, byte @NotNull[] bytes);
 
@@ -169,11 +169,11 @@ public abstract class PersistentStorage<K extends Comparable<K>, V> {
     /*
      * Unloads all data from a specific addon on the main thread.
      */
-    public void cleanup(@NotNull Set<String> typesToCleanup) {
-        for (String type : typesToCleanup) {
-            Set<K> keys = loadedByType(type);
+    public void cleanup(@NotNull Set<String> idsToCleanup) {
+        for (String id : idsToCleanup) {
+            Set<K> keys = loadedById(id);
             if (keys == null) {
-                KinematicCore.getInstance().getLogger().warning("Failed to save data of type " + type);
+                KinematicCore.getInstance().getLogger().warning("Failed to save data of type " + id);
                 continue;
             }
 
@@ -226,7 +226,7 @@ public abstract class PersistentStorage<K extends Comparable<K>, V> {
      * Does not save the data to disk.
      */
     public void unload(@NotNull V value) {
-        loadedDataByType.get(type(value)).remove(key(value));
+        loadedDataById.get(id(value)).remove(key(value));
         loadedData.remove(key(value));
     }
 
@@ -234,7 +234,7 @@ public abstract class PersistentStorage<K extends Comparable<K>, V> {
      * Adds a completely new piece of data.
      */
     public void create(@NotNull V value) {
-        Set<K> keys = loadedDataByType.computeIfAbsent(type(value), k -> ConcurrentHashMap.newKeySet());
+        Set<K> keys = loadedDataById.computeIfAbsent(id(value), k -> ConcurrentHashMap.newKeySet());
         keys.add(key(value));
         loadedData.put(key(value), value);
     }
@@ -244,10 +244,10 @@ public abstract class PersistentStorage<K extends Comparable<K>, V> {
     }
 
     public @NotNull Map<String, Set<K>> loaded() {
-        return loadedDataByType;
+        return loadedDataById;
     }
 
-    public @Nullable Set<K> loadedByType(@NotNull String type) {
-        return loadedDataByType.get(type);
+    public @Nullable Set<K> loadedById(@NotNull String id) {
+        return loadedDataById.get(id);
     }
 }

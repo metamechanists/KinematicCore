@@ -1,9 +1,8 @@
 package org.metamechanists.kinematiccore.test.entity;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.entity.Cow;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Pig;
 import org.jetbrains.annotations.NotNull;
 import org.metamechanists.kinematiccore.KinematicCore;
@@ -17,12 +16,11 @@ import static org.assertj.core.api.Assertions.*;
 
 
 public class TestDoubleRegister implements BaseTest {
-    private static class TestEntity extends KinematicEntity<Pig, KinematicEntitySchema> {
+    private static final class TestEntity extends KinematicEntity<Pig, KinematicEntitySchema> {
         private static final KinematicEntitySchema SCHEMA = new KinematicEntitySchema(
                 "test_double_register",
-                KinematicCore.class,
-                TestEntity.class,
-                Cow.class
+                EntityType.COW,
+                TestEntity.class
         );
 
         @SuppressWarnings("unused")
@@ -38,18 +36,15 @@ public class TestDoubleRegister implements BaseTest {
 
     @Override
     public void test(World world) {
-        Bukkit.getLogger().info("fuck this");
-        TestUtil.runSync(() -> {
-            Bukkit.getLogger().info("0");
-            if (KinematicEntitySchema.get(TestEntity.SCHEMA.getId()) == null) {
-                Bukkit.getLogger().info("1");
-                KinematicEntitySchema.register(TestEntity.SCHEMA);
-            }
-            Bukkit.getLogger().info("2");
+        TestDoubleRegister.TestEntity.SCHEMA.register(KinematicCore.getInstance());
 
-            assertThatThrownBy(() -> KinematicEntitySchema.register(TestEntity.SCHEMA))
+        TestUtil.runSync(() -> {
+            if (KinematicEntitySchema.get(TestEntity.SCHEMA.id()) == null) {
+                TestEntity.SCHEMA.register(KinematicCore.getInstance());
+            }
+
+            assertThatThrownBy(() -> TestEntity.SCHEMA.register(KinematicCore.getInstance()))
                     .isInstanceOf(Exceptions.IdConflictException.class);
-            Bukkit.getLogger().info("3");
         });
     }
 }

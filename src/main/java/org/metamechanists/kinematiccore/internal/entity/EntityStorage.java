@@ -35,8 +35,8 @@ public final class EntityStorage extends PersistentStorage<UUID, KinematicEntity
     }
 
     @Override
-    protected @Nullable String type(@NotNull KinematicEntity<?, ?> kinematicEntity) {
-        return kinematicEntity.schema().getId();
+    protected @NotNull String id(@NotNull KinematicEntity<?, ?> kinematicEntity) {
+        return kinematicEntity.schema().id();
     }
 
     @Override
@@ -45,16 +45,16 @@ public final class EntityStorage extends PersistentStorage<UUID, KinematicEntity
 
         KinematicEntitySchema schema = KinematicEntitySchema.get(reader.id());
         if (schema == null) {
-            KinematicCore.getInstance().getLogger().warning("Failed to load entity of type " + reader.id() + " (schema not found)");
+            KinematicCore.getInstance().getLogger().warning("Failed to load entity with ID " + reader.id() + " (schema not found)");
             KinematicCore.getInstance().getLogger().warning(KinematicEntitySchema.registeredSchemas().toString());
             return null;
         }
 
         try {
-            return new AbstractMap.SimpleEntry<>(schema.getId(), schema.getConstructor().newInstance(reader));
+            return new AbstractMap.SimpleEntry<>(schema.id(), schema.constructor().newInstance(reader));
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
                  IllegalArgumentException e) {
-            KinematicCore.getInstance().getLogger().severe("Error while loading entity of type " + reader.id());
+            KinematicCore.getInstance().getLogger().severe("Error while loading entity with ID " + reader.id());
             e.printStackTrace();
             return null;
         }
@@ -62,7 +62,7 @@ public final class EntityStorage extends PersistentStorage<UUID, KinematicEntity
 
     @Override
     protected byte @NotNull [] serialize(@NotNull KinematicEntity<?, ?> kinematicEntity) {
-        StateWriter writer = new StateWriter(kinematicEntity.schema().getId());
+        StateWriter writer = new StateWriter(kinematicEntity.schema().id());
         kinematicEntity.write(writer);
         return writer.toBytes();
     }

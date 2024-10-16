@@ -2,7 +2,7 @@ package org.metamechanists.kinematiccore.test.entity;
 
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.entity.Cow;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Pig;
 import org.jetbrains.annotations.NotNull;
 import org.metamechanists.kinematiccore.KinematicCore;
@@ -16,12 +16,11 @@ import static org.assertj.core.api.Assertions.*;
 
 
 public class TestEntityTypeMismatch implements BaseTest {
-    private static class TestEntity extends KinematicEntity<Pig, KinematicEntitySchema> {
+    private static final class TestEntity extends KinematicEntity<Pig, KinematicEntitySchema> {
         private static final KinematicEntitySchema SCHEMA = new KinematicEntitySchema(
                 "test_entity_type_mismatch",
-                KinematicCore.class,
-                TestEntity.class,
-                Cow.class
+                EntityType.COW,
+                TestEntity.class
         );
 
         private TestEntity(@NotNull Location location) {
@@ -37,6 +36,8 @@ public class TestEntityTypeMismatch implements BaseTest {
     @SuppressWarnings({"ResultOfObjectAllocationIgnored", "CodeBlock2Expr"})
     @Override
     public void test(World world) {
+        TestEntityTypeMismatch.TestEntity.SCHEMA.register(KinematicCore.getInstance());
+
         Location location = TestUtil.findUnloadedChunk(world);
 
         TestUtil.loadChunk(location);

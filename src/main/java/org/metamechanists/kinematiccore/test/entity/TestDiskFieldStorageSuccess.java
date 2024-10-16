@@ -3,6 +3,7 @@ package org.metamechanists.kinematiccore.test.entity;
 import lombok.Getter;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Pig;
 import org.jetbrains.annotations.NotNull;
 import org.metamechanists.kinematiccore.KinematicCore;
@@ -22,16 +23,15 @@ import static org.assertj.core.api.Assertions.*;
 
 public class TestDiskFieldStorageSuccess implements BaseTest {
     @Getter
-    private static class TestEntity extends KinematicEntity<Pig, KinematicEntitySchema> {
+    private static final class TestEntity extends KinematicEntity<Pig, KinematicEntitySchema> {
         private int integer;
         private final List<String> list;
         private final Location location;
 
         private static final KinematicEntitySchema SCHEMA = new KinematicEntitySchema(
                 "test_disk_field_storage_success",
-                KinematicCore.class,
-                TestEntity.class,
-                Pig.class
+                EntityType.PIG,
+                TestEntity.class
         );
 
         private TestEntity(@NotNull Location location) {
@@ -62,6 +62,8 @@ public class TestDiskFieldStorageSuccess implements BaseTest {
     @SuppressWarnings("CodeBlock2Expr")
     @Override
     public void test(World world) {
+        TestEntity.SCHEMA.register(KinematicCore.getInstance());
+
         Location location = TestUtil.findUnloadedChunk(world);
 
         TestUtil.loadChunk(location);
@@ -92,7 +94,7 @@ public class TestDiskFieldStorageSuccess implements BaseTest {
 
         TestUtil.runSync(() -> {
             TestEntity testEntity = (TestEntity) KinematicEntity.get(uuid.get());
-            assertThat(KinematicEntitySchema.get(TestEntity.SCHEMA.getId()))
+            assertThat(KinematicEntitySchema.get(TestEntity.SCHEMA.id()))
                     .isEqualTo(TestEntity.SCHEMA);
             assertThat(testEntity)
                     .isNotNull();
