@@ -36,7 +36,7 @@ public class TestDoubleRegister implements BaseTest {
 
     @Override
     public void test(World world) {
-        TestDoubleRegister.TestEntity.SCHEMA.register(KinematicCore.getInstance());
+        TestEntity.SCHEMA.register(KinematicCore.getInstance());
 
         TestUtil.runSync(() -> {
             if (KinematicEntitySchema.get(TestEntity.SCHEMA.id()) == null) {

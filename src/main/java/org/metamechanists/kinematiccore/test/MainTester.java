@@ -54,7 +54,7 @@ public final class MainTester {
     private boolean test(@NotNull BaseTest test) {
         try {
             test.test(world);
-        } catch (Exception | AssertionError e) {
+        } catch (Exception | LinkageError | AssertionError e) {
             e.printStackTrace();
             return false;
         }
