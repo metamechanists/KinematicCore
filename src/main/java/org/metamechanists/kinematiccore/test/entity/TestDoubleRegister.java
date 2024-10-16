@@ -20,7 +20,7 @@ public class TestDoubleRegister implements BaseTest {
     private static final class TestEntity extends KinematicEntity<Pig, KinematicEntitySchema> {
         private static final KinematicEntitySchema SCHEMA = new KinematicEntitySchema(
                 "test_double_register",
-                EntityType.COW,
+                EntityType.PIG,
                 TestEntity.class
         );
 

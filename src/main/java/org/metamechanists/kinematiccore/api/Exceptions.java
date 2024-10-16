@@ -9,7 +9,7 @@ import java.util.Set;
 public class Exceptions {
     public static class EntityTypeMismatchException extends RuntimeException {
         public EntityTypeMismatchException(String id, EntityType actual, EntityType expected) {
-            super("The provided entity (" + actual + ") in " + id + "does not match the entity id specified in the schema (" + expected + ")");
+            super("The provided entity (" + actual + ") in " + id + " does not match the entity id specified in the schema (" + expected + ")");
         }
     }
 
