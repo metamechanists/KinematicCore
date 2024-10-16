@@ -19,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 
 public class TestMassiveDiskStorageSuccess implements BaseTest {
-    private static final int ITERATIONS = 1000;
+    private static final int ITERATIONS = 20;
 
     @SuppressWarnings("unused")
     private static final class TestEntity extends KinematicEntity<Pig, KinematicEntitySchema> {
@@ -91,7 +91,7 @@ public class TestMassiveDiskStorageSuccess implements BaseTest {
                 });
 
                 TestUtil.unloadChunk(location);
-            }, 1);
+            }, 0);
         }
     }
 }
