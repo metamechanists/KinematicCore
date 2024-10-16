@@ -16,6 +16,7 @@ import static org.assertj.core.api.Assertions.*;
 
 
 public class TestEntityTypeMismatch implements BaseTest {
+    @SuppressWarnings("unused")
     private static final class TestEntity extends KinematicEntity<Pig, KinematicEntitySchema> {
         private static final KinematicEntitySchema SCHEMA = new KinematicEntitySchema(
                 "test_entity_type_mismatch",
@@ -27,8 +28,7 @@ public class TestEntityTypeMismatch implements BaseTest {
             super(SCHEMA, () -> location.getWorld().spawn(location, Pig.class));
         }
 
-        @SuppressWarnings("unused")
-        private TestEntity(@NotNull StateReader reader) {
+        public TestEntity(@NotNull StateReader reader) {
             super(reader);
         }
     }

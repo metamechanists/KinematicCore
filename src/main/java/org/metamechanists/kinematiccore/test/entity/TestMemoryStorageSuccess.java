@@ -15,6 +15,7 @@ import static org.assertj.core.api.Assertions.*;
 
 
 public class TestMemoryStorageSuccess implements BaseTest {
+    @SuppressWarnings("unused")
     private static final class TestEntity extends KinematicEntity<Pig, KinematicEntitySchema> {
         private static final KinematicEntitySchema SCHEMA = new KinematicEntitySchema(
                 "test_memory_storage_success",
@@ -26,8 +27,7 @@ public class TestMemoryStorageSuccess implements BaseTest {
             super(SCHEMA, () -> location.getWorld().spawn(location, Pig.class));
         }
 
-        @SuppressWarnings("unused")
-        private TestEntity(@NotNull StateReader reader) {
+        public TestEntity(@NotNull StateReader reader) {
             super(reader);
         }
     }

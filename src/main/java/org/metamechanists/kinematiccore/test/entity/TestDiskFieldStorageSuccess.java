@@ -22,6 +22,7 @@ import static org.assertj.core.api.Assertions.*;
 
 
 public class TestDiskFieldStorageSuccess implements BaseTest {
+    @SuppressWarnings("unused")
     @Getter
     private static final class TestEntity extends KinematicEntity<Pig, KinematicEntitySchema> {
         private int integer;
@@ -41,8 +42,8 @@ public class TestDiskFieldStorageSuccess implements BaseTest {
             this.location = location;
         }
 
-        @SuppressWarnings({"unused", "DataFlowIssue"})
-        private TestEntity(@NotNull StateReader reader) {
+        @SuppressWarnings("DataFlowIssue")
+        public TestEntity(@NotNull StateReader reader) {
             super(reader);
             integer = reader.get("integer", Integer.class);
             list = reader.get("list", new ArrayList<>());
