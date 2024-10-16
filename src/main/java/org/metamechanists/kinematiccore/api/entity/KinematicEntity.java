@@ -29,7 +29,7 @@ public abstract class KinematicEntity<T extends Entity, S extends KinematicEntit
         T entity = spawnEntity.get();
 
         // Check the spawned entity is the correct type (sadly can't be done at compile-time because... Java)
-        if (entity.getType() == schema.entityType()) {
+        if (entity.getType() != schema.entityType()) {
             throw new Exceptions.EntityTypeMismatchException(id, entity.getType(), schema.entityType());
         }
 
