@@ -30,7 +30,6 @@ public class TestMissingConstructor implements BaseTest {
     @SuppressWarnings({"ResultOfObjectAllocationIgnored", "CodeBlock2Expr"})
     @Override
     public void test(World world) {
-        TestEntity.SCHEMA.register(KinematicCore.getInstance());
         TestUtil.runSync(() -> {
             assertThatThrownBy(() -> new KinematicEntitySchema(
                     "test_missing_constructor",

@@ -164,6 +164,7 @@ public abstract class PersistentStorage<K extends Comparable<K>, V> {
      * This DOES NOT save any data! That's the job of cleanup and its callers.
      */
     public final void close() {
+        commit();
         db.commit();
         db.close();
     }
