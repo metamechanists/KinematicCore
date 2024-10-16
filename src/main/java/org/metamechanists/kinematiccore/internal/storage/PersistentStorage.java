@@ -22,7 +22,8 @@ public abstract class PersistentStorage<K extends Comparable<K>, V> {
     // 1MB max persistent because we are doing our own caching chunks, so storing a lot of
     // MapDB data in memory is effectively duplicating data
     private static final long MAX_DB_CACHE_SIZE = 1024 * 1024;
-    private static final long COMMIT_INTERVAL_TICKS = 20;
+    private static final long COMMIT_INTERVAL_TICKS = 1;
+    private static final long DISK_COMMIT_INTERVAL_TICKS = 200;
 
     private final DB db;
 
@@ -109,6 +110,7 @@ public abstract class PersistentStorage<K extends Comparable<K>, V> {
     /*
      * Commits scheduled changes
      * Do not call on the main thread
+     * Does not actually commit *to the disk database* - just writes changes
      */
     private void commit() {
         while (loadQueue.peek() != null) {
@@ -120,7 +122,6 @@ public abstract class PersistentStorage<K extends Comparable<K>, V> {
         while (deletionQueue.peek() != null) {
             commitDelete(deletionQueue.poll());
         }
-        db.commit();
     }
 
     protected PersistentStorage(String database, Serializer<K> keySerializer) {
@@ -143,6 +144,7 @@ public abstract class PersistentStorage<K extends Comparable<K>, V> {
                 .createOrOpen();
 
         Bukkit.getScheduler().runTaskTimerAsynchronously(KinematicCore.getInstance(), this::commit, 0, COMMIT_INTERVAL_TICKS);
+        Bukkit.getScheduler().runTaskTimerAsynchronously(KinematicCore.getInstance(), db::commit, 0, DISK_COMMIT_INTERVAL_TICKS);
     }
 
     protected abstract @NotNull K key(@NotNull V value);
