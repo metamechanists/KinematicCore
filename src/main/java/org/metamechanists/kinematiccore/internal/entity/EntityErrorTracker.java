@@ -1,8 +1,8 @@
 package org.metamechanists.kinematiccore.internal.entity;
 
 class EntityErrorTracker {
-    public static final int MAX_ERRORS = 5;
-    public static final int TRACKER_TIME = 30;
+    public static final int MAX_ERRORS = 3;
+    public static final int TRACKER_TIME = 60;
 
     private int errors;
     private int ticksSinceLastError;
