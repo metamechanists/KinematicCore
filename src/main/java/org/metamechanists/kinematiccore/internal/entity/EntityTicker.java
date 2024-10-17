@@ -35,7 +35,7 @@ public class EntityTicker implements Runnable {
                 KinematicEntity<?, ?> kinematicEntity = KinematicEntity.get(uuid);
 
                 try {
-                    //noinspection DataFlowIssue
+                    assert kinematicEntity != null;
                     kinematicEntity.tick(tick);
                 } catch (Exception e) {
                     handleError(uuid, kinematicEntity, e);
@@ -45,6 +45,8 @@ public class EntityTicker implements Runnable {
 
         errorTrackers.forEach((k, v) -> v.tick());
         errorTrackers.entrySet()
+                .removeIf(pair -> EntityStorage.getInstance().get(pair.getKey()) == null);
+        errorTrackers.entrySet()
                 .removeIf(pair -> pair.getValue().shouldRemoveTracker());
         errorTrackers.entrySet()
                 .stream()
@@ -53,10 +55,6 @@ public class EntityTicker implements Runnable {
                     KinematicCore.getInstance().getLogger().severe("Removed the entity " + pair.getKey()
                             + " because it threw " + EntityErrorTracker.MAX_ERRORS
                             + " errors in under " + EntityErrorTracker.TRACKER_TIME + " ticks");
-                    KinematicEntity<?, ?> kinematicEntity = KinematicEntity.get(pair.getKey());
-                    if (kinematicEntity != null) {
-                        EntityStorage.getInstance().delete(kinematicEntity);
-                    }
                     Entity entity = Bukkit.getEntity(pair.getKey());
                     assert entity != null;
                     entity.remove();

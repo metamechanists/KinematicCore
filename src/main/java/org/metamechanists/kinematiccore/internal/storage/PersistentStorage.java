@@ -229,7 +229,12 @@ public abstract class PersistentStorage<K extends Comparable<K>, V> {
      * Does not save the data to disk.
      */
     public void unload(@NotNull V value) {
-        loadedDataById.get(id(value)).remove(key(value));
+        String id = id(value);
+        if (id != null) {
+            loadedDataById.get(id).remove(key(value));
+        } else {
+            loadedDataById.values().forEach(set -> set.remove(key(value)));
+        }
         loadedData.remove(key(value));
     }
 

@@ -35,7 +35,10 @@ public final class EntityStorage extends PersistentStorage<UUID, KinematicEntity
     }
 
     @Override
-    protected @NotNull String id(@NotNull KinematicEntity<?, ?> kinematicEntity) {
+    protected @Nullable String id(@NotNull KinematicEntity<?, ?> kinematicEntity) {
+        if (kinematicEntity.schema() == null) {
+            return null;
+        }
         return kinematicEntity.schema().id();
     }
 
