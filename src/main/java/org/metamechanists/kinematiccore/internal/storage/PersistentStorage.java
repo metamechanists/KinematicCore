@@ -194,6 +194,8 @@ public abstract class PersistentStorage<K extends Comparable<K>, V> {
         commit();
     }
 
+    public void cleanup(@N)
+
     /*
      * Takes existing data and writes it from memory to disk.
      * Do not call on the main thread.

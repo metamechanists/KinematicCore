@@ -5,6 +5,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mapdb.Serializer;
 import org.metamechanists.kinematiccore.KinematicCore;
+import org.metamechanists.kinematiccore.api.addon.KinematicAddon;
 import org.metamechanists.kinematiccore.api.entity.KinematicEntity;
 import org.metamechanists.kinematiccore.api.entity.KinematicEntitySchema;
 import org.metamechanists.kinematiccore.api.state.StateReader;
@@ -14,6 +15,7 @@ import org.metamechanists.kinematiccore.internal.storage.PersistentStorage;
 import java.lang.reflect.InvocationTargetException;
 import java.util.AbstractMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 
@@ -68,5 +70,10 @@ public final class EntityStorage extends PersistentStorage<UUID, KinematicEntity
         StateWriter writer = new StateWriter(kinematicEntity.schema().id());
         kinematicEntity.write(writer);
         return writer.toBytes();
+    }
+
+    public void cleanup(KinematicAddon addon) {
+        Set<String> schemas = KinematicEntitySchema.registeredSchemasByAddon(addon);
+        cleanup(schemas);
     }
 }

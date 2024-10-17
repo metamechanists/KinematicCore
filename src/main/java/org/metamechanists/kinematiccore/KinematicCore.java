@@ -3,7 +3,7 @@ package org.metamechanists.kinematiccore;
 import co.aikar.commands.PaperCommandManager;
 import lombok.Getter;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.metamechanists.kinematiccore.internal.addon.AddonLifecycle;
+import org.jetbrains.annotations.NotNull;
 import org.metamechanists.kinematiccore.internal.addon.AddonStorage;
 import org.metamechanists.kinematiccore.internal.entity.EntityListener;
 import org.metamechanists.kinematiccore.internal.entity.EntityStorage;
@@ -21,7 +21,6 @@ public class KinematicCore extends JavaPlugin implements KinematicAddon {
     public void onEnable() {
         instance = this;
         AddonStorage.init();
-        AddonLifecycle.init();
         EntityStorage.init();
         EntityStorageListener.init();
         EntityTicker.init();
@@ -33,12 +32,19 @@ public class KinematicCore extends JavaPlugin implements KinematicAddon {
 
     @Override
     public void onDisable() {
-        AddonLifecycle.cleanup();
+        for (KinematicAddon addon : AddonStorage.getLoadedAddons()) {
+            cleanup(addon);
+        }
         EntityStorage.getInstance().close();
     }
 
     @Override
     public String name() {
         return "KinematicCore";
+    }
+
+    public static void cleanup(@NotNull KinematicAddon addon) {
+        instance.getLogger().info("Cleaning up addon " + addon.getClass().getSimpleName());
+        EntityStorage.getInstance().cleanup(addon);
     }
 }
