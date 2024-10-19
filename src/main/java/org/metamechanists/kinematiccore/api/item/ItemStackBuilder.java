@@ -1,22 +1,58 @@
 package org.metamechanists.kinematiccore.api.item;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
+@SuppressWarnings({"WeakerAccess", "unused"})
 public class ItemStackBuilder {
+    public static final int LINE_LENGTH = 50;
+    public static final String DIAMOND = "\u25C6";
+
+    public static final Component INTERMEDIATE = Component.text("\u1F6E0 Intermediate").color(TextColor.color(130, 255, 130));
+    public static final Component TOOL = Component.text("\u26CF Tool").color(TextColor.color(0, 255, 0));
+    public static final Component WEAPON = Component.text("\u1F5E1 Weapon").color(TextColor.color(0, 255, 0));
+    public static final Component ARMOR = Component.text("\u1F455 Armor").color(TextColor.color(0, 255, 0));
+    public static final Component VEHICLE = Component.text("\u2708 Vehicle").color(TextColor.color(170, 110, 170));
+    public static final Component MACHINE = Component.text("\u1F3ED Machine").color(TextColor.color(0, 255, 0));
+    public static final Component STORAGE = Component.text("\u1F9F0 Storage").color(TextColor.color(0, 255, 0));
+    public static final Component GENERATOR = Component.text("\u26A1 Generator").color(TextColor.color(0, 255, 0));
+    public static final Component ENERGY_STORAGE = Component.text("\u1F50B Energy Storage").color(TextColor.color(0, 255, 0));
+    public static final Component RESOURCE = Component.text("\u1FAA8 Resource").color(TextColor.color(241, 255, 98));
+    public static final Component FOOD = Component.text("\u1F352 Food/drink").color(TextColor.color(0, 255, 0));
+    public static final Component BUILDING_BLOCK = Component.text("\u1F3DB Building Block").color(TextColor.color(0, 255, 0));
+
+    public static final TextColor NAME_COLOR = TextColor.color(255, 255, 255);
+    public static final TextColor DIAMOND_COLOR = TextColor.color(210, 210, 150);
+    public static final TextColor KEY_COLOR = TextColor.color(180, 180, 180);
+    public static final TextColor VALUE_COLOR = TextColor.color(255, 180, 100);
+    public static final TextColor UNIT_COLOR = TextColor.color(100, 100, 100);
+
     private final ItemStack stack;
 
     public ItemStackBuilder(Material material) {
         this.stack = new ItemStack(material);
+    }
+
+    private void addLine(String line) {
+        stack.editMeta(meta -> {
+            List<String> lore = meta.getLore();
+            if (lore == null) {
+                lore = new ArrayList<>();
+            }
+            lore.add(line);
+            meta.setLore(lore);
+        });
     }
 
     public ItemStackBuilder amount(int amount) {
@@ -34,15 +70,17 @@ public class ItemStackBuilder {
         return this;
     }
 
+    public ItemStackBuilder loreLineWrapped(@NotNull String line) {
+        String temp = line;
+        while (temp.length() > LINE_LENGTH) {
+            addLine(temp.substring(0, LINE_LENGTH));
+            temp = temp.substring(LINE_LENGTH);
+        }
+        return loreLine(temp);
+    }
+
     public ItemStackBuilder loreLine(String line) {
-        stack.editMeta(meta -> {
-            List<String> lore = meta.getLore();
-            if (lore == null) {
-                lore = new ArrayList<>();
-            }
-            lore.add(line);
-            meta.setLore(lore);
-        });
+        addLine(line);
         return this;
     }
 
@@ -56,6 +94,18 @@ public class ItemStackBuilder {
             meta.lore(lore);
         });
         return this;
+    }
+
+    public ItemStackBuilder loreLine(String key, String value, String unit) {
+        return loreLine(Component.text(DIAMOND + " ")
+                .color(DIAMOND_COLOR)
+                .append(Component.text(key + ": ").color(KEY_COLOR))
+                .append(Component.text(value + " ").color(VALUE_COLOR))
+                .append(Component.text(unit).color(UNIT_COLOR)));
+    }
+
+    public ItemStackBuilder loreLine(String key, String value) {
+        return loreLine(key, value, "");
     }
 
     public ItemStackBuilder enchantment(Enchantment enchantment, int level) {
