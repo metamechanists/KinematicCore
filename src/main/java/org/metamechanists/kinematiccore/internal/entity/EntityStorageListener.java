@@ -1,4 +1,4 @@
-package org.metamechanists.kinematiccore.internal.storage;
+package org.metamechanists.kinematiccore.internal.entity;
 
 import com.destroystokyo.paper.event.entity.EntityRemoveFromWorldEvent;
 import org.bukkit.Bukkit;
@@ -10,7 +10,6 @@ import org.bukkit.event.world.EntitiesLoadEvent;
 import org.jetbrains.annotations.NotNull;
 import org.metamechanists.kinematiccore.KinematicCore;
 import org.metamechanists.kinematiccore.api.entity.KinematicEntity;
-import org.metamechanists.kinematiccore.internal.entity.EntityStorage;
 
 
 public class EntityStorageListener implements Listener {

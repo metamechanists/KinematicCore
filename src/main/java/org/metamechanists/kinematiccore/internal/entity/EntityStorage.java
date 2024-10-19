@@ -72,6 +72,11 @@ public final class EntityStorage extends PersistentStorage<UUID, KinematicEntity
         return writer.toBytes();
     }
 
+    @Override
+    protected void onDelete(@NotNull KinematicEntity<?, ?> kinematicEntity) {
+        kinematicEntity.onRemove();
+    }
+
     public void cleanup(KinematicAddon addon) {
         Set<String> schemas = KinematicEntitySchema.registeredSchemasByAddon(addon);
         cleanup(schemas);

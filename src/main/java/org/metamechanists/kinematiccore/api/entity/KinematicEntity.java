@@ -83,7 +83,9 @@ public abstract class KinematicEntity<T extends Entity, S extends KinematicEntit
 
     protected void tick(@NotNull T entity, long tick) {}
 
-    public void onRightClick(Player player) {}
+    public void onRightClick(@NotNull Player player) {}
+
+    public void onRemove() {}
 
     /*
      * Not marked as nullable because in almost all cases we can assume this to be not null

@@ -8,6 +8,7 @@ import org.mapdb.DBMaker;
 import org.mapdb.HTreeMap;
 import org.mapdb.Serializer;
 import org.metamechanists.kinematiccore.KinematicCore;
+import org.metamechanists.kinematiccore.api.entity.KinematicEntity;
 
 import java.io.File;
 import java.util.Map;
@@ -160,6 +161,8 @@ public abstract class PersistentStorage<K extends Comparable<K>, V> {
 
     protected abstract byte @Nullable[] serialize(@NotNull V value);
 
+    protected abstract void onDelete(@NotNull V kinematicEntity);
+
     /*
      * This DOES NOT save any data! That's the job of cleanup and its callers.
      */
@@ -222,6 +225,7 @@ public abstract class PersistentStorage<K extends Comparable<K>, V> {
     public void delete(@NotNull V value) {
         scheduledForDeletion.add(key(value));
         deletionQueue.add(value);
+        onDelete(value);
     }
 
     /*

@@ -10,7 +10,7 @@ import org.metamechanists.kinematiccore.internal.entity.EntityStorage;
 import org.metamechanists.kinematiccore.api.addon.KinematicAddon;
 import org.metamechanists.kinematiccore.internal.entity.EntityTicker;
 import org.metamechanists.kinematiccore.internal.command.KinematicCommand;
-import org.metamechanists.kinematiccore.internal.storage.EntityStorageListener;
+import org.metamechanists.kinematiccore.internal.entity.EntityStorageListener;
 
 
 public class KinematicCore extends JavaPlugin implements KinematicAddon {
