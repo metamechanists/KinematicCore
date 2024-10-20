@@ -2,6 +2,7 @@ package org.metamechanists.kinematiccore.api.item;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
@@ -82,15 +83,6 @@ public class ItemStackBuilder {
         return this;
     }
 
-    public ItemStackBuilder loreLineWrapped(@NotNull String line) {
-        String temp = line;
-        while (temp.length() > LINE_LENGTH) {
-            addLine(temp.substring(0, LINE_LENGTH));
-            temp = temp.substring(LINE_LENGTH);
-        }
-        return loreLine(temp);
-    }
-
     public ItemStackBuilder loreLine(String line) {
         addLine(line);
         return this;
@@ -104,9 +96,16 @@ public class ItemStackBuilder {
     public ItemStackBuilder loreLine(String key, String value, String unit) {
         return loreLine(Component.text(DIAMOND + " ")
                 .color(DIAMOND_COLOR)
-                .append(Component.text(key + ": ").color(KEY_COLOR))
-                .append(Component.text(value + " ").color(VALUE_COLOR))
-                .append(Component.text(unit).color(UNIT_COLOR)));
+                .decoration(TextDecoration.ITALIC, false)
+                .append(Component.text(key + ": ")
+                        .color(KEY_COLOR)
+                        .decoration(TextDecoration.ITALIC, false))
+                .append(Component.text(value + " ")
+                        .color(VALUE_COLOR)
+                        .decoration(TextDecoration.ITALIC, false))
+                .append(Component.text(unit)
+                        .color(UNIT_COLOR)
+                        .decoration(TextDecoration.ITALIC, false)));
     }
 
     public ItemStackBuilder loreLine(String key, String value) {

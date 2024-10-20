@@ -6,7 +6,7 @@
 
     <groupId>org.metamechanists</groupId>
     <artifactId>KinematicCore</artifactId>
-    <version>29</version>
+    <version>30</version>
     <packaging>jar</packaging>
 
     <name>KinematicCore</name>
