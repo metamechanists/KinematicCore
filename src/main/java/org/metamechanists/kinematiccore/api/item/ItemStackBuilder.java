@@ -63,7 +63,7 @@ public class ItemStackBuilder {
             if (lore == null) {
                 lore = new ArrayList<>();
             }
-            lore.add(line.decoration(TextDecoration.ITALIC, false));
+            lore.add(line);
             meta.lore(lore);
         });
     }
