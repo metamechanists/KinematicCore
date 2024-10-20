@@ -75,7 +75,7 @@ public class ItemStackBuilder {
     }
 
     public ItemStackBuilder loreLine(String key, String value, String unit) {
-        return loreLine("<color:#eec250>" + DIAMOND + " <color:#b4b4b4>" + key + " <color:#2182ff>" + unit);
+        return loreLine("<color:#eec250>" + DIAMOND + " <color:#b4b4b4>" + key + " <color:#2182ff>" + value + " <color:");
     }
 
     public ItemStackBuilder loreLine(String key, String value) {
