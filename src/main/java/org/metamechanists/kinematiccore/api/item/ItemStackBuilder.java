@@ -2,6 +2,8 @@ package org.metamechanists.kinematiccore.api.item;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.format.TextDecoration;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
@@ -50,8 +52,19 @@ public class ItemStackBuilder {
             if (lore == null) {
                 lore = new ArrayList<>();
             }
-            lore.add(line);
+            lore.add(ChatColor.RESET + line);
             meta.setLore(lore);
+        });
+    }
+
+    private void addLine(Component line) {
+        stack.editMeta(meta -> {
+            List<Component> lore = meta.lore();
+            if (lore == null) {
+                lore = new ArrayList<>();
+            }
+            lore.add(line.decoration(TextDecoration.ITALIC, false));
+            meta.lore(lore);
         });
     }
 
@@ -85,14 +98,7 @@ public class ItemStackBuilder {
     }
 
     public ItemStackBuilder loreLine(Component line) {
-        stack.editMeta(meta -> {
-            List<Component> lore = meta.lore();
-            if (lore == null) {
-                lore = new ArrayList<>();
-            }
-            lore.add(line);
-            meta.lore(lore);
-        });
+        addLine(line);
         return this;
     }
 
