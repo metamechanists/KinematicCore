@@ -2,7 +2,6 @@ package org.metamechanists.kinematiccore.api.item;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
-import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
@@ -52,7 +51,7 @@ public class ItemStackBuilder {
             if (lore == null) {
                 lore = new ArrayList<>();
             }
-            lore.add(ChatColor.RESET + line);
+            lore.add(ChatColor.RESET + "" + ChatColor.WHITE + line);
             meta.setLore(lore);
         });
     }
