@@ -56,8 +56,7 @@ public class ItemStackBuilder {
     }
 
     public ItemStackBuilder name(String name) {
-        stack.editMeta(meta -> meta.setDisplayName(name));
-        return this;
+        return name(mm.deserialize(name));
     }
 
     public ItemStackBuilder name(Component name) {
