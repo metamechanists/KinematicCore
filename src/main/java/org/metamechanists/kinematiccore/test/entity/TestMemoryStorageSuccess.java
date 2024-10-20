@@ -34,7 +34,7 @@ public class TestMemoryStorageSuccess implements BaseTest {
 
     @Override
     public void test(World world) {
-        TestMemoryStorageSuccess.TestEntity.SCHEMA.register(KinematicCore.getInstance());
+        TestMemoryStorageSuccess.TestEntity.SCHEMA.register(KinematicCore.instance());
 
         Location location = TestUtil.findUnloadedChunk(world);
 

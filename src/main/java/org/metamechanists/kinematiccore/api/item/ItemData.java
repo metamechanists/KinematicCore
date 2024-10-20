@@ -20,7 +20,7 @@ public class ItemData {
     private ItemData() {}
 
     private static @NotNull NamespacedKey key(@NotNull String key) {
-        return keys.computeIfAbsent(key, k -> new NamespacedKey(KinematicCore.getInstance(), key));
+        return keys.computeIfAbsent(key, k -> new NamespacedKey(KinematicCore.instance(), key));
     }
 
     private static void editMeta(@NotNull ItemStack stack, @NotNull String key, @NotNull Consumer<PersistentDataContainer> editor) {

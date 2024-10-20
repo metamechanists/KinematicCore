@@ -18,9 +18,9 @@ public class EntityTicker implements Runnable {
 
     private static void handleError(UUID uuid, @NotNull KinematicEntity<?, ?> kinematicEntity, Exception e) {
         if (kinematicEntity.schema() != null) {
-            KinematicCore.getInstance().getLogger().severe("Failed to tick " + kinematicEntity.schema().id());
+            KinematicCore.instance().getLogger().severe("Failed to tick " + kinematicEntity.schema().id());
         } else {
-            KinematicCore.getInstance().getLogger().severe("Failed to tick " + uuid);
+            KinematicCore.instance().getLogger().severe("Failed to tick " + uuid);
         }
 
         errorTrackers.computeIfAbsent(uuid, k -> new EntityErrorTracker()).incrementErrors();
@@ -45,14 +45,14 @@ public class EntityTicker implements Runnable {
 
         errorTrackers.forEach((k, v) -> v.tick());
         errorTrackers.entrySet()
-                .removeIf(pair -> EntityStorage.getInstance().get(pair.getKey()) == null);
+                .removeIf(pair -> EntityStorage.instance().get(pair.getKey()) == null);
         errorTrackers.entrySet()
                 .removeIf(pair -> pair.getValue().shouldRemoveTracker());
         errorTrackers.entrySet()
                 .stream()
                 .filter(pair -> pair.getValue().shouldDeleteEntity())
                 .forEach(pair -> {
-                    KinematicCore.getInstance().getLogger().severe("Removed the entity " + pair.getKey()
+                    KinematicCore.instance().getLogger().severe("Removed the entity " + pair.getKey()
                             + " because it threw " + EntityErrorTracker.MAX_ERRORS
                             + " errors in under " + EntityErrorTracker.TRACKER_TIME + " ticks");
                     Entity entity = Bukkit.getEntity(pair.getKey());
@@ -62,6 +62,6 @@ public class EntityTicker implements Runnable {
     }
 
     public static void init() {
-        Bukkit.getServer().getScheduler().runTaskTimer(KinematicCore.getInstance(), new EntityTicker(), 0, INTERVAL);
+        Bukkit.getServer().getScheduler().runTaskTimer(KinematicCore.instance(), new EntityTicker(), 0, INTERVAL);
     }
 }

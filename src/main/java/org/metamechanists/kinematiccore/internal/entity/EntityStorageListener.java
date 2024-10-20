@@ -14,13 +14,13 @@ import org.metamechanists.kinematiccore.api.entity.KinematicEntity;
 
 public class EntityStorageListener implements Listener {
     public static void init() {
-        Bukkit.getPluginManager().registerEvents(new EntityStorageListener(), KinematicCore.getInstance());
+        Bukkit.getPluginManager().registerEvents(new EntityStorageListener(), KinematicCore.instance());
     }
 
     @EventHandler
     private static void onEntityLoad(@NotNull EntitiesLoadEvent event) {
         for (Entity entity : event.getEntities()) {
-             EntityStorage.getInstance().load(entity.getUniqueId());
+             EntityStorage.instance().load(entity.getUniqueId());
         }
     }
 
@@ -30,13 +30,13 @@ public class EntityStorageListener implements Listener {
     // is merged, this can be fixed, but currently this fires WHEN ENTITIES ARE KILLED meaning it 'competes' with onEntityDeath
     @EventHandler
     private static void onEntityUnload(@NotNull EntityRemoveFromWorldEvent event) {
-        KinematicEntity<?, ?> kinematicEntity = EntityStorage.getInstance().get(event.getEntity().getUniqueId());
+        KinematicEntity<?, ?> kinematicEntity = EntityStorage.instance().get(event.getEntity().getUniqueId());
         if (kinematicEntity == null) {
             return;
         }
 
-        EntityStorage.getInstance().unload(kinematicEntity);
-        EntityStorage.getInstance().save(kinematicEntity);
+        EntityStorage.instance().unload(kinematicEntity);
+        EntityStorage.instance().save(kinematicEntity);
     }
 
     @EventHandler
@@ -46,6 +46,6 @@ public class EntityStorageListener implements Listener {
             return;
         }
 
-        EntityStorage.getInstance().delete(kinematicEntity);
+        EntityStorage.instance().delete(kinematicEntity);
     }
 }

@@ -37,7 +37,7 @@ public class TestDiskStorageSuccess implements BaseTest {
 
     @Override
     public void test(World world) {
-        TestEntity.SCHEMA.register(KinematicCore.getInstance());
+        TestEntity.SCHEMA.register(KinematicCore.instance());
 
         Location location = TestUtil.findUnloadedChunk(world);
 

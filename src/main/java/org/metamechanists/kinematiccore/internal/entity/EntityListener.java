@@ -12,12 +12,12 @@ import org.metamechanists.kinematiccore.api.entity.KinematicEntity;
 
 public class EntityListener implements Listener {
     public static void init() {
-        Bukkit.getPluginManager().registerEvents(new EntityListener(), KinematicCore.getInstance());
+        Bukkit.getPluginManager().registerEvents(new EntityListener(), KinematicCore.instance());
     }
 
     @EventHandler
     public static void onRightClick(@NotNull PlayerInteractEntityEvent event) {
-        KinematicEntity<?, ?> kinematicEntity = EntityStorage.getInstance().get(event.getRightClicked().getUniqueId());
+        KinematicEntity<?, ?> kinematicEntity = EntityStorage.instance().get(event.getRightClicked().getUniqueId());
         if (kinematicEntity != null) {
             kinematicEntity.onRightClick(event.getPlayer());
         }

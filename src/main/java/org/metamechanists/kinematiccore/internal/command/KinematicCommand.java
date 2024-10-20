@@ -43,7 +43,7 @@ public class KinematicCommand extends BaseCommand {
             @Description("Run all tests.")
             public static void test(@NotNull Player player) {
                 // Tests must be run async
-                Bukkit.getScheduler().runTaskAsynchronously(KinematicCore.getInstance(), () -> {
+                Bukkit.getScheduler().runTaskAsynchronously(KinematicCore.instance(), () -> {
                     MainTester.TestResult result = new MainTester(player.getLocation().getWorld()).all();
 
                     player.sendMessage(ChatColor.GRAY + "[ "

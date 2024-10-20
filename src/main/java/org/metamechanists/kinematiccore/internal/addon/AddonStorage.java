@@ -1,6 +1,7 @@
 package org.metamechanists.kinematiccore.internal.addon;
 
 import lombok.Getter;
+import lombok.experimental.Accessors;
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -14,12 +15,13 @@ import java.util.HashSet;
 import java.util.Set;
 
 
+@Accessors(fluent = true)
 public class AddonStorage implements Listener {
     @Getter
     private static final Set<KinematicAddon> loadedAddons = new HashSet<>();
 
     public static void init() {
-        Bukkit.getPluginManager().registerEvents(new AddonStorage(), KinematicCore.getInstance());
+        Bukkit.getPluginManager().registerEvents(new AddonStorage(), KinematicCore.instance());
     }
 
     @EventHandler

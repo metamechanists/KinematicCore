@@ -26,7 +26,7 @@ public abstract class KinematicItem {
         this.stack = stack;
         stack.editMeta(meta -> meta.setPlaceableKeys(List.of()));
         stack.editMeta(meta -> meta.getPersistentDataContainer()
-                .set(new NamespacedKey(KinematicCore.getInstance(), "id"), PersistentDataType.STRING, id));
+                .set(new NamespacedKey(KinematicCore.instance(), "id"), PersistentDataType.STRING, id));
     }
 
     public String id() {

@@ -36,7 +36,7 @@ public class TestEntityTypeMismatch implements BaseTest {
     @SuppressWarnings({"ResultOfObjectAllocationIgnored", "CodeBlock2Expr"})
     @Override
     public void test(World world) {
-        TestEntityTypeMismatch.TestEntity.SCHEMA.register(KinematicCore.getInstance());
+        TestEntityTypeMismatch.TestEntity.SCHEMA.register(KinematicCore.instance());
 
         Location location = TestUtil.findUnloadedChunk(world);
 

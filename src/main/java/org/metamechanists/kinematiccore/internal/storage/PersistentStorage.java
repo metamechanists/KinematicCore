@@ -8,7 +8,6 @@ import org.mapdb.DBMaker;
 import org.mapdb.HTreeMap;
 import org.mapdb.Serializer;
 import org.metamechanists.kinematiccore.KinematicCore;
-import org.metamechanists.kinematiccore.api.entity.KinematicEntity;
 
 import java.io.File;
 import java.util.Map;
@@ -66,7 +65,7 @@ public abstract class PersistentStorage<K extends Comparable<K>, V> {
             loadedDataById.computeIfAbsent(id, k -> ConcurrentHashMap.newKeySet()).add(key);
             loadedData.put(key, value);
         } catch (Exception e) {
-            KinematicCore.getInstance().getLogger().severe("Error while loading " + key);
+            KinematicCore.instance().getLogger().severe("Error while loading " + key);
             e.printStackTrace();
         }
     }
@@ -81,11 +80,11 @@ public abstract class PersistentStorage<K extends Comparable<K>, V> {
             persistentDataById.computeIfAbsent(id, k -> ConcurrentHashMap.newKeySet()).add(key);
         } catch (IllegalArgumentException e) {
             String message = errorMessage(value, "The class " + e.getClass().getSimpleName() + " cannot be serialized.");
-            KinematicCore.getInstance().getLogger().severe(message);
+            KinematicCore.instance().getLogger().severe(message);
             e.printStackTrace();
         } catch (Exception e) {
             String message = errorMessage(value, "Error while saving.");
-            KinematicCore.getInstance().getLogger().severe(message);
+            KinematicCore.instance().getLogger().severe(message);
             e.printStackTrace();
         }
     }
@@ -101,7 +100,7 @@ public abstract class PersistentStorage<K extends Comparable<K>, V> {
                     .remove(key);
         } catch (Exception e) {
             String message = errorMessage(value,"Error while deleting.");
-            KinematicCore.getInstance().getLogger().severe(message);
+            KinematicCore.instance().getLogger().severe(message);
             e.printStackTrace();
         } finally {
             scheduledForDeletion.remove(key(value));
@@ -127,9 +126,9 @@ public abstract class PersistentStorage<K extends Comparable<K>, V> {
 
     protected PersistentStorage(String database, Serializer<K> keySerializer) {
         //noinspection ResultOfMethodCallIgnored
-        KinematicCore.getInstance().getDataFolder().mkdir();
+        KinematicCore.instance().getDataFolder().mkdir();
 
-        db = DBMaker.fileDB(new File(KinematicCore.getInstance().getDataFolder(), database + ".mapdb"))
+        db = DBMaker.fileDB(new File(KinematicCore.instance().getDataFolder(), database + ".mapdb"))
                 .closeOnJvmShutdown()
                 .fileMmapEnableIfSupported()
                 .transactionEnable()
@@ -144,8 +143,8 @@ public abstract class PersistentStorage<K extends Comparable<K>, V> {
                 .expireStoreSize(MAX_DB_CACHE_SIZE)
                 .createOrOpen();
 
-        Bukkit.getScheduler().runTaskTimerAsynchronously(KinematicCore.getInstance(), this::commit, 0, COMMIT_INTERVAL_TICKS);
-        Bukkit.getScheduler().runTaskTimerAsynchronously(KinematicCore.getInstance(), db::commit, 0, DISK_COMMIT_INTERVAL_TICKS);
+        Bukkit.getScheduler().runTaskTimerAsynchronously(KinematicCore.instance(), this::commit, 0, COMMIT_INTERVAL_TICKS);
+        Bukkit.getScheduler().runTaskTimerAsynchronously(KinematicCore.instance(), db::commit, 0, DISK_COMMIT_INTERVAL_TICKS);
     }
 
     protected abstract @NotNull K key(@NotNull V value);
@@ -179,7 +178,7 @@ public abstract class PersistentStorage<K extends Comparable<K>, V> {
         for (String id : idsToCleanup) {
             Set<K> keys = loadedById(id);
             if (keys == null) {
-                KinematicCore.getInstance().getLogger().warning("Failed to save data of type " + id);
+                KinematicCore.instance().getLogger().warning("Failed to save data of type " + id);
                 continue;
             }
 

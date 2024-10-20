@@ -36,7 +36,7 @@ public abstract class KinematicEntity<T extends Entity, S extends KinematicEntit
         this.uuid = entity.getUniqueId();
 
         //noinspection ThisEscapedInObjectConstruction
-        EntityStorage.getInstance().create(this);
+        EntityStorage.instance().create(this);
     }
 
     protected KinematicEntity(@NotNull StateReader reader) {
@@ -98,15 +98,15 @@ public abstract class KinematicEntity<T extends Entity, S extends KinematicEntit
     }
 
     public static @Nullable KinematicEntity<?, ?> get(UUID uuid) {
-        return EntityStorage.getInstance().get(uuid);
+        return EntityStorage.instance().get(uuid);
     }
 
     public static @NotNull Map<String, Set<UUID>> loaded() {
-        return EntityStorage.getInstance().loaded();
+        return EntityStorage.instance().loaded();
     }
 
     public static @Nullable Set<UUID> loadedById(@NotNull String id) {
-        return EntityStorage.getInstance().loadedById(id);
+        return EntityStorage.instance().loadedById(id);
     }
 
     public static @Nullable Set<UUID> loadedById(@NotNull KinematicEntitySchema schema) {

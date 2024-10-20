@@ -1,6 +1,7 @@
 package org.metamechanists.kinematiccore.internal.entity;
 
 import lombok.Getter;
+import lombok.experimental.Accessors;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mapdb.Serializer;
@@ -19,6 +20,7 @@ import java.util.Set;
 import java.util.UUID;
 
 
+@Accessors(fluent = true)
 public final class EntityStorage extends PersistentStorage<UUID, KinematicEntity<?, ?>> {
     @Getter
     private static EntityStorage instance;
@@ -50,8 +52,8 @@ public final class EntityStorage extends PersistentStorage<UUID, KinematicEntity
 
         KinematicEntitySchema schema = KinematicEntitySchema.get(reader.id());
         if (schema == null) {
-            KinematicCore.getInstance().getLogger().warning("Failed to load entity with ID " + reader.id() + " (schema not found)");
-            KinematicCore.getInstance().getLogger().warning(KinematicEntitySchema.registeredSchemas().toString());
+            KinematicCore.instance().getLogger().warning("Failed to load entity with ID " + reader.id() + " (schema not found)");
+            KinematicCore.instance().getLogger().warning(KinematicEntitySchema.registeredSchemas().toString());
             return null;
         }
 
@@ -59,7 +61,7 @@ public final class EntityStorage extends PersistentStorage<UUID, KinematicEntity
             return new AbstractMap.SimpleEntry<>(schema.id(), schema.constructor().newInstance(reader));
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
                  IllegalArgumentException e) {
-            KinematicCore.getInstance().getLogger().severe("Error while loading entity with ID " + reader.id());
+            KinematicCore.instance().getLogger().severe("Error while loading entity with ID " + reader.id());
             e.printStackTrace();
             return null;
         }

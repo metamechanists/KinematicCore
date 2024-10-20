@@ -35,14 +35,14 @@ public class TestDoubleRegister implements BaseTest {
 
     @Override
     public void test(World world) {
-        TestEntity.SCHEMA.register(KinematicCore.getInstance());
+        TestEntity.SCHEMA.register(KinematicCore.instance());
 
         TestUtil.runSync(() -> {
             if (KinematicEntitySchema.get(TestEntity.SCHEMA.id()) == null) {
-                TestEntity.SCHEMA.register(KinematicCore.getInstance());
+                TestEntity.SCHEMA.register(KinematicCore.instance());
             }
 
-            assertThatThrownBy(() -> TestEntity.SCHEMA.register(KinematicCore.getInstance()))
+            assertThatThrownBy(() -> TestEntity.SCHEMA.register(KinematicCore.instance()))
                     .isInstanceOf(Exceptions.IdConflictException.class);
         });
     }

@@ -1,6 +1,5 @@
 package org.metamechanists.kinematiccore.test.entity;
 
-import lombok.Getter;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.EntityType;
@@ -23,7 +22,6 @@ import static org.assertj.core.api.Assertions.*;
 
 public class TestDiskFieldStorageSuccess implements BaseTest {
     @SuppressWarnings("unused")
-    @Getter
     private static final class TestEntity extends KinematicEntity<Pig, KinematicEntitySchema> {
         private int integer;
         private final List<String> list;
@@ -63,7 +61,7 @@ public class TestDiskFieldStorageSuccess implements BaseTest {
     @SuppressWarnings("CodeBlock2Expr")
     @Override
     public void test(World world) {
-        TestEntity.SCHEMA.register(KinematicCore.getInstance());
+        TestEntity.SCHEMA.register(KinematicCore.instance());
 
         Location location = TestUtil.findUnloadedChunk(world);
 
@@ -76,11 +74,12 @@ public class TestDiskFieldStorageSuccess implements BaseTest {
             TestEntity testEntity = (TestEntity) KinematicEntity.get(uuid.get());
             assertThat(testEntity)
                     .isNotNull();
-            assertThat(testEntity.getInteger())
+            assertThat(testEntity.integer)
                     .isEqualTo(5);
-            assertThat(testEntity.getList())
+            assertThat(testEntity.list)
                     .isEmpty();
-            assertThat(testEntity.getLocation().x())
+            //noinspection DataFlowIssue
+            assertThat(testEntity.location.x())
                     .isEqualTo(location.x());
         });
 
@@ -99,11 +98,11 @@ public class TestDiskFieldStorageSuccess implements BaseTest {
                     .isEqualTo(TestEntity.SCHEMA);
             assertThat(testEntity)
                     .isNotNull();
-            assertThat(testEntity.getInteger())
+            assertThat(testEntity.integer)
                     .isEqualTo(6);
-            assertThat(testEntity.getList())
+            assertThat(testEntity.list)
                     .hasSize(1);
-            assertThat(testEntity.getLocation().x())
+            assertThat(testEntity.location.x())
                     .isEqualTo(location.x());
         });
 
