@@ -2,6 +2,8 @@ package org.metamechanists.kinematiccore.internal.entity;
 
 import lombok.Getter;
 import lombok.experimental.Accessors;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Entity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.mapdb.Serializer;
@@ -58,7 +60,10 @@ public final class EntityStorage extends PersistentStorage<UUID, KinematicEntity
         }
 
         try {
-            return new AbstractMap.SimpleEntry<>(schema.id(), schema.constructor().newInstance(reader));
+            Entity entity = Bukkit.getEntity(uuid);
+            assert entity != null;
+            assert entity.getType() == schema.entityType();
+            return new AbstractMap.SimpleEntry<>(schema.id(), schema.constructor().newInstance(reader, entity));
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
                  IllegalArgumentException e) {
             KinematicCore.instance().getLogger().severe("Error while loading entity with ID " + reader.id());

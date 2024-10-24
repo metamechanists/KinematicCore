@@ -41,8 +41,8 @@ public class TestDiskFieldStorageSuccess implements BaseTest {
         }
 
         @SuppressWarnings("DataFlowIssue")
-        public TestEntity(@NotNull StateReader reader) {
-            super(reader);
+        public TestEntity(@NotNull StateReader reader, @NotNull Pig pig) {
+            super(reader, pig);
             integer = reader.get("integer", Integer.class);
             list = reader.get("list", new ArrayList<>());
             location = reader.get("location", Location.class);

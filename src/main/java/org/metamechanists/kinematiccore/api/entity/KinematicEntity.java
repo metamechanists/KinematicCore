@@ -1,7 +1,6 @@
 package org.metamechanists.kinematiccore.api.entity;
 
 
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -11,7 +10,6 @@ import org.metamechanists.kinematiccore.internal.entity.EntityStorage;
 import org.metamechanists.kinematiccore.api.state.StateReader;
 import org.metamechanists.kinematiccore.api.state.StateWriter;
 
-import java.lang.ref.WeakReference;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -22,11 +20,11 @@ import java.util.function.Supplier;
 public abstract class KinematicEntity<T extends Entity, S extends KinematicEntitySchema> {
     private final String id;
     private final UUID uuid;
-    private transient WeakReference<T> entityRef;
+    private final transient T entity;
 
     protected KinematicEntity(@NotNull S schema, @NotNull Supplier<T> spawnEntity) {
         this.id = schema.id();
-        T entity = spawnEntity.get();
+        this.entity = spawnEntity.get();
 
         // Check the spawned entity is the correct type (sadly can't be done at compile-time because... Java)
         if (entity.getType() != schema.entityType()) {
@@ -39,35 +37,16 @@ public abstract class KinematicEntity<T extends Entity, S extends KinematicEntit
         EntityStorage.instance().create(this);
     }
 
-    protected KinematicEntity(@NotNull StateReader reader) {
+    protected KinematicEntity(@NotNull StateReader reader, @NotNull T entity) {
         this.id = reader.id();
         this.uuid = reader.uuid();
+        this.entity = entity;
     }
 
     public void write(@NotNull StateWriter writer) {}
 
-    public final @Nullable T entity() {
-        // Use weakref if available
-        if (entityRef != null) {
-            T entityFromRef = entityRef.get();
-            if (entityFromRef != null && entityFromRef.isValid()) {
-                return entityFromRef;
-            }
-        }
-
-        // Fall back to getting entity from world, and if found, update the weakref
-        Entity entityFromWorld = Bukkit.getEntity(uuid);
-        if (entityFromWorld != null && schema().entityType() == entityFromWorld.getType()) {
-            Class<?> entityClass = schema().entityType().getEntityClass();
-            assert entityClass != null;
-            assert entityClass.isInstance(entityFromWorld);
-            //noinspection unchecked
-            T castEntity = (T) entityClass.cast(entityFromWorld);
-            entityRef = new WeakReference<>(castEntity);
-            return castEntity;
-        }
-
-        return null;
+    public final @NotNull T entity() {
+        return entity;
     }
 
     public final @NotNull UUID uuid() {
@@ -75,10 +54,7 @@ public abstract class KinematicEntity<T extends Entity, S extends KinematicEntit
     }
 
     public final void tick(long tick) {
-        T entity = entity();
-        if (entity != null) {
-            tick(entity, tick);
-        }
+        tick(entity, tick);
     }
 
     protected void tick(@NotNull T entity, long tick) {}

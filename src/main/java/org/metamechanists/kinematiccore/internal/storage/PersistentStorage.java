@@ -178,7 +178,6 @@ public abstract class PersistentStorage<K extends Comparable<K>, V> {
         for (String id : idsToCleanup) {
             Set<K> keys = loadedById(id);
             if (keys == null) {
-                KinematicCore.instance().getLogger().warning("Failed to save data of type " + id);
                 continue;
             }
 

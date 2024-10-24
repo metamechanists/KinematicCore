@@ -15,7 +15,7 @@ public class Exceptions {
 
     public static class MissingConstructorException extends RuntimeException {
         public MissingConstructorException(String id) {
-            super(id + " must implement a deserialization constructor, in the form: public SomeEntity(StateReader reader) { ... }");
+            super(id + " must implement a deserialization constructor, in the form: public SomeEntity(StateReader reader, Entity entity) { ... }");
         }
     }
 

@@ -28,8 +28,8 @@ public class TestDoubleRegister implements BaseTest {
             super(SCHEMA, () -> location.getWorld().spawn(location, Pig.class));
         }
 
-        public TestEntity(@NotNull StateReader reader) {
-            super(reader);
+        public TestEntity(@NotNull StateReader reader, @NotNull Pig pig) {
+            super(reader, pig);
         }
     }
 

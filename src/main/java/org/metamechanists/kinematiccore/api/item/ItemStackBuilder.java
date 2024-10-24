@@ -21,18 +21,22 @@ public class ItemStackBuilder {
     public static final int LINE_LENGTH = 50;
     public static final String DIAMOND = "\u25C6";
 
-    public static final Component INTERMEDIATE = mm.deserialize("<color:#48df56>\u1F6E0 Intermediate");
-    public static final Component TOOL = mm.deserialize("<color:#00ff00>\u26CF Tool");
-    public static final Component WEAPON = mm.deserialize("<color:#00ff00>\u1F5E1 Weapon");
-    public static final Component ARMOR = mm.deserialize("<color:#00ff00>\u1F455 Armor");
-    public static final Component VEHICLE = mm.deserialize("<color:#aa6eaa>\u2708 Vehicle");
-    public static final Component MACHINE = mm.deserialize("<color:#00ff00>\u1F3ED Machine");
-    public static final Component STORAGE = mm.deserialize("<color:#00ff00>\u1F9F0 Storage");
-    public static final Component GENERATOR = mm.deserialize("<color:#00ff00>\u26A1 Generator");
-    public static final Component ENERGY_STORAGE = mm.deserialize("<color:#00ff00>\u1F50B Energy Storage");
-    public static final Component RESOURCE = mm.deserialize("<color:#00ff00>\u1FAA8 Resource");
-    public static final Component FOOD = mm.deserialize("<color:#00ff00>\u1F352 Food/drink");
-    public static final Component BUILDING_BLOCK = mm.deserialize("<color:#00ff00>\u1F3DB Building Block");
+    public static final String INTERMEDIATE_COLOR = "<color:#48df56>";
+    public static final String TOOL_COLOR = "<color:#00ff00>";
+    public static final String WEAPON_COLOR = "<color:#00ff00>";
+
+    public static final String INTERMEDIATE = INTERMEDIATE_COLOR + "\u1F6E0 Intermediate";
+    public static final String TOOL = "\u26CF Tool";
+    public static final String WEAPON = "<color:#00ff00>\u1F5E1 Weapon";
+    public static final String ARMOR = "<color:#00ff00>\u1F455 Armor";
+    public static final String VEHICLE = "<color:#aa6eaa>\u2708 Vehicle";
+    public static final String MACHINE = "<color:#00ff00>\u1F3ED Machine";
+    public static final String STORAGE = "<color:#00ff00>\u1F9F0 Storage";
+    public static final String GENERATOR = "<color:#00ff00>\u26A1 Generator";
+    public static final String ENERGY_STORAGE = "<color:#00ff00>\u1F50B Energy Storage";
+    public static final String RESOURCE = "<color:#00ff00>\u1FAA8 Resource";
+    public static final String FOOD = "<color:#00ff00>\u1F352 Food/drink";
+    public static final String BUILDING_BLOCK = "<color:#00ff00>\u1F3DB Building Block";
 
     private final ItemStack stack;
 
