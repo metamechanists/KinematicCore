@@ -1,6 +1,7 @@
 package org.metamechanists.kinematiccore.api.item;
 
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
@@ -45,7 +46,7 @@ public class ItemStackBuilder {
             if (lore == null) {
                 lore = new ArrayList<>();
             }
-            lore.add(line);
+            lore.add(line.decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE));
             meta.lore(lore);
         });
     }
@@ -75,7 +76,7 @@ public class ItemStackBuilder {
     }
 
     public ItemStackBuilder loreLine(String key, String value, String unit) {
-        return loreLine("<color:#eec250>" + DIAMOND + " <color:#b4b4b4>" + key + " <color:#2182ff>" + value + " <color:");
+        return loreLine("<color:#eec250>" + DIAMOND + " <color:#b4b4b4>" + key + " <color:#2182ff>" + value + " <color:#708b8c>" + unit);
     }
 
     public ItemStackBuilder loreLine(String key, String value) {
