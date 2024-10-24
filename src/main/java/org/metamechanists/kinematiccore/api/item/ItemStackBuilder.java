@@ -61,7 +61,7 @@ public class ItemStackBuilder {
     }
 
     public ItemStackBuilder name(Component name) {
-        stack.editMeta(meta -> meta.displayName(name));
+        stack.editMeta(meta -> meta.displayName(name.decorationIfAbsent(TextDecoration.ITALIC, TextDecoration.State.FALSE)));
         return this;
     }
 
@@ -76,7 +76,7 @@ public class ItemStackBuilder {
     }
 
     public ItemStackBuilder loreLine(String key, String value, String unit) {
-        return loreLine("<color:#eec250>" + DIAMOND + " <color:#b4b4b4>" + key + " <color:#2182ff>" + value + " <color:#708b8c>" + unit);
+        return loreLine("<color:#eec250>" + DIAMOND + " <color:#b4b4b4>" + key + " <color:#2182ff>" + value + " <color:#416a7f>" + unit);
     }
 
     public ItemStackBuilder loreLine(String key, String value) {
