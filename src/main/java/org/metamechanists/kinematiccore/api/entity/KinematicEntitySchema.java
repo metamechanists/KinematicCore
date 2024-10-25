@@ -37,7 +37,7 @@ public class KinematicEntitySchema {
         this.kinematicClass = kinematicClass;
 
         try {
-            constructor = kinematicClass.getConstructor(StateReader.class);
+            constructor = kinematicClass.getConstructor(StateReader.class, entityType.getEntityClass());
         } catch (NoSuchMethodException e) {
             throw new Exceptions.MissingConstructorException(id);
         }
