@@ -19,17 +19,17 @@ public class ItemStackBuilder {
     private static final MiniMessage mm = MiniMessage.miniMessage();
 
     public static final int LINE_LENGTH = 50;
+
     public static final String DIAMOND = "\u25C6";
 
-    public static final String INTERMEDIATE_COLOR = "<color:#48df56>";
-    public static final String TOOL_COLOR = "<color:#00ff00>";
-    public static final String WEAPON_COLOR = "<color:#00ff00>";
+    public static final String COMPONENT_COLOR = "<color:#48df56>";
+    public static final String VEHICLE_COLOR = "<color:#b259d6>";
 
-    public static final String INTERMEDIATE = INTERMEDIATE_COLOR + "\u1F6E0 Intermediate";
-    public static final String TOOL = "\u26CF Tool";
+    public static final String COMPONENT = COMPONENT_COLOR + "\u1F6E0 Component";
+    public static final String TOOL = "<color:#00ff00>\u26CF Tool";
     public static final String WEAPON = "<color:#00ff00>\u1F5E1 Weapon";
     public static final String ARMOR = "<color:#00ff00>\u1F455 Armor";
-    public static final String VEHICLE = "<color:#aa6eaa>\u2708 Vehicle";
+    public static final String VEHICLE = VEHICLE_COLOR + "<color:#aa6eaa>\u2708 Vehicle";
     public static final String MACHINE = "<color:#00ff00>\u1F3ED Machine";
     public static final String STORAGE = "<color:#00ff00>\u1F9F0 Storage";
     public static final String GENERATOR = "<color:#00ff00>\u26A1 Generator";
@@ -77,14 +77,6 @@ public class ItemStackBuilder {
     public ItemStackBuilder loreLine(Component line) {
         addLine(line);
         return this;
-    }
-
-    public ItemStackBuilder loreLine(String key, String value, String unit) {
-        return loreLine("<color:#eec250>" + DIAMOND + " <color:#b4b4b4>" + key + " <color:#2182ff>" + value + " <color:#416a7f>" + unit);
-    }
-
-    public ItemStackBuilder loreLine(String key, String value) {
-        return loreLine(key, value, "");
     }
 
     public ItemStackBuilder enchantment(Enchantment enchantment, int level) {
