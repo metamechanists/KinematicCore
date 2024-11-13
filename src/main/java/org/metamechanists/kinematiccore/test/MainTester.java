@@ -50,20 +50,22 @@ public final class MainTester {
     }
 
     private boolean test(@NotNull BaseTest test) {
+        boolean success = true;
+
         try {
             test.test(world);
         } catch (Exception | LinkageError | AssertionError e) {
             e.printStackTrace();
-            return false;
+            success = false;
         }
 
         try {
             test.cleanup();
         } catch (Exception | LinkageError | AssertionError e) {
             e.printStackTrace();
-            return false;
+            success = false;
         }
 
-        return true;
+        return success;
     }
 }

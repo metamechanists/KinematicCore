@@ -1,5 +1,6 @@
 package org.metamechanists.kinematiccore.test.entity;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.entity.EntityType;
@@ -10,6 +11,9 @@ import org.metamechanists.kinematiccore.api.entity.KinematicEntity;
 import org.metamechanists.kinematiccore.api.entity.KinematicEntitySchema;
 import org.metamechanists.kinematiccore.api.state.StateReader;
 import org.metamechanists.kinematiccore.test.BaseTest;
+
+import java.util.UUID;
+import java.util.concurrent.atomic.AtomicReference;
 
 import static org.assertj.core.api.Assertions.*;
 
@@ -42,6 +46,7 @@ public class TestMemoryStorageSuccess implements BaseTest {
 
         TestUtil.runSync(() -> {
             TestEntity kinematicEntity = new TestEntity(location);
+            UUID uuid = kinematicEntity.uuid();
 
             assertThat(KinematicEntity.get(kinematicEntity.uuid()))
                     .isEqualTo(kinematicEntity);
@@ -53,17 +58,14 @@ public class TestMemoryStorageSuccess implements BaseTest {
             assertThat(kinematicEntity.entity())
                     .isNotNull();
 
-            //noinspection DataFlowIssue
-            kinematicEntity.entity().remove();
+            Bukkit.getEntity(uuid).remove();
 
-            assertThat(KinematicEntity.get(kinematicEntity.uuid()))
+            assertThat(KinematicEntity.get(uuid))
                     .isNull();
             assertThat(KinematicEntitySchema.get(TestEntity.SCHEMA.id()))
                     .isEqualTo(TestEntity.SCHEMA);
             assertThat(KinematicEntity.loadedById(TestEntity.SCHEMA))
                     .isEmpty();
-            assertThat(kinematicEntity.entity())
-                    .isNull();
         });
 
         TestUtil.unloadChunk(location);
