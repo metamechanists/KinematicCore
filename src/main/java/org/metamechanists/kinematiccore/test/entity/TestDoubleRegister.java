@@ -46,4 +46,9 @@ public class TestDoubleRegister implements BaseTest {
                     .isInstanceOf(Exceptions.IdConflictException.class);
         });
     }
+
+    @Override
+    public void cleanup() {
+        TestDoubleRegister.TestEntity.SCHEMA.unregister();
+    }
 }

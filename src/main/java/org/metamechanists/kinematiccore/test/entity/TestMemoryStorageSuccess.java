@@ -68,4 +68,9 @@ public class TestMemoryStorageSuccess implements BaseTest {
 
         TestUtil.unloadChunk(location);
     }
+
+    @Override
+    public void cleanup() {
+        TestMemoryStorageSuccess.TestEntity.SCHEMA.unregister();
+    }
 }

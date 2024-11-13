@@ -87,4 +87,9 @@ public class TestDiskStorageSuccess implements BaseTest {
 
         TestUtil.unloadChunk(location);
     }
+
+    @Override
+    public void cleanup() {
+        TestDiskStorageSuccess.TestEntity.SCHEMA.unregister();
+    }
 }

@@ -37,4 +37,7 @@ public class TestMissingConstructor implements BaseTest {
             )).isInstanceOf(Exceptions.MissingConstructorException.class);
         });
     }
+
+    @Override
+    public void cleanup() {}
 }

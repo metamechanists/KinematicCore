@@ -57,6 +57,13 @@ public final class MainTester {
             return false;
         }
 
+        try {
+            test.cleanup();
+        } catch (Exception | LinkageError | AssertionError e) {
+            e.printStackTrace();
+            return false;
+        }
+
         return true;
     }
 }
