@@ -5,7 +5,6 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.metamechanists.kinematiccore.api.Exceptions;
 import org.metamechanists.kinematiccore.internal.entity.EntityStorage;
 import org.metamechanists.kinematiccore.api.state.StateReader;
 import org.metamechanists.kinematiccore.api.state.StateWriter;
@@ -25,12 +24,7 @@ public abstract class KinematicEntity<T extends Entity, S extends KinematicEntit
     protected KinematicEntity(@NotNull S schema, @NotNull Supplier<T> spawnEntity) {
         this.id = schema.id();
         this.entity = spawnEntity.get();
-
-        // Check the spawned entity is the correct type (sadly can't be done at compile-time because... Java)
-        if (entity.getType() != schema.entityType()) {
-            throw new Exceptions.EntityTypeMismatchException(id, entity.getType(), schema.entityType());
-        }
-
+        assert entity.getType() == schema.entityType(); // sanity check, should be checked at compile time
         this.uuid = entity.getUniqueId();
 
         //noinspection ThisEscapedInObjectConstruction
