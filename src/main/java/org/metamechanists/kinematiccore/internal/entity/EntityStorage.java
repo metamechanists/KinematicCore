@@ -20,12 +20,14 @@ import java.util.AbstractMap;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 
 
 @Accessors(fluent = true)
 public final class EntityStorage extends PersistentStorage<UUID, KinematicEntity<?, ?>> {
     @Getter
     private static EntityStorage instance;
+    private static final Map<UUID, Entity> entityCache = new ConcurrentHashMap<>();
 
     private EntityStorage() {
         super("entity", Serializer.UUID);
@@ -48,6 +50,17 @@ public final class EntityStorage extends PersistentStorage<UUID, KinematicEntity
         return kinematicEntity.schema().id();
     }
 
+    /*
+     * Overriden because we must also store a reference to the Entity, to be used
+     * when we deserialize. We can't use Bukkit.getEntities when deserializing
+     * because that would be an asynchronous call.
+     */
+    @Override
+    public void load(UUID uuid) {
+        super.load(uuid);
+        entityCache.put(uuid, Bukkit.getEntity(uuid));
+    }
+
     @Override
     protected @Nullable Map.Entry<String, KinematicEntity<?, ?>> deserialize(UUID uuid, byte @NotNull [] bytes) {
         StateReader reader = new StateReader(uuid, bytes);
@@ -60,7 +73,7 @@ public final class EntityStorage extends PersistentStorage<UUID, KinematicEntity
         }
 
         try {
-            Entity entity = Bukkit.getEntity(uuid);
+            Entity entity = entityCache.remove(uuid);
             assert entity != null;
             assert entity.getType() == schema.entityType();
             return new AbstractMap.SimpleEntry<>(schema.id(), schema.constructor().newInstance(reader, entity));
