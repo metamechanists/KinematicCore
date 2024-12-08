@@ -15,6 +15,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.metamechanists.kinematiccore.KinematicCore;
+import org.metamechanists.kinematiccore.api.entity.KinematicEntitySchema;
 import org.metamechanists.kinematiccore.test.MainTester;
 
 
@@ -32,8 +33,14 @@ public class KinematicCommand extends BaseCommand {
 
     @SuppressWarnings("InnerClassMayBeStatic")
     @Subcommand("dev")
-    @Description("Commands to help with Kinematic development. DO NOT use this command outside of a test server unless you know exactly what you're doing!")
+    @Description("Commands to help with Kinematic development. DO NOT EVER use this command outside of a test server unless you know exactly what you're doing!")
     public class KinematicDevCommand extends BaseCommand {
+
+        @Subcommand("schemas")
+        @Description("List all loaded schemas")
+        public static void schemas(@NotNull Player player) {
+            player.sendMessage(String.join("", KinematicEntitySchema.registeredSchemas()));
+        }
 
         @Subcommand("test")
         @Description("Run Kinematic tests.")
