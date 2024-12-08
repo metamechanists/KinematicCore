@@ -39,7 +39,7 @@ public class KinematicCommand extends BaseCommand {
         @Subcommand("schemas")
         @Description("List all loaded schemas")
         public static void schemas(@NotNull Player player) {
-            player.sendMessage(String.join("", KinematicEntitySchema.registeredSchemas()));
+            player.sendMessage(String.join(", ", KinematicEntitySchema.registeredSchemas()));
         }
 
         @Subcommand("test")
