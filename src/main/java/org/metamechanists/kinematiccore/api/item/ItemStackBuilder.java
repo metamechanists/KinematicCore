@@ -21,6 +21,7 @@ public class ItemStackBuilder {
     public static final int LINE_LENGTH = 50;
 
     public static final String DIAMOND = "\u25C6";
+    public static final String RIGHT_ARROW = "\u2192";
 
     public static final String COMPONENT_COLOR = "<color:#48df56>";
     public static final String VEHICLE_COLOR = "<color:#b259d6>";
