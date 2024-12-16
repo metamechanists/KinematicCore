@@ -5,9 +5,15 @@ import java.util.Set;
 
 @SuppressWarnings("EmptyClass")
 public class Exceptions {
-    public static class MissingConstructorException extends RuntimeException {
-        public MissingConstructorException(String id) {
+    public static class EntityMissingConstructorException extends RuntimeException {
+        public EntityMissingConstructorException(String id) {
             super(id + " must implement a deserialization constructor, in the form: public SomeEntity(StateReader reader, Entity entity) { ... }");
+        }
+    }
+
+    public static class BlockMissingConstructorException extends RuntimeException {
+        public BlockMissingConstructorException(String id) {
+            super(id + " must implement a deserialization constructor, in the form: public SomeBlock(StateReader reader) { ... }");
         }
     }
 

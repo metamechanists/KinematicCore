@@ -34,7 +34,7 @@ public class TestMissingConstructor implements BaseTest {
                     "test_missing_constructor",
                     EntityType.PIG,
                     TestEntity.class
-            )).isInstanceOf(Exceptions.MissingConstructorException.class);
+            )).isInstanceOf(Exceptions.EntityMissingConstructorException.class);
         });
     }
 

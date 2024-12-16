@@ -39,7 +39,7 @@ public class KinematicEntitySchema {
         try {
             constructor = kinematicClass.getConstructor(StateReader.class, entityType.getEntityClass());
         } catch (NoSuchMethodException e) {
-            throw new Exceptions.MissingConstructorException(id);
+            throw new Exceptions.EntityMissingConstructorException(id);
         }
 
         constructor.setAccessible(true);
