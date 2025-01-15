@@ -36,6 +36,10 @@ public class EntityTicker implements Runnable {
 
                 try {
                     assert kinematicEntity != null;
+                    if (kinematicEntity.schema() == null) {
+                        // Prevent entities with unregistered schemas being ticked
+                        continue;
+                    }
                     kinematicEntity.tick(tick);
                 } catch (Exception e) {
                     handleError(uuid, kinematicEntity, e);
